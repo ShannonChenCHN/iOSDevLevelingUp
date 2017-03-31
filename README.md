@@ -6,16 +6,16 @@ What to do
 
 - Topic
     - Objective-C Language *****
-        - []block
-        - []runtime
-    - []Memory Management *****
-    - []Networking *****
-    - []Multithreading *****
-    - []Database ****
+        - [ ] block
+        - [ ] runtime
+    - [ ] Memory Management *****
+    - [ ] Networking *****
+    - [ ] Multithreading *****
+    - [ ] Database ****
     - UI *****
         - Drawing
         - Animation
-    - []Architecture *****
+    - [ ] Architecture *****
     - Performance
     - Framework
         - Usage
@@ -29,9 +29,9 @@ What to do
 
 - Open Source
     - Networking
-        - []AFNetworking *****
-        - []YTKNetwork *****
-        - []RTNetwork *****
+        - [ ] AFNetworking *****
+        - [ ] YTKNetwork *****
+        - [ ] RTNetwork *****
         - XMNetworking
     - Image Download
         - []SDWebImage *****
@@ -63,19 +63,19 @@ What to do
 
 - Books
 
-        - []Pro Multithreading and Memory Management for iOS and OS X *****
-        - [x]Effective Objective-C 2.0 *****
-        - [x][Zen and the Art of the Objective-C Craftsmanship](https://github.com/objc-zen/objc-zen-book) ****
-        - []The Swift Programming Language *****
+        - [ ] Pro Multithreading and Memory Management for iOS and OS X *****
+        - [x] Effective Objective-C 2.0 *****
+        - [x] [Zen and the Art of the Objective-C Craftsmanship](https://github.com/objc-zen/objc-zen-book) ****
+        - [ ] The Swift Programming Language *****
         - Swifter
         - Objc.io
-        - [NSHipster] Obscure Topics In Cocoa & Objective-C
+        - [NSHipster]Obscure Topics In Cocoa & Objective-C
         - iOS Core Animation Advanced Techniques
         - iOS Drawing
         - CFHipsterRef: Low-level Programming on iOS & OS X
         - iOS 7 Pushing the limits
-        - []The C Pragramming Language *****
-        - []Computer Science Illuminated *****
+        - [ ] The C Pragramming Language *****
+        - [ ] Computer Science Illuminated *****
 
 - Documentation & API Reference
 
