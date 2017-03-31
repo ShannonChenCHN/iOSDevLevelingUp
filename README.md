@@ -74,6 +74,8 @@ What to do
         - iOS Drawing
         - CFHipsterRef: Low-level Programming on iOS & OS X
         - iOS 7 Pushing the limits
+        - The C Pragramming Language *****
+        - Computer Science Illuminated *****
 
 - Documentation & API Reference
         - Foundation
@@ -89,3 +91,9 @@ What to do
 
 
 - Blogs
+
+        - ibireme
+        - tangqiaoboy
+        - bang
+        - Limboy
+
