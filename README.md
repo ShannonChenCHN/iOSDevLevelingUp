@@ -26,18 +26,18 @@ What to do
     - TDD, Unit Test
     - CI
     - Documentation(English)
-
+    
 - Open Source
     - Networking
         - [ ] AFNetworking *****
         - [ ] YTKNetwork *****
         - [ ] RTNetwork *****
         - XMNetworking
-    - Image Download
-        - []SDWebImage *****
+    - Image Download 
+        - [ ] SDWebImage *****
         - YYWebImage
     - Model
-        - []MJExtension *****
+        - [ ] MJExtension *****
         - Mantle
         - JSONModel
         - YYModel
@@ -60,41 +60,39 @@ What to do
         - ReactiveCocoa
         - Aspects
         - IGListKit
-
+        - GNUstep
+        
 - Books
-
-        - [ ] Pro Multithreading and Memory Management for iOS and OS X *****
-        - [x] Effective Objective-C 2.0 *****
-        - [x] [Zen and the Art of the Objective-C Craftsmanship](https://github.com/objc-zen/objc-zen-book) ****
-        - [ ] The Swift Programming Language *****
-        - Swifter
-        - Objc.io
-        - [NSHipster]Obscure Topics In Cocoa & Objective-C
-        - iOS Core Animation Advanced Techniques
-        - iOS Drawing
-        - CFHipsterRef: Low-level Programming on iOS & OS X
-        - iOS 7 Pushing the limits
-        - [ ] The C Pragramming Language *****
-        - [ ] Computer Science Illuminated *****
+    - [ ] Pro Multithreading and Memory Management for iOS and OS X *****
+    - [x] Effective Objective-C 2.0 *****
+    - [x] [Zen and the Art of the Objective-C Craftsmanship](https://github.com/objc-zen/objc-zen-book) ****
+    - [ ] The Swift Programming Language *****
+    - Swifter
+    - Objc.io
+    - [NSHipster]Obscure Topics In Cocoa & Objective-C
+    - iOS Core Animation Advanced Techniques
+    - iOS Drawing
+    - CFHipsterRef: Low-level Programming on iOS & OS X
+    - iOS 7 Pushing the limits
+    - [ ] The C Pragramming Language *****
+    - [ ] Computer Science Illuminated *****
 
 - Documentation & API Reference
-
-        - Foundation
-        - UIKit
-        - CoreAnimation
-        - CoreGraphics
-        - CoreImage
-        - CoreText
-        - AVFoundation
+    - Foundation
+    - UIKit
+    - CoreAnimation
+    - CoreGraphics
+    - CoreImage
+    - CoreText
+    - AVFoundation
         
 
 - WWDC
 
 
 - Blogs
-
-        - ibireme
-        - tangqiaoboy
-        - bang
-        - Limboy
+    - ibireme
+    - tangqiaoboy
+    - bang
+    - Limboy
 
