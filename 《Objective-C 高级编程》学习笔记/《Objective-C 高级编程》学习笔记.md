@@ -374,14 +374,323 @@ ARC中ARC 只是在编译层做手脚，所以我们可以对整个项目设置 
 
 ####2.3 Blocks 的实现 
 **（1）block 的实质**
+
+- clang（LLVM）编译器：
+- block 的编译：block 在实际编译时，会被当做 C 语言源码来处理，通过支持 block 的编译器，含有 block 语法的代码会被转成一般 C 语言编译器能够处理的代码，并被当做极为普通的 C 语言来编译。
+- 通过 clang 来查看 block 的真实面目：block 在实际编译时，无法转换成我们能够理解的源代码，但是我们可以借助 clang 将含有 block 语法的代码转成我们能看懂的底层代码 —— 通过 `clang -rewrite-objc yourfilename`命令可以含有 block 语法的代码转成 C++ 源代码。
+- 下面是 block 被转换后的源码解读：
+	1. 先看看几个关键的数据结构和函数：
+		- `__main_block_func_0` 是 block 中要执行的内容所转成的函数。
+		- `__main_block_impl_0` 是存有 block 信息的结构体，是最核心的角色，作为 block 实现的入口，其中包含两个主要的成员变量：`__block_impl` 类型的变量和 `__main_block_desc_0` 类型的变量，除了这两个成员变量，还有一个构造函数 `__main_block_impl_0`。
+		- `__block_impl` 是 block 变量所指向的结构体，包含四个成员变量，其中两个是指针变量 `isa` 和函数指针变量 `FuncPtr` 。
+		- `__main_block_desc_0` 是记录 block 描述信息的结构体。
+		- 构造函数 `__main_block_impl_0 ` 的第一个参数是指向 `__main_block_func_0` 函数的指针（第一个参数前为什么是 `(void *)`，而不是 `& ` ？），第二个参数是作为静态全局变量初始化的结构体指针 `__main_block_desc_0_DATA` 。这个构造函数中会对 成员变量 `isa`、`Flags`、`FuncPtr` 和 `Desc` 进行赋值。
+   
+	2. block 的实质：
+		- block 的“执行体”最终被转成了函数 `__main_block_func_0`，并且这个函数的指针被赋值给了 `__block_impl` （实际上也就是 `__main_block_impl_0 ` 的成员变量）的成员变量 `FuncPtr `函数指针。最后调用 block 时，也就是从结构体中取出这个函数来调用。
+		- 将 block 赋给 block 类型的变量 myBlock，相当于将 `__main_block_impl_0 ` 结构体实例的指针（`(struct __block_impl *)`类型）赋给变量 myBlock。
+		- block 就相当于一个 Objective-C 对象，其中有一个 `isa` 指针用来存储 block 的地址（示例代码中的 `&__NSConcreteStackBlock`）。
+
+*示例代码：*
+
+```
+// 原代码
+int main() {
+     void (^block)(void) = ^void(void) {
+         printf("Block\n");
+     };
+     block();
+     return 0;
+  }
+```
+
+```
+// 转换后的代码
+
+/// 存储 block 关键信息的结构体
+struct __block_impl {
+  void *isa; // 像 Objective-C 对象一样，存储对象地址的指针变量
+  int Flags;
+  int Reserved;
+  void *FuncPtr; // 存储 block 执行函数的指针变量
+};
+
+/// 存储 block 描述信息的结构体
+static struct __main_block_desc_0 {
+    size_t reserved;
+    size_t Block_size;
+} __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0)}; // 静态全局变量
+
+/// block 转成的结构体
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+    
+    /// 构造函数
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int flags=0) {
+    impl.isa = &_NSConcreteStackBlock;  // _NSConcreteStackBlock ？？？
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+/// block 的执行内容转成的函数
+static void __main_block_func_0(struct __main_block_impl_0 *__cself) {
+
+        printf("Block\n");
+    }
+
+
+
+int main() {
+
+    void (*block)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA));
+    // 1.左边实际上就是一个函数指针变量
+    // 2.右边拆开来看：
+    //      2.1 调用 __main_block_impl_0 结构体的构造函数，生成一个 __main_block_impl_0 结构体（第一个参数前为什么是(void *)，而不是 & 符号？）：
+    //       struct __main_block_impl_0 blockImpl = __main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA);
+    //      2.2 获取 __main_block_impl_0 结构体的指针：（这里有疑问？？？）
+    //       struct __main_block_impl_0 *structPtr = &blockImpl;
+    //      2.3 转换成一个函数指针，传给左边的函数指针变量：
+    //      void (*block)(void) = structPtr;
+    
+    ((void (*)(__block_impl *))((__block_impl *)block)->FuncPtr)((__block_impl *)block);
+    // 1.首先取 block 变量： __block_impl *blockPtr = ((__block_impl *)block);
+    // 2.然后取出 FuncPtr 指针：void *funcPtr = blockPtr->FuncPtr;
+    // 3.再获取函数变量值：void blockFun() = (void (*)(__block_impl *))funcPtr; // 这里是模拟的，实际上不能直接这么转的
+    // 4.最后调用函数，将函数指针变量（指向 block 值的指针）作为参数：blockFun((__block_impl *)block);
+
+    return 0;
+}
+```
+
+参考：
+
+- [深入研究Block捕获外部变量和__block实现原理](http://www.jianshu.com/p/ee9756f3d5f6)
+- [深入研究Block用weakSelf、strongSelf、@weakify、@strongify解决循环引用](http://www.jianshu.com/p/701da54bd78c)
+- [谈Objective-C block的实现](http://blog.devtang.com/2013/07/28/a-look-inside-blocks/)
+- [Objective-C中block的底层原理](http://www.cnblogs.com/dahe007/p/6067591.html)
+
 **（2）block 是如何截获自动变量值的**
-**（3）__block 的背后发生了什么**    
-**（4）block 的内存分配** 
-**（5）__block变量的内存分配** 
-**（6）被 block 截获的自动变量的内存管理** 
-**（7）__block 变量和对象** 
+
+- block 截获自动变量的本质——将截获的自动变量值保存到 block 的结构体实例中：
+	-  block 中截获的自动变量被作为参数传入 `__main_block_impl_0 ` 结构体的构造函数中， 然后被当做成员变量追加到了 `__main_block_impl_0 ` 结构体中了，`__main_block_impl_0 ` 结构体中追加的成员变量与截获的自动变量的类型完全相同，而且 block 对自动变量的截获只针对 block 中使用到的变量。
+	-  在调用 block 时，也就是调用 `__main_block_func_0 ` 函数时，会将捕获的自动变量从 `__main_block_impl_0 ` 结构体中取出来使用。
+	
+- block 中为什么不能截获 C 语言数组类型的自动变量：C 语言中的数组与指针不同，数组不是变量，不能直接被整体赋值，所以在 block 捕获 C 语言数组时，虽然能追加到  `__main_block_impl_0 ` 结构体的成员变量中（**怎么做到的？**），但是在 block 的执行函数 `__main_block_func_0 ` 中，却不能将该成员变量直接赋给函数中数组类型的自动变量（**为什么不能声明为指针变量呢**）。
+
+截获自动变量的示例代码：
+
+```
+// 转换前
+
+int main () {
+    
+    int val1 = 256;
+    int val2 = 10;
+    const char *fmt = "val2 = %d\n";
+    
+    void (^myBlock)(void) = ^void(void) {
+        printf(fmt, val2);
+    };
+    
+    val2 = 2;
+    fmt = "These values were changed. val2 = %d\n";
+    
+    myBlock();
+    
+    return 0;
+}
+```
+
+```
+// 转换后
+struct __block_impl {
+  void *isa;
+  int Flags;
+  int Reserved;
+  void *FuncPtr;
+};
+
+static struct __main_block_desc_0 {
+    size_t reserved;
+    size_t Block_size;
+} __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0)};
+
+
+// block 对应的结构体
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+    
+    // block 中捕获的自动变量被声明成了成员变量
+  const char *fmt;
+  int val2;
+    
+    // 构造函数中也多了两个参数，用来传入捕获的自动变量（函数后面部分的 “ : fmt(_fmt), val2(_val2）” 是什么意思？）
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, const char *_fmt, int _val2, int flags=0) : fmt(_fmt), val2(_val2) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+
+static void __main_block_func_0(struct __main_block_impl_0 *__cself) {
+  const char *fmt = __cself->fmt; // bound by copy，获取捕获到的自动变量（保存在成员变量中）
+  int val2 = __cself->val2; // bound by copy，获取捕获到的自动变量（保存在成员变量中）
+
+        printf(fmt, val2);
+    }
+
+
+
+int main () {
+
+    int val1 = 256;  // block 中没用到，也就不会截获
+    int val2 = 10;
+    const char *fmt = "val2 = %d\n";
+
+    // 捕获到的自动变量传入构造函数的参数
+    void (*myBlock)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, fmt, val2));
+
+    val2 = 2;
+    fmt = "These values were changed. val2 = %d\n";
+
+    ((void (*)(__block_impl *))((__block_impl *)myBlock)->FuncPtr)((__block_impl *)myBlock);
+
+    return 0;
+}
+
+```
+
+截获数组变量的示例代码：
+
+```
+
+```
+
+**（3）`__block` 的本质**   
+
+- block 是如何访问全局变量、全局静态变量和局部静态变量的？
+	- block 中可以直接访问全局变量和全局自动变量，跟其他函数一样可以修改全局变量和全局自动变量的值。
+	- 当 block 捕获局部静态变量时，局部静态变量的地址会被传入到 block 结构体的构造函数中，block 回调时，其内部的函数会通过访问局部静态变量的地址来改变局部静态变量值。
+- `__block` 变量是如何被 block 截获的呢？
+	- 当 block 捕获 `__block` 变量时，`__block` 变量会被转成一个 `__Block_byref` 结构体变量，该结构体中有一个存储`__Block_byref` 结构体指针的成员变量 `__forwarding`，还有一个存储 `__block` 变量值的成员变量 `val`。
+	- `__Block_byref` 结构体变量的地址会被传入 block 结构体的构造函数中，保存到 block 结构体的成员变量 `__Block_byref_val_0 *val` 中。
+	- 给 `__block` 变量赋值的过程：在 block 执行内容转换后的函数 `__main_block_func_0` 中，首先通过访问 block 结构体实例 `__main_block_impl_0` 的成员变量 `__Block_byref_val_0 *val` 获取到指向 `__block` 变量的结构体指针 `val`，然后再通过 `__Block_byref_val_0` 的成员变量  `__forwarding` 来获取/改变 `__block` 变量的值。
+ 
+- `__Block_byref_val_0 ` 结构体中为什么会有成员变量 `__forwarding ` 呢？这样做是为了在多个 block 中使用同一个 `__block` 变量。
+- `->` 运算符代表什么意思？访问结构体指针的成员时可以使用 `->` 。比如，假设 `student`是一个结构体指针，那么 `student->name` 就相当于 `(* student).name`。
+
+示例代码
+
+```
+
+```
+ 遗留问题：
+ 
+ 1. block 超出变量作用域仍然存在的原因
+ 2. `__block` 变量结构体的成员变量 ` __forwarding` 存在的原因
+
+**（4）block 变量的存储域** 
+
+- block 变量和 `__block` 变量的本质
+- block “类”
+	- _NSConcreteStackBlock
+	- _NSConcreteGlobalBlock
+	- _NSConcreteMallocBlock
+- 全局的 block
+	- 作为全局变量的 block
+	- 不使用/截获自动变量的 block
+- 栈上的 block
+- 堆上的 block
+	- 从栈上复制到堆上的 block 与 `__block` 变量 
+	- 使用堆上的 block 的目的？
+	- 何时使用堆上的 block 呢？应用场景？
+	- block 的自动 copy 和手动 copy
+		- 大多数情况下，编译器会恰当地进行判断，自动生成将 block 从栈上复制到堆上的代码。比如，当 block 作为函数返回值的时候，系统会自动将 block 从栈上 copy 到堆上。
+		- 个别情况下，我们需要手动将 block 从栈上复制到堆上，也就是使用 copy 方法。比如，向方法或者函数的参数中传递 block 时，我们就需要手动调用 copy 方法，将 block 从栈上 copy 到堆上。
+		- 但是如果在方法或者函数中适当地复制了传递过来的参数，那么就不必在调用该方法或者函数前手动复制了。比如，Cocoa 框架中方法名带有 usingBlock 的方法，GCD 的 API。
+	- 对不同类别的 block 的复制产生的效果？
+
+**（5）`__block` 变量的存储域** 
+
+- block 从栈复制到堆时对 ` __block` 变量产生的影响
+- 多个 block 同时使用同一个 `__block` 变量的情况
+- 复制到堆上的 block 被释放了，对 `__block` 变量有什么影响吗？
+- 使用 `__block` 变量结构体的成员变量 `__forwarding` 的原因是什么？`__forwarding` 指针在 block 被复制前和复制后有什么不一样吗？
+
+示例代码
+
+```
+
+```
+
+
+**（6）block 截获 Objective-C 对象** 
+
+- 使用 `__strong` 的 Objective-C 对象自动变量被堆上 block 截获后，会被该 block 所持有，因此可以超出其变量作用域而存在。
+- 捕获`__strong` 的 Objective-C 对象自动变量的 block 结构体中有一个 `_main_block_copy_0` 函数，其内部调用了 `_Block_object_assign` 函数，相当于 Objective-C 中的 retain 方法，将捕获的对象赋值给 block 结构体的成员变量，并持有该对象。
+- 相对应地，捕获`__strong` 的 Objective-C 对象自动变量的 block 结构体中有一个 `_main_block_dispose_0` 函数，其内部调用了 `_Block_object_dispose` 函数，相当于 Objective-C 中的 release 方法，释放存储在 block 结构体的成员变量。
+- copy 函数（即 `_Block_object_assign` 函数）和 dispose 函数（即`_Block_object_dispose `函数）的调用时机：
+	- 当栈上的 block 被复制到堆上时，copy 函数会被调用
+	- 当堆上的 block 被销毁时，dispose 函数会被调用
+- 什么时候栈上的 block 会被复制到堆上呢？
+	- 调用 block 的 copy 方法
+	- block 作为函数返回值
+	- 将 block 赋值给附有 `__strong` 修饰符 id 类型的类或者 block 类型成员变量时（这句话是什么意思？？？难道是指将 block 赋值给一个 `__strong` 修饰的变量？）
+	- 在方法名中含有 usingBlock 的 Cocoa 框架方法或者 GCD 的 API 中传入 block 时
+- block 截获 Objective-C 对象和 `__block` 变量的不同（问题：如果是带有 `__block` 修饰符的 Objective-C 对象呢 ？从转换后的源代码来看，跟 `__block` 变量一样的处理方式）
+
+示例代码：
+
+```
+
+```
+
+**（7）带有 `__block` 和所有权修饰符修饰的 Objective-C 对象** 
+
+- 同时带有 `__block` 和 `__strong` 的 Objective-C 对象被 block 捕获后，该对象转换成的 `__block` 结构体的成员变量也是 `__strong` 修饰的，所以在 block 被复制到堆上时，会被 block 持有。当 block 从栈复制到堆时，使用 `_Block_object_assign` 函数，持有截获的对象，当堆上的 block 被销毁时，使用 `_Block_object_dispose` 函数，释放 block 持有的对象。
+- 带有 `__weak` 的 Objective-C 对象被 block 捕获后，该对象转换成的 block 结构体中的成员变量也是 `__weak` 修饰的，所以不管 block 是否被复制到堆上时，都不会被 block 持有。（猜想）
+- 同时带有 `__block` 和 `__weak` 的 Objective-C 对象被 block 捕获后，该对象转换成的 `__block` 结构体的成员变量也是 `__weak` 修饰的，所以同样不会被 block 持有。
+- 带有 `__unsafe_unretained` 的 Objective-C 对象被 block 捕获后，跟 C 语言指针相似，所以不管是直接被 block 捕获，还是跟 `__block` 一起使用，都不会像 `__strong` 和 `__weak` 修饰的变量那样处理。
+- block 中不能使用带有 `__autoreleasing` 的 Objective-C 对象，它与 `__block` 也不能同时使用，这两种情况都不会编译成功。
+
+示例代码：
+
+```
+
+```
+
 **（8）block 中的循环引用**    
-**（9）非 ARC 中对 block 的 copy 和 release**    
+
+- 什么情况下使用 block 会出现循环引用？     
+
+ > 如果在 block 中使用附有 `__strong` 修饰符的 Objective-C 对象类型的自动变量，那么当 block 从栈复制到堆上时，该对象被 block 所持有。此时，如果该对象本身就已经直接或间接持有了该 block，那么就会造成循环引用。比如说，该 block 本身就已经是该对象的一个属性（持有 block），然后 block 中又用到了该对象或者该对象的成员变量（强引用）。
+ 
+- 如何避免？
+	- 使用 `__weak`
+	- 使用 `__unsafe_unretained`
+	- 使用 `__block`
+
+示例代码：
+
+```
+
+```
+
+**（9）非 ARC 中对 block 的 copy 和 release**   
+
+- ARC 未开启时，对 block 的内存管理：
+	- ARC 未开启时，一般需要手动调用 copy 将 block 从栈复制到堆上。
+	- ARC 未开启时，只要 block 有一次复制并配置在堆上，就可以通过调用 `retain` 方法持有 block。但是对于配置在栈上的 block 调用 retain 方法是无效的。
+	- ARC 未开启时，我们可以调用 release 来释放堆上的 block。
+- C 语言中使用 block：
+	- 使用 Block_copy 函数代替 Objective-C 中的 copy 方法，进行持有。
+	- 使用 Block_release 函数代替 Objective-C 中的 release 方法，进行释放。
        
 ###3. Grand Central Dispatch 
 - 介绍：GCD（Grand Central Dispatch）是从 OS X Snow Leopard 和 iOS 4 开始引入的多线程编程技术。
@@ -419,24 +728,27 @@ ARC中ARC 只是在编译层做手脚，所以我们可以对整个项目设置 
 3.(Apple Documentation)[Advanced Memory Management Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011-SW1)    
 4.[GNUstep 源码下载地址](http://wwwmain.gnustep.org/resources/downloads.php?site=ftp%3A%2F%2Fftp.gnustep.org%2Fpub%2Fgnustep%2F)
 
-5.《Effective Objective-C 2.0》       
+5.(Apple Documentation)[Blocks Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Blocks/Articles/00_Introduction.html#//apple_ref/doc/uid/TP40007502-CH1-SW1)        
+6. 《Effective Objective-C 2.0》       
 6.《Mac OS X 背后的故事》    
 
 -------
 **问题**：  
-1.读技术书的正确姿势是什么？怎么读英文技术书？  
-2.开发中，什么时候要用 weakSelf 和 strongSelf，为什么？  
-3.野指针是怎么产生的？  
-4.`@property(nonatomic, copy) NSString *newPrice;`这段代码有什么问题吗？    
-5.解释一下：我在 viewController 的 viewDidLoad 方法中新建了一个对象 manager，然后调用了这个 manager 的一个实例方法，这个实例方法带有一个会异步回调的 block， 当 viewDidLoad 方法执行完毕后，这个 manager 也就被释放了，但是过了一段时间后， block 却正常回调了。 （详见示例代码）
 
-6.类方法中 block 的调用问题：跟 4. 中一样的场景，只不过不再是创建一个对象再调用了，而是直接调用 Manager 类的一个带有 block 的类方法 + processImageWithCompletion:，内部实现和实例方法一样，也是依然回调了。（详见示例代码）
+1. 读技术书的正确姿势是什么？怎么读英文技术书？  
+2. 开发中，什么时候要用 weakSelf 和 strongSelf，为什么？  
+3. 野指针是怎么产生的？  
+4. `@property(nonatomic, copy) NSString *newPrice;`这段代码有什么问题吗？    
+5. 解释一下：我在 viewController 的 viewDidLoad 方法中新建了一个对象 manager，然后调用了这个 manager 的一个实例方法，这个实例方法带有一个会异步回调的 block， 当 viewDidLoad 方法执行完毕后，这个 manager 也就被释放了，但是过了一段时间后， block 却正常回调了。 （详见示例代码）
 
-7.如何在 5.0.0 以上版本 Xcode 中关闭 ARC 功能，以及使用非 ARC 文件？
+6. 类方法中 block 的调用问题：跟 4. 中一样的场景，只不过不再是创建一个对象再调用了，而是直接调用 Manager 类的一个带有 block 的类方法 + processImageWithCompletion:，内部实现和实例方法一样，也是依然回调了。（详见示例代码）
+
+7. 如何在 5.0.0 以上版本 Xcode 中关闭 ARC 功能，以及使用非 ARC 文件？
 http://www.xuebuyuan.com/1529708.html
-8.一个 Objective-C 对象本质上是什么？一个 block 变量本质上是什么？
-9.`[[NSObject alloc] init]` 这一行代码是在干什么？我们在重载 init 方法时，为什么要判断 `self` 是否为空？
-10.`[NSMutableArray array]` 生成的对象是如何被系统的 autorelease 释放的呢？何时被释放呢？
+8. 一个 Objective-C 对象本质上是什么？一个 block 变量本质上是什么？Objective-C 类的类方法和实例方法本质上是什么？
+9. Objective-C 中为什么有 .h 和 .m 文件？Objective-C 的 @interface 和 @implementation 是什么？
+10. `[[NSObject alloc] init]` 这一行代码是在干什么？我们在重载 init 方法时，为什么要判断 `self` 是否为空？
+11. `[NSMutableArray array]` 生成的对象是如何被系统的 autorelease 释放的呢？何时被释放呢？
 
 *第5题和第6题的示例代码*： 
 
