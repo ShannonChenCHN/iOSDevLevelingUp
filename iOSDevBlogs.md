@@ -1,8 +1,7 @@
 # iOSDevBlogs
 ==================
 
->平日里，经常读到一些不错的博客，但大多也只是一扫而过，囫囵吞枣，却从未细读过，等到需要时又只好感叹“书到用时方恨少”，无可奈何地去百度一番。后来一想何不利用好GitHub这个平台，建立自己的“藏经阁”。于是，便有了这个README。
-							————丙申年二月初九 上海虹口
+A collection of awesome iOS development resources for reading.
 							
 ===========
 
@@ -170,6 +169,34 @@
 
 81.What's New in iOS：https://developer.apple.com/library/content/releasenotes/General/WhatsNewIniOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008244-SW1
 
+82.Git教程 - 廖雪峰的官方网站：http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000
+
+83.吴发伟的博客：http://wufawei.com
+
+84.腾讯ISUX：https://isux.tencent.com
+
+85.网易工程师项望烽的博客-阿毛的蛋疼地：http://xiangwangfeng.com
+
+86.里脊串的开发随笔：http://adad184.com
+
+87.awesome-weekly：https://github.com/jondot/awesome-weekly
+
+88.phodal的博客：https://www.phodal.com
+
+89.青玉伏案的博客：http://www.cnblogs.com/ludashi/
+
+90.ios-goodies：http://ios-goodies.com
+
+91.Swift 开发者-四娘的窝的博客： https://kemchenj.github.io
+
+92.今日头条技术博客： https://techblog.toutiao.com
+
+93.PSPDFKit blog：https://pspdfkit.com/blog/
+
+94.The Big Nerd Ranch Blog：https://www.bignerdranch.com/blog/
+
+95.Apple Swift blog：https://developer.apple.com/swift/blog/
+
 
 ## 其他学习资源合集
 trip-to-iOS：https://github.com/Aufree/trip-to-iOS
@@ -191,6 +218,8 @@ Favorite articles on iOS, Obj-C, and Swift（By Wendy Lu）：https://github.com
 ios_top_1000：https://github.com/iamdaiyuan/ios_top_1000
 
 iOS 中 常用的第三方库：http://www.jianshu.com/p/c8152d6ce957
+
+Swift30Projects：https://github.com/soapyigu/Swift30Projects
 
 ## Awesome 系列
 awesome-ios-ui：https://github.com/cjwirth/awesome-ios-ui
