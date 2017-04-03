@@ -80,11 +80,16 @@ What to do
 - Documentation & API Reference
     - Foundation
     - UIKit
+        - [ ] [View Programming Guide for iOS](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009503)
     - CoreAnimation
     - CoreGraphics
     - CoreImage
     - CoreText
     - AVFoundation
+    - Networking, Internet, & Web
+    - Xcode
+    - Swift
+    - Performance
         
 
 - WWDC
