@@ -110,7 +110,10 @@ What to do
         - [ ] [Instruments User Guide](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/index.html#//apple_ref/doc/uid/TP40004652-CH3-SW1)
     - Swift
     - Performance
-        
+    - Other
+        - [Xcode Release Notes](https://developer.apple.com/library/content/releasenotes/DeveloperTools/RN-Xcode/Chapters/Introduction.html)
+        - [iOS Human Interface Guidelines](https://developer.apple.com/ios/human-interface-guidelines)
+        - [App Review](https://developer.apple.com/app-store/review)/[App Review(CHN)](https://developer.apple.com/app-store/review/cn/)
 
 - WWDC
 
