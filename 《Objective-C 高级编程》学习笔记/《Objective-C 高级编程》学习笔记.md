@@ -698,39 +698,231 @@ int main () {
        
 ####3.1 Grand Central Dispatch（GCD）概要       
 **（1）什么是 GCD**     
+
+- 什么是 GCD？
+- GCD 与其他多线程编程技术（NSThread、NSOperation）的比较：
+- GCD 的优缺点：
+
 **（2）多线程编程**    
+
+- 从计算机 CPU 执行命令的层面，解释一下什么是线程：
+- 什么是多线程
+- 多线程编程技术的原理
+- 多线程编程中常见问题：
+	- 数据竞争
+	- 死锁
+	- 线程太多导致消耗大量内存
+- 为什么要使用多线程编程技术：
+
+>
+问题：        
+什么是 Runloop ？
 
 
 ####3.2 GCD 中的 API        
 **（1）Dispatch Queue**   
-**（2）dispatch_queue_create**     
-**（3）Main Dispatch Queue/Global Dispatch Queue**     
-**（4）dispatch_set_target_queue**      
-**（5）dispatch_after**      
-**（6）Dispatch Group**      
-**（7）dispatch_barrier_async**      
-**（8）dispatch_sync**      
-**（9）dispatch_apply**      
-**（10）dispatch_suspend/dispatch_resume**
-**（11）Dispatch Semaphore**      
-**（12）dispatch_once**      
-**（13）Dispatch I/O**      
+
+- GCD 怎么用：开发者要做的只是定义想执行的任务并追加到适当的 Dispatch Queue 中。
+- Dispatch Queue 是什么：
+- Dispatch Queue 的种类：
+	- Serial：等待队列中现在执行中的任务结束后在执行下一个任务，一次只执行一个任务。当然，你也可以同时创建多个队列，然后让多个队列同时执行不同的任务，实现并发执行。
+	- Concurrent：队列中的任务仍然是按照添加顺序启动的，但是是被分配到了不同的线程中执行的，所以一次可以执行多个任务。
+	- Main dispatch queue：在主线程中执行任务的队列
+- 并行执行的处理数量取决于当前系统的状态，iOS 和 OS X的核心——XNU 内核决定应当使用的线程数，并只生成所需的线程执行处理。
+- 创建 Dispatch Queue 的两种方式：
+	- 通过 `dispatch_queue_create` 函数创建 Serial Dispatch Queue 和 Concurrent Dispatch Queue。
+	- 直接获取系统提供的 Main Dispatch Queue 和 Global Dispatch Queue。
+
+**（2）`dispatch_queue_create`函数**  
+
+- 一个 Concurrent Dispatch Queue 可以并行执行多的任务，而一个 Serial Dispatch Queue 一次只能执行一个任务（生成并使用一个线程），但是我们可以用 `dispatch_queue_create` 函数创建多个 Serial Dispatch Queue ，这样多个 Serial Dispatch Queue 一起使用也可以实现并行执行了。
+- Serial Dispatch Queue 的典型应用场景：为了避免同步数据的时候出现数据竞争的情况，推荐使用 Serial Dispatch Queue（ Serial queues are often used to synchronize access to a specific resource.）。
+- `dispatch_queue_create` 函数使用说明：
+	- 第一个参数用于指定 Dispatch Queue 的名称，推荐使用像 APP Identifier 一样的逆序全局域名（fully qualified domain name）的命名方式进行命名，清晰地命名方便调试和查看日志。
+	- 第二个参数用于指定要生成的 Dispatch Queue 的类型：
+		- DISPATCH_QUEUE_CONCURRENT（创建 Concurrent Dispatch Queue）
+		- DISPATCH_QUEUE_SERIAL 或者 NULL（创建 Serial Dispatch Queue）
+- `dispatch_queue_t` 类型的内存管理：
+	- iOS 6.0 以前，不管是 ARC 还是 MRR，都要手动调用 dispatch_release 和 dispatch_retain 来管理内存。
+	- iOS 6.0 以后，ARC 下不需要关心内存管理的问题。
+
+> 问题：             
+> 1. [Does ARC support dispatch queues?](http://stackoverflow.com/questions/8618632/does-arc-support-dispatch-queues)        
+> 2. 如何理解书中这句话 “当想并行执行不发生数据竞争等问题的处理时，使用 Concurrent Dispatch Queue。”？
+
+
+   
+**（3）Main Dispatch Queue 和 Global Dispatch Queue**   
+- 系统提供的 Dispatch Queue 有两种：Main Dispatch Queue 和 Global Dispatch Queue。
+- 追加到 Main Dispatch Queue 的处理在主线程的 Runloop 中处理，因为主线程只有一个，所以 Main Dispatch Queue 类似于 Serial Dispatch Queue。
+- 使用 Global Dispatch Queue 很容易就能创建非主线程的 Concurrent Dispatch Queue。
+- Global Dispatch Queue 有四个优先级：
+	- 高优先级（High Priority）
+	- 默认优先级（Default Priority）
+	- 低优先级（Low Priority）
+	- 后台优先级（Background Priority）
+- 通过 XNU 内核管理的用于 Global Dispatch Queue 的线程，将各自使用的 Global Dispatch Queue 的优先级作为线程的执行优先级使用，但实际上这里的优先级只是大致的判断。
+
+> 问题：      
+> 1. XNU 内核是怎么处理 Global Dispatch Queue 的优先级的？                
+> 2. Global Dispatch Queue 的优先级有什么意义？各优先级的应用场景是什么？为什么很多人都是直接用 Default Priority？
+  
+**（4）`dispatch_set_target_queue`**      
+
+- 使用 `dispatch_queue_create` 函数生成的 Serial Dispatch Queue 或者 Concurrent Dispatch Queue 的优先级都是 DISPATCH_QUEUE_PRIORITY_DEFAULT。
+- 通过使用 `dispatch_set_target_queue ` 函数可以改变生成的 Dispatch Queue 的优先级。
+- `dispatch_set_target_queue ` 函数的第一个参数是要变更优先级的 Dispatch Queue，第二个参数是属于目标优先级的 Dispatch Queue。
+- 将 Dispatch Queue 指定为 `dispatch_set_target_queue ` 函数的参数，不仅可以变更 Dispatch Queue 的执行优先级，还可以设置 Dispatch Queue 的执行层次。如果在多个 Serial Dispatch Queue 中用 `dispatch_set_target_queue ` 函数指定目标为某一个 Serial Dispatch Queue，那么原先本应并行执行的多个 Serial Dispatch Queue，在目标 Serial Dispatch Queue 上只能同时执行一个处理。
+
+示例代码：
+
+```
+
+```
+
+**（5）`dispatch_after` 函数**     
+
+- 使用 `dispatch_after ` 函数可以实现在指定时间后执行要执行的任务，也就是延时执行。        
+
+	> 注意：严格意义上来讲，`dispatch_after ` 函数并不是在指定时间后执行任务，而是在指定时间追加任务到 Dispatch Queue。
+- `dispatch_after ` 函数的第一个参数是指定执行时间用的 `dispatch_time_t` 类型的值，第二个参数是指定要追加任务的 Dispatch Queue，第三个参数为要执行的 block。
+- `dispatch_time_t`类型的值可以通过 `dispatch_time` 函数或者 `dispatch_walltime` 函数生成，`dispatch_time` 函数通常用于计算相对时间，而 `dispatch_walltime` 函数用于计算绝对时间。
+
+示例代码：
+
+```
+
+```
+ 
+**（6）Dispatch Group**    
+
+- 使用 Dispatch Group 可以轻松实现“ Dispatch Queue 中的多个任务都结束后再执行结束任务”的效果。（如果只有一个 Serial Queue 的话就很好实现，但是在使用 Concurrent Queue 或者同时使用多个 Dispatch Queue 时就比较复杂）。
+- 无论向什么样的 Dispatch Queue 中追加任务，使用 Dispatch Group 都可以监视这些任务执行的结束，一旦检测到所有任务执行结束，就可将结束后要执行的“收尾任务”追加到 Dispatch Queue 中。
+- Dispatch Group 有两个函数可以进行监听：
+	- `dispatch_group_notify` 函数：第一个参数为要进行监视的 Dispatch Group，在追加到该 Dispatch Group 的全部任务处理后，将第三个参数的 block 追加到第二个参数的 Dispatch Queue 中执行。
+	-  `dispatch_group_wait` 函数：第二个参数为超时等待时长，在 `dispatch_group_wait`函数的“等待”过程中，会阻塞其所在的线程。
+- 应用案例：
+	- `AFNetworking 3.1.0`  的 `AFURLSessionManager` 中使用了 `dispatch_group_async` 函数。
+	- `AFNetworking 2.x.0` 的 `AFHTTPRequestOperation` 和 `AFURLConnectionOperation` 中使用了 `dispatch_group_enter`、`dispatch_group_leave`、`dispatch_group_async `、`dispatch_group_notify`函数。
+
+示例代码：
+
+```
+
+```
+  
+**（7）`dispatch_barrier_async` 函数**  
+
+- 背景：写入处理不可与其他的写入处理以及包含读取处理的其他某些处理并行执行，但是如果只是读取处理与其他读取处理并行执行，那么多个并行执行就不会发生问题。因此，为了高效率地进行访问，读取处理追加到 Concurrent Dispatch Queue 中，写入处理在任一个读取处理没有执行的状态下，追加到 Serial Dispatch Queue 中即可（在写入处理结束之前，读取处理不执行）。
+- `dispatch_barrier_async` 函数可以将同一 Concurrent Dispatch Queue 的两组任务隔离开，等第一组任务全部执行完，再将指定的任务追加到该 Concurrent Dispatch Queue 中，然后在该指定任务执行结束后，Concurrent Dispatch Queue 又会恢复一般动作，继续执行 Queue 中后面的第二组任务（利用 Dispatch Group 和 `dispatch_set_target_queue` 函数也可实现，但是会更复杂）。
+- 应用案例：
+	- `SDWebImage 3.7.3` 的 `SDWebImageDownloader` 中使用了 `dispatch_barrier_async` 函数和 `dispatch_barrier_sync` 函数。
+	- `AFNetworking 3.1.0` 的 `AFAutoPurgingImageCache` 中使用了 `dispatch_barrier_async` 函数。
+    
+**（8）`dispatch_sync` 函数**      
+
+- `dispatch_async` 函数：将指定 block 异步地追加到指定的 Dispatch Queue 中，而且不会阻塞所在的线程。
+- `dispatch_sync` 函数：将指定 block 同步地追加到指定的 Dispatch Queue 中，知道追加的 block 执行结束前，该函数会一直等待，从而阻塞所在的线程。
+- 使用 `dispatch_sync` 函数时，容易引起“死锁”问题（详见示例代码）。
+- 类似地，`dispatch_barrier_sync` 函数与 `dispatch_barrier_async `的区别也在于是否阻塞所在线程。
+- 应用案例：`AFNetworking` 和 `SDWebImage` 中有很多应用 `dispatch_sync` 函数的场景。
+
+示例代码：
+
+```
+
+```
+
+> 问题：          
+> 1.[Difference between dispatch_async and dispatch_sync on serial queue?](http://stackoverflow.com/questions/19822700/difference-between-dispatch-async-and-dispatch-sync-on-serial-queue)
+
+
+
+**（9）`dispatch_apply` 函数**     
+
+- `dispatch_apply` 函数是 `dispatch_sync` 函数和 Dispatch Group 的关联 API，该函数按照指定的次数将指定的 block 追加到指定的 Dispatch Queue 中，并等待全部任务执行结束。
+- `dispatch_apply` 函数的第一个参数是重复次数，第二个参数是追加对象的 Dispatch Queue，第三个参数是要添加执行的 block。 
+- 由于 `dispatch_apply` 函数与 `dispatch_sync` 函数类似，会等待其任务执行结束，因此推荐在 `dispatch_async` 函数中异步执行 `dispatch_apply` 函数。
+ 
+ 示例代码：
+
+```
+
+```
+ 
+**（10）`dispatch_suspend` 函数和 `dispatch_resume` 函数**
+
+- `dispatch_suspend` 函数用来暂停 Dispatch Queue 中的任务执行。
+- `dispatch_resume` 函数用来恢复 Dispatch Queue 中暂停的任务，使之继续执行。
+
+**（11）Dispatch Semaphore**    
+
+- 当并行执行的任务更新数据时，会产生数据不一致的情况，有时程序还会异常退出。虽然使用 Serial Dispatch Queue 和 `dispatch_barrier_async` 函数可以避免此类问题，但是 Dispatch Semaphore 可以提供粒度更细的隔离控制。
+- Dispatch Semaphore 主要有三个函数：
+	- `dispatch_semaphore_create` 函数：用来创建 Dispatch Semaphore，有一个设置初始计数值的参数，设为大于 0 的值时，代表可以访问，设为 0 时，代表不允许竞争数据，但是不能小于 0。
+	- `dispatch_semophore_wait` 函数：第一个参数用于指定要计数的 Dispatch Semaphore，第二个参数用于指定要等待的时长。当传入的 Dispatch Semaphore 计数大于 0 时，该函数中会对其计数进行减法处理（具体怎么减？）。
+	- `dispatch_semaphore_signal` 函数：只有一个参数，用于指定要计数的 Dispatch Semaphore，该函数用于将传入的 Dispatch Semaphore 计数值加 1。
+- 应用案例：`AFNetworking 3.1.0`、`YYText 1.0.1` 和 `GPUImage 0.1.7`中都有用到过 Dispatch Semaphore。
+
+示例代码：
+
+```
+
+```
+  
+**（12）`dispatch_once` 函数**  
+
+- `dispatch_once` 函数主要是用来执行那些在程序整个生命周期中只需要执行一次的代码。
+- 实际上，`dispatch_once` 函数的价值不仅仅是保证一次执行，还保证了多线程中的安全执行。
+    
+**（13）Dispatch I/O**     
+
+- 通过使用 Dispatch I/O 和 Dispatch Data，我们能够一次使用多个线程更快地并列读取数据，所以该技术一般用于读取大文件。 
+- 应用案例：Apple System Log API（Libc-736.11 gen/asl.c）
 
 ####3.3 GCD 的实现  
-**（1）Dispatch Queue**    
+**（1）Dispatch Queue**
+
+- 通常，应用程序中线程管理的代码要在系统级实现，也就是 iOS 和 OS X 的核心 XNU 内核上。
+- GCD 的 Dispatch Queue 的实现包括三个部分：
+	- 用于管理追加的 block 的 C 语言层实现的 FIFO 队列。
+	- Atomic 函数中实现的用于排他控制的轻量级信号。
+	- 用于管理线程的 C 语言实现的一些容器。
+- 用于实现 Dispatch Queue 而使用的软件组件
+	- libdispatch：用于提供 Dispatch Queue
+	- Libc（pthreads）：用于提供 pthread_workqueue
+	- XNU 内核：用于提供 workqueue
+- Dispatch Queue 的执行过程
+    
 **（2）Dispatch Source**    
 
+- Dispatch Source 的种类：
+	- DISPATCH_SOURCE_TYPE_DATA_ADD：变量增加
+	- DISPATCH_SOURCE_TYPE_DATA_OR：变量 OR
+	- DISPATCH_SOURCE_TYPE_MACH_SEND：MACH 端口发送
+	- DISPATCH_SOURCE_TYPE_MACH_RECV：MACH 端口接收
+	- DISPATCH_SOURCE_TYPE_PROC：检测到与进程相关的事件
+	- DISPATCH_SOURCE_TYPE_READ：可读取文件映像
+	- DISPATCH_SOURCE_TYPE_TIMER：定时器
+	...
+- 使用 DISPATCH_SOURCE_TYPE_TIMER 创建计时器/定时器
+
+示例代码：
+
+```
+
+```
 
 ------
 **延伸阅读**：  
 1.(Apple Documentation)[Transitioning to ARC Release Notes](https://developer.apple.com/library/content/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html)  
 2.(Clang 5 documentation)[Objective-C Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html)   
 3.(Apple Documentation)[Advanced Memory Management Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011-SW1)    
-4.[GNUstep 源码下载地址](http://wwwmain.gnustep.org/resources/downloads.php?site=ftp%3A%2F%2Fftp.gnustep.org%2Fpub%2Fgnustep%2F)
-
-5.(Apple Documentation)[Blocks Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Blocks/Articles/00_Introduction.html#//apple_ref/doc/uid/TP40007502-CH1-SW1)        
-6. 《Effective Objective-C 2.0》       
-6.《Mac OS X 背后的故事》    
+4.[GNUstep 源码下载地址](http://wwwmain.gnustep.org/resources/downloads.php?site=ftp%3A%2F%2Fftp.gnustep.org%2Fpub%2Fgnustep%2F)        
+5.(Apple Documentation)[Blocks Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Blocks/Articles/00_Introduction.html#//apple_ref/doc/uid/TP40007502-CH1-SW1)  
+6.(Apple Documentation)[Concurrency Programming Guide] (https://developer.apple.com/library/content/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW2)     
+7.《Effective Objective-C 2.0》       
+8.《Mac OS X 背后的故事》    
 
 -------
 **问题**：  
@@ -738,7 +930,7 @@ int main () {
 1. 读技术书的正确姿势是什么？怎么读英文技术书？  
 2. 开发中，什么时候要用 weakSelf 和 strongSelf，为什么？  
 3. 野指针是怎么产生的？  
-4. `@property(nonatomic, copy) NSString *newPrice;`这段代码有什么问题吗？    
+4. `@property(nonatomic, copy) NSString *newPrice;`这段代码会导致什么问题吗？    
 5. 解释一下：我在 viewController 的 viewDidLoad 方法中新建了一个对象 manager，然后调用了这个 manager 的一个实例方法，这个实例方法带有一个会异步回调的 block， 当 viewDidLoad 方法执行完毕后，这个 manager 也就被释放了，但是过了一段时间后， block 却正常回调了。 （详见示例代码）
 
 6. 类方法中 block 的调用问题：跟 4. 中一样的场景，只不过不再是创建一个对象再调用了，而是直接调用 Manager 类的一个带有 block 的类方法 + processImageWithCompletion:，内部实现和实例方法一样，也是依然回调了。（详见示例代码）
@@ -749,6 +941,7 @@ http://www.xuebuyuan.com/1529708.html
 9. Objective-C 中为什么有 .h 和 .m 文件？Objective-C 的 @interface 和 @implementation 是什么？
 10. `[[NSObject alloc] init]` 这一行代码是在干什么？我们在重载 init 方法时，为什么要判断 `self` 是否为空？
 11. `[NSMutableArray array]` 生成的对象是如何被系统的 autorelease 释放的呢？何时被释放呢？
+
 
 *第5题和第6题的示例代码*： 
 
