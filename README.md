@@ -74,8 +74,13 @@ What to do
     - iOS Drawing
     - CFHipsterRef: Low-level Programming on iOS & OS X
     - iOS 7 Pushing the limits
-    - [ ] The C Pragramming Language *****
-    - [ ] Computer Science Illuminated *****
+    - The C Pragramming Language *****
+    - Computer Science Illuminated *****
+    - Mac OS X and iOS Internals 
+    - OS X and iOS Kernel Programming
+    - Professional iOS Network Programming：Connecting the Enterprise to the iPhone and iPad
+    - iOS and OS X Network Programming Cookbook
+    - Mastering TCP/IP
 
 - Documentation & API Reference
     - General
@@ -136,6 +141,8 @@ What to do
     - [NSHipster](http://nshipster.com)
     - [iOS Developer Tips](http://iosdevelopertips.com)
     - [Ole Begemann's blog](https://oleb.net/blog/)
+    - [Mike Ash's blog](https://mikeash.com/pyblog/)
+    - [Matt Gallagher's blog](http://www.cocoawithlove.com)
     - [PSPDFKit blog](https://pspdfkit.com/blog/)
     - [The Big Nerd Ranch Blog](https://www.bignerdranch.com/blog/)
     - [Yalantis blog](https://yalantis.com/blog/)
