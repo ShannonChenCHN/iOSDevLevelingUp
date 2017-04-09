@@ -941,6 +941,7 @@ http://www.xuebuyuan.com/1529708.html
 9. Objective-C 中为什么有 .h 和 .m 文件？Objective-C 的 @interface 和 @implementation 是什么？
 10. `[[NSObject alloc] init]` 这一行代码是在干什么？我们在重载 init 方法时，为什么要判断 `self` 是否为空？
 11. `[NSMutableArray array]` 生成的对象是如何被系统的 autorelease 释放的呢？何时被释放呢？
+12. main 函数中的 autorelease pool 是用来干嘛的？
 
 
 *第5题和第6题的示例代码*： 

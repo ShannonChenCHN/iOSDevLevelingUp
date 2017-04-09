@@ -32,14 +32,76 @@
 ###三、接口与 API 设计        
 ###四、协议与分类        
 ###五、内存管理    
-1.理解引用计数
+#####第 29 条 理解引用计数
 
-2.以 ARC 简化引用计数
+- OS X 10.8 以前，Mac OS 上使用垃圾回收机制（garbage collector）来进行内存管理，但是在 OS X 10.8 以后就被废弃了。
+- 引用计数的概念：每个 Objective-C 对象都有一个计数值，被持有时引用计数加1，被释放时引用计数减1，当引用变为 0 时，该对象就被销毁掉了。
+- 在 `NSObject` 协议中声明了几个跟引用计数相关的方法：
+	- `retain`        引用计数加1
+	- `release`       引用计数减1
+	- `autorelease`   等到后面自动释放池被清理时，引用计数减1
+	- `retainCount`   查看引用计数（并不是特别有用，Apple 官方不推荐使用）
+- 通过对象图（Object Graph）来描述对象之间的引用关系，每一个对象图都会有一个根对象，比如，在 OS X 上，根对象是 NSApplication，在 iOS 上根对象是 UIApplication。
+- 疑问：在调用 alloc、init 方法创建一个对象之后，这个对象的引用计数不一定就是 1，有可能比 1 要大，因为在 `alloc` 或者 `initWithInt:` 方法的实现中，有可能有其他对象也引用了该对象。
+- 为了避免在对象被销毁后，因访问垂悬指针（dangling pointer）而导致的异常，我们一般需要在不再需要指向对象的引用后，将其置为 nil（清空指针），这就能保证不会出现可能指向无效对象的指针（也就是垂悬指针）。
 
-3.
+```
+        NSObject *obj = [[NSObject alloc] init]; // 创建并持有对象 A
+        
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        [array addObject:obj];  // 数组 array 也持有对象 A    
+        [obj release]; // 发送 release 消息，obj 指针不再持有对象 A
+        obj = nil;  // 将不再需要的 obj 指针置为 nil，防止出现访问垂悬指针导致异常的问题
+        
+        NSLog(@"==== %@, %@", obj, array);
+        
+        [array release];
+        
+
+```
+
+- 属性(property)中的内存管理：
+	- setter 方法的实现
+	- setter 方法中 retain 和 release 方法的调用顺序
+
+- Autorelease Pools
+	- 什么是 Autorelease Pool
+	- 什么时候用到 autorelease 方法
+	- 为什么要用 autorelease 方法
+	- 被 autorelease 的对象什么时候会被释放
+- 循环引用
+	- 什么是循环引用
+	- 垃圾回收环境是怎么处理“循环引用”的
+	- 引用计数环境下怎么避免“循环引用”
+
+#####第 30 条 以 ARC 简化引用计数
+
+#####第 31 条 在 `dealloc` 方法中只释放引用和解除监听
+
+#####第 32 条 编写异常处理代码时需要留意内存管理问题
+
+#####第 33 条 使用弱引用避免循环引用
+
+#####第 34 条 使用 autorelease pool 块来减低内存峰值
+
+#####第 35 条 使用“僵尸对象”（zombies）来调试内存管理问题
+
+#####第 36 条 避免使用 `retainCount` 方法
 
     
-###六、block 与 GCD        
+###六、block 与 GCD   
+#####第 37 条 理解 blocks 概念
+#####第 38 条 为常用的 block 类型创建 typedef
+#####第 39 条 使用 handler blocks 减低代码的分散程度
+#####第 40 条 避免因为 block 引用其所属对象而导致的循环引用
+#####第 41 条 多线程同步时推荐使用 Dispatch Queue 代替 Locks
+#####第 42 条 推荐使用 GCD 代替 `performSelector` 系列方法
+#####第 43 条 了解选择使用 GCD 和 Operation Queue 的场景
+#####第 44 条 Dispatch Group 的使用
+#####第 45 条 使用 `dispatch_once` 来实现线程安全的、只需执行一次的代码
+#####第 46 条 避免使用 `dispatch_get_current_queue`
+
+     
 ###七、系统框架
 
 ----------
