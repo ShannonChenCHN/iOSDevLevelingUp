@@ -84,6 +84,8 @@ What to do
 
 - [Guides and Sample Code](https://developer.apple.com/library/content/navigation/)
     - [General](https://developer.apple.com/library/content/navigation/#section=Topics&topic=General)
+    	- [ ] [Cocoa Core Competencies](https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/Accessibility.html)
+    	- [ ] [Cocoa Application Competencies for iOS](https://developer.apple.com/library/content/documentation/General/Conceptual/Devpedia-CocoaApp/Animation.html)
         - [ ] [A Short Practical Guide to Blocks](https://developer.apple.com/library/content/featuredarticles/Short_Practical_Guide_Blocks/index.html#//apple_ref/doc/uid/TP40009758)
         - [ ] [App Programming Guide for iOS](https://developer.apple.com/library/content/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Introduction/Introduction.html)
         - [ ] [iOS Technology Overview](https://developer.apple.com/library/content/documentation/Miscellaneous/Conceptual/iPhoneOSTechOverview/Introduction/Introduction.html)
