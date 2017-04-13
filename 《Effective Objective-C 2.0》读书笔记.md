@@ -61,18 +61,27 @@
 ```
 
 - 属性(property)中的内存管理：
-	- setter 方法的实现
-	- setter 方法中 retain 和 release 方法的调用顺序
+	- 非ARC 中如何重写 setter 方法（可参考：http://stackoverflow.com/a/12370073/7088321）
+	- setter 方法中 retain 和 release 方法的调用顺序（疑问：无法重现书中所说的错误——当旧值和新值指向同一对象时，如果先 release 旧值，再 retain 新值，会导致垂悬指针）
+
+```
+- (void)setFoo:(id)foo {
+    [foo retain];
+    [_foo release];
+    _foo = foo;
+}
+```
 
 - Autorelease Pools
-	- 什么是 Autorelease Pool
-	- 什么时候用到 autorelease 方法
-	- 为什么要用 autorelease 方法
-	- 被 autorelease 的对象什么时候会被释放
+	- 什么是 Autorelease Pool：自动释放池是为了延长一些对象的寿命，使其在失去持有者时仍然可以存活。
+	- 什么时候用到 autorelease 方法：比如，在方法中创建一个新对象并返回值的时候，编译器会帮我们在返回前加上 autorelease。
+    - 什么时候用到 Autorelease Pool：系统（Application Kit）会在程序每一个 event loop 循环的开始在主线程上创建一个 autorelease pool，然后在结束时清理掉 pool，所以我们一般不需要自己创建 pool。但是，如果你的应用中需要创建很多临时的 autoreleased 对象，这个时候，我们可以通过创建局部的 autorelease pool 来减低内存峰值，
+	- 为什么要用 autorelease 方法：为了在某些场景下延长对象的生命期，使其在被持有的变量超出变量作用域时还能存活。
+	- 被 autorelease 的对象什么时候会被释放：加入了该对象的自动释放池被清理时，就会给该对象发送 release 消息，从而被释放。一个对象可能会被加入到同一个池中很多次，在释放池被清理时，该对象会收到相对应次数的 release 消息。（具体什么时候清空释放池呢？）
 - 循环引用
-	- 什么是循环引用
-	- 垃圾回收环境是怎么处理“循环引用”的
-	- 引用计数环境下怎么避免“循环引用”
+	- 什么是循环引用：多个对象成环形相互引用，导致引用计数都不能降为0，这就是循环引用，这会引起内存泄漏。
+	- 垃圾回收环境（garbage-collected environment）是怎么处理“循环引用”的：在垃圾回收环境中，循环引用会被当成“孤岛”来处理，垃圾回收器会将环中的对象都销毁掉。
+	- 引用计数环境下怎么避免“循环引用”：① 使用“弱引用”，② 通过外界影响使得其中一个对象不再持有另一个对象。
 
 #####第 30 条 以 ARC 简化引用计数
 
