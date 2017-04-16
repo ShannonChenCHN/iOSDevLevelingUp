@@ -317,6 +317,7 @@ What to do
     - [美团点评技术团队博客](http://tech.meituan.com)
     - [微信读书技术团队的博客](http://wereadteam.github.io)
     - [iOS Dev Weekly](http://iosdevweekly.com)
+    - [iOS Goodies](http://ios-goodies.com)
     - [objc.io](https://www.objc.io)
     - [NSHipster](http://nshipster.com)
     - [iOS Developer Tips](http://iosdevelopertips.com)
