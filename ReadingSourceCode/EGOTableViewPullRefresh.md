@@ -29,10 +29,11 @@
 
 4.重写 `delegate` 属性的 setter 方法，设置 `MessageInterceptor`。
 
-5.重写 `pullTableIsRefreshing` 属性和 `pullTableIsLoadingMore` 属性的 setter 方法，触发下拉刷新和上拉查看更多事件
+5.重写 `pullTableIsRefreshing` 属性和 `pullTableIsLoadingMore` 属性的 setter 方法，手动触发下拉刷新和上拉查看更多事件
 
-6.
+6.实现 `UISCrollViewDelegate` 的三个方法`-scrollViewDidScroll:`、`-scrollViewDidEndDragging:willDecelerate:`、`-scrollViewWillBeginDragging:`，监听滚动和拖拽事件，并将事件传递给下拉刷新控件和上拉加载更多控件，以及外面的 delegate（也就是 delegateInterceptor.receiver），同时针对上拉查看更多时可能是最后一页做了处理。
 
+7.实现 `EGORefreshTableHeaderDelegate` 和 `LoadMoreTableViewDelegate` 的方法，监听用户触发的下拉刷新事件和上拉查看更多事件，设置 `pullTableIsRefreshing` 和 `pullTableIsLoadingMore` 为 `YES`，并将事件传递给外面的 pullDelegate。
 
 
 ### 延伸阅读：
