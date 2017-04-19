@@ -319,6 +319,7 @@ What to do
     - [微信读书技术团队的博客](http://wereadteam.github.io)
     - [iOS Dev Weekly](http://iosdevweekly.com)
     - [iOS Goodies](http://ios-goodies.com)
+    - [Swift Developments Newsletter](https://andybargh.com/swiftdevelopments/)
     - [objc.io](https://www.objc.io)
     - [NSHipster](http://nshipster.com)
     - [iOS Developer Tips](http://iosdevelopertips.com)
