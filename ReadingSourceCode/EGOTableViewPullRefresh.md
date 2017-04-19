@@ -4,11 +4,11 @@
 
 ### PullTableView
 
-##### 继承关系
+#### 继承关系
 
 继承自 UITableView，遵守 `EGORefreshTableHeaderDelegate`， `LoadMoreTableFooterDelegate` 协议。
 
-##### 最关键的 5 个公开属性
+#### 最关键的 5 个公开属性
 
 ```
 	@property (nonatomic, assign) BOOL pullTableIsRefreshing;   ///< 下拉刷新控件被触发是，该属性会被置为 YES；刷新完毕时你需要手动设置为 NO 来关闭刷新动画；你可以通过设置该属性为 YES 来手动开启下拉刷新
@@ -21,7 +21,7 @@
 ```
 	@property (nonatomic, assign) BOOL lastPage; ///< 是否到了最后一页
 ```
-##### PullTableViewDelegate
+#### PullTableViewDelegate
 
 共 6 个方法
 1 个下拉刷新被触发时的回调方法
@@ -29,7 +29,7 @@
 
 4 个 touch 事件的回调方法
 
-##### 主要逻辑
+#### 主要逻辑
 
 1.初始化方法 `- initWithFrame: style:` 中，调用了 `-config` 方法，这个方法中初始化了代理拦截器 `MessageInterceptor`，下拉刷新控件`EGORefreshTableHeaderView`，上拉加载更多控件`LoadMoreTableFooterView`，以及一些初始化设置（`pullTableIsRefreshing = NO`, `pullTableIsLoadingMore = NO`, `refreshingViewEnable = YES`, `loadMoreViewEnable = YES`）。[^1]
 
@@ -61,11 +61,11 @@
 ### EGORefreshTableHeaderView
 
 
-##### 继承关系
+#### 继承关系
 
 继承自 UIView
 
-##### 最关键的 1 个公开属性和 5 个公开方法
+#### 最关键的 1 个公开属性和 5 个公开方法
 
 代理属性
 ```
@@ -86,7 +86,7 @@
 - (void)startAnimatingWithScrollView:(UIScrollView *) scrollView;
 ```
 
-##### EGORefreshTableHeaderDelegate
+#### EGORefreshTableHeaderDelegate
 
 
 刷新事件回调
@@ -96,7 +96,7 @@
 ```- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view;```
 
 
-##### 主要逻辑
+#### 主要逻辑
 
 ```isLoading```属性是用来记录当前的刷新状态的，当 ```egoRefreshTableHeaderDidTriggerRefresh``` 方法被调用时是 YES，当 ```egoRefreshScrollViewDataSourceDidFinishedLoading``` 方法被调用时是 NO。
 
