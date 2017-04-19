@@ -13,13 +13,25 @@
 
 @property (strong, nonatomic) PullTableView *tableView;
 
+@property (strong, nonatomic) NSMutableArray *dataSource;
+
 @end
 
 @implementation ViewController
 
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _dataSource = [NSMutableArray array];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    [self refreshData];
     
     self.tableView = [[PullTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -35,16 +47,38 @@
     
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+}
+
+
+- (void)refreshData {
+    [self.dataSource removeAllObjects];
+    
+    for (int i = 0; i < 10; i++) {
+        [self.dataSource addObject:[NSNull null]];
+    }
+}
+
+- (void)loadMoreData {
+    for (int i = 0; i < 10; i++) {
+        [self.dataSource addObject:[NSNull null]];
+    }
+}
 
 #pragma mark - <UITableViewDelegate, UITableViewDataSource>
 /// number of sections
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 /// row count for each section
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return self.dataSource.count;
 }
 
 /// cell configuration
@@ -89,14 +123,20 @@
 #pragma mark - <PullTableViewDelegate>
 // 下拉刷新
 - (void)pullTableViewDidTriggerRefresh:(PullTableView *)pullTableView {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self refreshData];
+        [self.tableView reloadData];
+        
         self.tableView.pullTableIsRefreshing = NO;
         NSLog(@"------ %g, %g -------", self.tableView.contentInset.top, self.tableView.contentOffset.y);
     });
 }
 
 - (void)pullTableViewDidTriggerLoadMore:(PullTableView *)pullTableView {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadMoreData];
+        [self.tableView reloadData];
+        
         self.tableView.pullTableIsLoadingMore = NO;
     });
 }

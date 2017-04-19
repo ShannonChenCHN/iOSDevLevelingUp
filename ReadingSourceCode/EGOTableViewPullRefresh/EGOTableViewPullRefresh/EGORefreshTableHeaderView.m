@@ -166,7 +166,7 @@
         _lastUpdatedLabel.hidden = YES;
     }
 	switch (aState) {
-		case EGOOPullPulling:
+		case EGOOPullPulling:   // normal -> pulling
 			if (statusMessageDic) {
                 _statusLabel.text = NSLocalizedStringFromTable(statusMessageDic[@"pullDownStatus"],@"PullTableViewLan", @"Release to refresh status");
             } else {
@@ -179,7 +179,7 @@
 			[CATransaction commit];
 			break;
 		case EGOOPullNormal:
-			if (_state == EGOOPullPulling) {
+			if (_state == EGOOPullPulling) { // pulling -> normal
 				[CATransaction begin];
 				[CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
 				_arrowImage.transform = CATransform3DIdentity;
@@ -201,7 +201,7 @@
 			[CATransaction commit];
 			[self refreshLastUpdatedDate];
 			break;
-		case EGOOPullLoading:
+		case EGOOPullLoading:  // normal -> loading
 			_statusLabel.text = NSLocalizedStringFromTable(@"正在刷新数据中...",@"PullTableViewLan", @"Loading Status");
 			[_activityView startAnimating];
             [self updateContent:YES];
@@ -251,16 +251,16 @@
     PullTableView * tableView = (PullTableView *)scrollView;
     CGFloat top = tableView.insets.top;
     
-	if (_state == EGOOPullLoading) {
+	if (_state == EGOOPullLoading) { // 刷新状态时 scrollView 上边留白停滞一点时间
 		CGFloat offset = MAX(scrollView.contentOffset.y * -1, top);
         offset = MIN(offset, PULL_AREA_HEIGTH+top);
         UIEdgeInsets currentInsets = scrollView.contentInset;
         currentInsets.top = offset;
         scrollView.contentInset = currentInsets;
 	} else {
-		if (_state == EGOOPullPulling && scrollView.contentOffset.y > -PULL_TRIGGER_HEIGHT-top && scrollView.contentOffset.y < 0.0f && !isLoading) {
+		if (_state == EGOOPullPulling && scrollView.contentOffset.y > -PULL_TRIGGER_HEIGHT-top && scrollView.contentOffset.y < 0.0f && !isLoading) { // pulling -> normal
 			[self setState:EGOOPullNormal];
-		} else if (_state == EGOOPullNormal && scrollView.contentOffset.y < -PULL_TRIGGER_HEIGHT-top && !isLoading) {
+		} else if (_state == EGOOPullNormal && scrollView.contentOffset.y < -PULL_TRIGGER_HEIGHT-top && !isLoading) {  // normal -> pulling
 			[self setState:EGOOPullPulling];
 		}
 		
@@ -289,7 +289,7 @@
     PullTableView * tableView = (PullTableView *)scrollView;
     CGFloat top = tableView.insets.top;
     
-	if (scrollView.contentOffset.y <= -PULL_TRIGGER_HEIGHT-top && !isLoading) {
+	if (scrollView.contentOffset.y <= -PULL_TRIGGER_HEIGHT-top && !isLoading) {  // 用户下拉松手后，而且不是正在刷新中时，触发下拉刷新事件
         if ([_delegate respondsToSelector:@selector(egoRefreshTableHeaderDidTriggerRefresh:)]) {
             [_delegate egoRefreshTableHeaderDidTriggerRefresh:self];
         }
@@ -299,8 +299,10 @@
 
 - (void)egoRefreshScrollViewDataSourceDidFinishedLoading:(UIScrollView *)scrollView
 {
+    // isLoading 改为 NO
     isLoading = NO;
     
+    // 还原 insets
     PullTableView * tableView = (PullTableView *)scrollView;
     CGFloat top = tableView.insets.top;
     
@@ -311,12 +313,13 @@
     scrollView.contentInset = currentInsets;
 	[UIView commitAnimations];
     
+    // 更新状态
 	[self setState:EGOOPullNormal];
 }
 
 - (void)egoRefreshScrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    [self refreshLastUpdatedDate];
+    [self refreshLastUpdatedDate]; // 刷新更新时间的显示
 }
 
 #pragma mark - Dealloc
