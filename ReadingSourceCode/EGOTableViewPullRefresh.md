@@ -31,7 +31,7 @@
 
 ##### 主要逻辑
 
-1.初始化方法 `- initWithFrame: style:` 中，调用了 `-config` 方法，这个方法中初始化了代理拦截器 `MessageInterceptor`[^1]，下拉刷新控件`EGORefreshTableHeaderView`，上拉加载更多控件`LoadMoreTableFooterView`，以及一些初始化设置（`pullTableIsRefreshing = NO`, `pullTableIsLoadingMore = NO`, `refreshingViewEnable = YES`, `loadMoreViewEnable = YES`）。
+1.初始化方法 `- initWithFrame: style:` 中，调用了 `-config` 方法，这个方法中初始化了代理拦截器 `MessageInterceptor`，下拉刷新控件`EGORefreshTableHeaderView`，上拉加载更多控件`LoadMoreTableFooterView`，以及一些初始化设置（`pullTableIsRefreshing = NO`, `pullTableIsLoadingMore = NO`, `refreshingViewEnable = YES`, `loadMoreViewEnable = YES`）。[^1]
 
 [^1]:[Intercept Objective-C delegate messages within a subclass](http://stackoverflow.com/questions/3498158/intercept-objective-c-delegate-messages-within-a-subclass)
 
