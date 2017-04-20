@@ -15,12 +15,12 @@ A checklist for leveling up iOS dev knowledge and skills.
 
 ### Topic
 - Objective-C Language *****
-    - [ ] block
-    - [ ] runtime
-- [ ] Memory Management *****
-- [ ] Networking *****
-- [ ] Multithreading *****
-- [ ] Database ****
+    - block
+    - runtime
+- Memory Management *****
+- Networking *****
+- Multithreading *****
+- Database ****
 - UI *****
     - Drawing
     - Animation
@@ -47,9 +47,9 @@ A checklist for leveling up iOS dev knowledge and skills.
     - YYWebImage
 - Model
     - [ ] MJExtension *****
-    - Mantle
+    - [ ] Mantle
+    - [ ] YYModel
     - JSONModel
-    - YYModel
 - Refresh
     - MJRefresh
 - Database/Cache
@@ -88,7 +88,7 @@ A checklist for leveling up iOS dev knowledge and skills.
 - Mac OS X and iOS Internals 
 - OS X and iOS Kernel Programming
 - Professional iOS Network Programming：Connecting the Enterprise to the iPhone and iPad
-- iOS and OS X Network Programming Cookbook
+- [ ] iOS and OS X Network Programming Cookbook
 - Mastering TCP/IP
 
 ### [Guides and Sample Code](https://developer.apple.com/library/content/navigation/)
