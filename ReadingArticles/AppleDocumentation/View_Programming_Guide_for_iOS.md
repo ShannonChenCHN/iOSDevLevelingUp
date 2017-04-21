@@ -144,8 +144,9 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- [contentStretch](https://developer.apple.com/reference/uikit/uiview/1622511-contentstretch property: The use of normalized values alleviates the need for you to update the `contentStretch` property every time the bounds of your view change.
 		- Stretchable areas are only used when the **content mode** would cause the view’s content to be scaled.
 		
-**Figure 1-3**  Stretching the background of a button
-![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/button_scale.jpg)
+	**Figure 1-3**  Stretching the background of a button
+	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/button_scale.jpg)
+
 	- Built-In Animation Support
 - View Geometry and Coordinate Systems
 	- The Relationship of the Frame, Bounds, and Center Properties
