@@ -4,18 +4,35 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 
 ## Content
 - [Introduction](#introduction)
-
+	- Overview
+	- At a Glance
 - [View and Window Achitecture](#view-and-window-achitecture)
-
+	- View Architecture Fundamentals
+	- View Geometry and Coordinate Systems
+	- The Runtime Interaction Model for Views
 - [Windows](#windows)
-
+	- Tasks That Involve Windows
+	- Creating and Configuring a Window
+	- Monitoring Window Changes
+	- Displaying Content on an External Display
 - [Views](#views)
-
+	- Responsibilities
+	- Creating and Configuring View Objects
+	- Creating and Managing a View Hierarchy
+	- Adjusting the Size and Position of Views at Runtime
+	- Modifying Views at Runtime
+	- Interacting with Core Animation Layers
+	- Defining a Custom View
 - [Animations](#animations)
+	- What Can Be Animated?
+	- Animating Property Changes in a View
+	- Creating Animated Transitions Between Views
+	- Linking Multiple Animations Together
+	- Animating View and Layer Changes Together
 
 ### Introduction(About Windows and Views)
 
-- Introduction
+- Overview
 	- What is windows and views used for: 
 		- present your application’s content on the screen.
 		- handle the interactions with your application’s user interface.
@@ -126,7 +143,6 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		
 **Figure 1-3**  Stretching the background of a button
 ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/button_scale.jpg)
-
 	- Built-In Animation Support
 - View Geometry and Coordinate Systems
 	- The Relationship of the Frame, Bounds, and Center Properties
@@ -202,7 +218,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 - Animating View and Layer Changes Together
 
 ### See Also
-	- *[View Controller Programming Guide for iOS](https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457)*
-	- *[Event Handling Guide for UIKit Apps](https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/index.html#//apple_ref/doc/uid/TP40009541)*
-	- *[Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)*
-	- *[Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514)*
+- *[View Controller Programming Guide for iOS](https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457)*
+- *[Event Handling Guide for UIKit Apps](https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/index.html#//apple_ref/doc/uid/TP40009541)*
+- *[Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)*
+- *[Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514)*
