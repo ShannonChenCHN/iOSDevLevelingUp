@@ -100,6 +100,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 			- Reusing already-rendered content eliminates the expensive drawing cycle usually needed to update views. 
 
 	**Figure 1-1**  Architecture of the views in a sample application([example](https://developer.apple.com/library/content/samplecode/ViewTransitions/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007411))
+	
 	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/view-layer-store.jpg)
 
 	- View Hierarchies and Subview Management
@@ -133,6 +134,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 			- In general, you should avoid using this value whenever possible, and you should certainly not use it with the standard system views.
 			
 	**Figure 1-2** Content mode comparisons
+	
 	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/scale_aspect.jpg)
 	
 	- Stretchable Views
@@ -145,6 +147,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- Stretchable areas are only used when the **content mode** would cause the view’s content to be scaled.
 		
 	**Figure 1-3**  Stretching the background of a button
+	
 	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/button_scale.jpg)
 
 	- Built-In Animation Support
