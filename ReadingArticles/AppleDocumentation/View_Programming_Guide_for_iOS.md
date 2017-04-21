@@ -131,6 +131,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- [UIViewContentModeRedraw](https://developer.apple.com/reference/uikit/uiviewcontentmode/uiviewcontentmoderedraw)
 			-  Setting your view’s content mode to this value forces the system to call your view’s drawRect: method in response to geometry changes.
 			- In general, you should avoid using this value whenever possible, and you should certainly not use it with the standard system views.
+			
 	**Figure 1-2** Content mode comparisons
 	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/scale_aspect.jpg)
 	
