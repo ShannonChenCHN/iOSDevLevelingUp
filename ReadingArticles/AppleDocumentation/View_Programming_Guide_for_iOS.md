@@ -15,11 +15,51 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 
 ### Introduction(About Windows and Views)
 
+- Introduction
+	- What is windows and views used for: 
+		- present your application’s content on the screen.
+	- Windows: 
+		- do not have any visible content themselves but provide a basic container for your application’s views.
+	- Views:
+		- define a portion of a window that you want to fill with some content.
+		- organize and manage other views.
+	- Every application has at least one window and one view for presenting its content.
+
 - At a Glance
 	- Views Manage Your Application’s Visual Content
+		- What is view: an instance of the [UIView](https://developer.apple.com/reference/uikit/uiview) class (or one of its subclasses) and manages a rectangular area in your application window. 
+		- Responsiblity
+			- drawing content: using graphics technologies such as `Core Graphics`, `OpenGL ES`, or `UIKit` to draw shapes, images, and text inside a view’s rectangular area.
+			- handling multitouch events: a view responds to touch events in its rectangular area either by *using gesture recognizers* or by handling *touch events* directly.
+			- managing the layout of any subviews: parent views are responsible for positioning and sizing their child views.
+	> Relevant Chapters: [View and Window Architecture](#view-and-window-achitecture), [Views](#views)
+		
 	- Windows Coordinate the Display of Your Views
+		- What is window: an instance of the [UIWindow](https://developer.apple.com/reference/uikit/uiwindow) class and handles the **overall** presentation of your application’s user interface.
+		- Responsiblity
+			- Windows work with views (and their owning view controllers) to manage interactions with, and changes to, the visible view hierarchy. 
+				-  After the window is created, it stays the same and only the views displayed by it change.
+				- Every application has **at least one** window that displays the application’s user interface on a device’s **main screen**.
+			- External display
+	> Relevant Chapters: [Windows](#windows)
+	
 	- Animations Provide the User with Visible Feedback for Interface Changes
+		- What is animation: animations provide users with visible feedback about changes to your view hierarchy.  
+		- Approach
+			- Standard animations: The system defines standard animations for presenting modal views and transitioning between different groups of views.
+			- Animate view's attributes directly.
+			- Work directly with the view’s underlying Core Animation `layer` object.
+	> Relevant Chapters: [Animations](#animations)
+	
 	- The Role of Interface Builder
+		- What is Interface Builder: an application that you use to graphically construct and configure your application’s windows and views.
+		- How to use: assemble your views and place them in a nib file.
+			- What is nib file: a resource file that stores a freeze-dried version of your views and other objects.
+			- [Interface Builder User Guide]()
+		- How does Interface Builder works: When you load a nib file at runtime, the objects inside it are reconstituted into actual objects that your code can then manipulate programmatically.
+		- How view controllers manage the nib files containing their views: see Creating Custom Content View Controllers in *[View Controller Programming Guide for iOS](https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457)*.
+		- Benifits: Interface Builder greatly simplifies the work you have to do in creating your application’s user interface.
+	> Relevant Resources: [WWDC-Interface Builder Core Concepts](https://developer.apple.com/videos/play/wwdc2013/405/), [WWDC-What's New in Auto Layout](https://developer.apple.com/videos/play/wwdc2016/236/), [What's New in Storyboards](https://developer.apple.com/videos/play/wwdc2015/215/)
 	
 ### View and Window Achitecture
 
