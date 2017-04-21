@@ -143,7 +143,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 			- You typically use stretchable areas for buttons or other views where part of the view defines a **repeatable** pattern.
 			- When stretching a view along two axes, the edges of the view must also define a **repeatable** pattern to avoid any distortion.
 			-  The use of the `contentStretch` property is recommended over the creation of a stretchable UIImage object when specifying the background for a view.
-		- [contentStretch](https://developer.apple.com/reference/uikit/uiview/1622511-contentstretch property: The use of normalized values alleviates the need for you to update the `contentStretch` property every time the bounds of your view change.
+		- [contentStretch](https://developer.apple.com/reference/uikit/uiview/1622511-contentstretch) property: The use of normalized values alleviates the need for you to update the `contentStretch` property every time the bounds of your view change.
 		- Stretchable areas are only used when the **content mode** would cause the view’s content to be scaled.
 		
 	**Figure 1-3**  Stretching the background of a button
@@ -151,9 +151,41 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/button_scale.jpg)
 
 	- Built-In Animation Support
+		- To perform an animation for one of animatable properties of `UIView` class, all you have to do is:
+			1. Tell UIKit that you want to perform an animation.
+			2. Change the value of the property.
+		- Among the properties you can animate on a UIView object are the following:
+			- `frame`
+			- `bounds`
+			- `center`
+			- `transform`: Use this to rotate or scale the view.
+			- `alpha`
+			- `backgroundColor`
+			- `contentStretch`
+		- View Transition
+			- View-controller-based
+			- View-based
+		- Create animations using Core Animation layers: Dropping down to the layer level gives you much more control over the **timing** and **properties** of your animations.
+		- How to perform view-based animations: see [Animations](#animations).
+		- How to create animations by using Core Animation: see [Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514) and Core Animation Cookbook
 - View Geometry and Coordinate Systems
+	- Inroduction
+		- The default coordinate system in `UIKit` has its origin in the **top-left** corner and has axes that extend down and to the right from the origin point.(Some iOS technologies define default coordinate systems whose origin point and orientation differ from those used by `UIKit`.Such as `Core Graphics` and `OpenGL ES`.)
 	- The Relationship of the Frame, Bounds, and Center Properties
+		- A view object tracks its size and location using its frame, bounds, and center properties:
+			- The `frame` property contains the frame rectangle, which specifies the size and location of the view in its **superview’s** coordinate system.
+			- The `bounds` property contains the bounds rectangle, which specifies the size of the view (and its **content origin**) in the **view’s own** local coordinate system.
+			- The `center` property contains the known center point of the view in the **superview’s** coordinate system.
+		- The `frame` property is considered invalid if the view’s transform is not equal to the identity transform.
+		- You use the `bounds` property primarily during drawing. 
+		- By default, a view’s frame is not clipped to its superview’s frame.You can change this behavior by setting the superview’s `clipsToBounds` property to `YES`.
+		- Regardless of whether or not subviews are clipped visually, **touch events** always respect the bounds rectangle of the target view’s superview. 
 	- Coordinate System Transformations
+	    - How you apply the affine transform therefore depends on context:
+	    	- To modify your entire view, modify the affine transform in the `transform` property of your view.
+	    	- To modify specific pieces of content in your view’s `drawRect:` method, modify the affine transform associated with the active graphics context.
+		- You typically modify the `transform` property of a view when you want to implement **animations**. You would not use this property to make **permanent** changes to your view.
+		- When modifying the `transform` property of your view, all transformations are performed relative to the center point of the view.
 	- Points Versus Pixels
 - The Runtime Interaction Model for Views
 	- Tips for Using Views Effectively
