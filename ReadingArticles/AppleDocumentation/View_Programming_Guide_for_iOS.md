@@ -99,8 +99,9 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 			- when the code is called, the results are cached by Core Animation and reused as much as possible later. 
 			- Reusing already-rendered content eliminates the expensive drawing cycle usually needed to update views. 
 
-**Figure 1-1**  Architecture of the views in a sample application([example](https://developer.apple.com/library/content/samplecode/ViewTransitions/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007411))
-![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/view-layer-store.jpg)
+	**Figure 1-1**  Architecture of the views in a sample application([example](https://developer.apple.com/library/content/samplecode/ViewTransitions/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007411))
+	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/view-layer-store.jpg)
+
 	- View Hierarchies and Subview Management
 		- a view can act as a container for other views.
 		- Visually, the content of a subview obscures all or part of the content of its parent view.
@@ -130,8 +131,9 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- [UIViewContentModeRedraw](https://developer.apple.com/reference/uikit/uiviewcontentmode/uiviewcontentmoderedraw)
 			-  Setting your view’s content mode to this value forces the system to call your view’s drawRect: method in response to geometry changes.
 			- In general, you should avoid using this value whenever possible, and you should certainly not use it with the standard system views.
-**Figure 1-2** Content mode comparisons
-![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/scale_aspect.jpg)
+	**Figure 1-2** Content mode comparisons
+	![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/scale_aspect.jpg)
+	
 	- Stretchable Views
 		- Why we need stretchable views: You can designate **a portion of a view as stretchable** so that when the size of the view changes **only** the content in the stretchable portion is affected.
 		- Usage
