@@ -18,6 +18,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 - Introduction
 	- What is windows and views used for: 
 		- present your application’s content on the screen.
+		- handle the interactions with your application’s user interface.
 	- Windows: 
 		- do not have any visible content themselves but provide a basic container for your application’s views.
 	- Views:
@@ -48,7 +49,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- Approach
 			- Standard animations: The system defines standard animations for presenting modal views and transitioning between different groups of views.
 			- Animate view's attributes directly.
-			- Work directly with the view’s underlying Core Animation `layer` object.
+			- Core Animation: In places where the standard view animations are not sufficient, you can work directly with the view’s underlying Core Animation `layer` object.
 	> Relevant Chapters: [Animations](#animations)
 	
 	- The Role of Interface Builder
@@ -63,11 +64,69 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 	
 ### View and Window Achitecture
 
+- Inroduction
+	- Understand the infrastructure provided by the [UIView](https://developer.apple.com/reference/uikit/uiview) and [UIWindow](https://developer.apple.com/reference/uikit/uiwindow) classes.
+	- Understand those facilities provided by the [UIView](https://developer.apple.com/reference/uikit/uiview) and [UIWindow](https://developer.apple.com/reference/uikit/uiwindow) classes for managing the layout and presentation of views.
+
 - View Architecture Fundamentals
+	- Introduction
+		- General feature
+			- A view object defines a rectangular region on the screen and handles the drawing and touch events in that region.
+			- A view can also act as a parent for other views and coordinate the placement and sizing of those views.
+		- Core Animation layers
+			- Views work in conjunction with Core Animation layers to handle the rendering and animating of a view’s content.
+			- Every view in UIKit is backed by a layer object (usually an instance of the `CALayer` class), which manages the backing store for the view and handles view-related animations.Behind those layer objects are Core Animation rendering objects and ultimately the hardware buffers used to manage the actual bits on the screen.
+			- in situations where you need more control over the rendering or animation behavior of your view, you can perform operations through its layer instead.
+		- The use of Core Animation layer objects has important implications for performance. (?????)
+			- The actual drawing code of a view object is called as little as possible
+			- when the code is called, the results are cached by Core Animation and reused as much as possible later. 
+			- Reusing already-rendered content eliminates the expensive drawing cycle usually needed to update views. 
+
+**Figure 1-1**  Architecture of the views in a sample application([example](https://developer.apple.com/library/content/samplecode/ViewTransitions/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007411))
+![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/view-layer-store.jpg)
 	- View Hierarchies and Subview Management
-	- The View Drawing Cycle
+		- a view can act as a container for other views.
+		- Visually, the content of a subview obscures all or part of the content of its parent view.
+		- The superview-subview relationship also impacts several view behaviors. Changes that affect subviews include: 
+			- changing the size of a parent view
+			- hiding a superview
+			- changing a superview’s alpha
+			- applying a mathematical transform to a superview’s coordinate system.
+		- The arrangement of views in a view hierarchy also determines how your application **responds to events**. 
+			- responder chain
+		- Create view hierarchies: see [Creating and Managing a View Hierarchy](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/CreatingViews/CreatingViews.html#//apple_ref/doc/uid/TP40009503-CH5-SW47).
+	- [The View Drawing Cycle](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/WindowsandViews/WindowsandViews.html#//apple_ref/doc/uid/TP40009503-CH2-SW10)
+		- The `UIView` class uses an **on-demand** drawing model for presenting content. 
+		- When the contents of your view change, you do not redraw those changes directly. Instead, you invalidate the view using either the [setNeedsDisplay](https://developer.apple.com/reference/uikit/uiview/1622437-setneedsdisplay) or [setNeedsDisplayInRect:](https://developer.apple.com/reference/uikit/uiview/1622587-setneedsdisplay) method. 
+		- Note: Changing a view’s geometry does not automatically cause the system to redraw the view’s content. 
+		- Provide a view’s content
+			- System views typically implement private drawing methods to render their content. 
+			- For custom `UIView` subclasses, you typically override the `drawRect: `method of your view and use that method to draw your view’s content.
+			- Setting the contents of the underlying layer directly.
+		- How to draw content for custom views: see [Implementing Your Drawing Code](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/CreatingViews/CreatingViews.html#//apple_ref/doc/uid/TP40009503-CH5-SW3)
 	- Content Modes
+		- Content modes are good for recycling the contents of your view.
+		- The value in the [contentMode](https://developer.apple.com/reference/uikit/uiview/1622619-contentmode) property determines whether the bitmap should be scaled to fit the new bounds or simply pinned to one corner or edge of the view.
+		- The content mode of a view is applied whenever you do the following:
+			- Change the width or height of the view’s `frame` or`bounds` rectangles.
+			- Assign a transform that includes a scaling factor to the view’s `transform` property.
+		- [UIViewContentModeRedraw](https://developer.apple.com/reference/uikit/uiviewcontentmode/uiviewcontentmoderedraw)
+			-  Setting your view’s content mode to this value forces the system to call your view’s drawRect: method in response to geometry changes.
+			- In general, you should avoid using this value whenever possible, and you should certainly not use it with the standard system views.
+**Figure 1-2** Content mode comparisons
+![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/scale_aspect.jpg)
 	- Stretchable Views
+		- Why we need stretchable views: You can designate **a portion of a view as stretchable** so that when the size of the view changes **only** the content in the stretchable portion is affected.
+		- Usage
+			- You typically use stretchable areas for buttons or other views where part of the view defines a **repeatable** pattern.
+			- When stretching a view along two axes, the edges of the view must also define a **repeatable** pattern to avoid any distortion.
+			-  The use of the `contentStretch` property is recommended over the creation of a stretchable UIImage object when specifying the background for a view.
+		- [contentStretch](https://developer.apple.com/reference/uikit/uiview/1622511-contentstretch property: The use of normalized values alleviates the need for you to update the `contentStretch` property every time the bounds of your view change.
+		- Stretchable areas are only used when the **content mode** would cause the view’s content to be scaled.
+		
+**Figure 1-3**  Stretching the background of a button
+![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/button_scale.jpg)
+
 	- Built-In Animation Support
 - View Geometry and Coordinate Systems
 	- The Relationship of the Frame, Bounds, and Center Properties
@@ -143,7 +202,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 - Animating View and Layer Changes Together
 
 ### See Also
-	- [View Controller Programming Guide for iOS](https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457)
-	- [Event Handling Guide for UIKit Apps](https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/index.html#//apple_ref/doc/uid/TP40009541)
-	- [Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)
-	- [Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514)
+	- *[View Controller Programming Guide for iOS](https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457)*
+	- *[Event Handling Guide for UIKit Apps](https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/index.html#//apple_ref/doc/uid/TP40009541)*
+	- *[Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)*
+	- *[Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514)*
