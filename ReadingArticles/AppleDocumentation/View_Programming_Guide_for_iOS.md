@@ -169,9 +169,19 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- How to perform view-based animations: see [Animations](#animations).
 		- How to create animations by using Core Animation: see [Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514) and Core Animation Cookbook
 - View Geometry and Coordinate Systems
+
+    **Figure 1-4**  Coordinate system orientation in UIKit
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/native_coordinate_system.jpg)
+
 	- Inroduction
 		- The default coordinate system in `UIKit` has its origin in the **top-left** corner and has axes that extend down and to the right from the origin point.(Some iOS technologies define default coordinate systems whose origin point and orientation differ from those used by `UIKit`.Such as `Core Graphics` and `OpenGL ES`.)
 	- The Relationship of the Frame, Bounds, and Center Properties
+
+    **Figure 1-5**  Relationship between a view's frame and bounds
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/frame_bounds_rects.jpg)
+
 		- A view object tracks its size and location using its frame, bounds, and center properties:
 			- The `frame` property contains the frame rectangle, which specifies the size and location of the view in its **superview’s** coordinate system.
 			- The `bounds` property contains the bounds rectangle, which specifies the size of the view (and its **content origin**) in the **view’s own** local coordinate system.
@@ -181,6 +191,11 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- By default, a view’s frame is not clipped to its superview’s frame.You can change this behavior by setting the superview’s `clipsToBounds` property to `YES`.
 		- Regardless of whether or not subviews are clipped visually, **touch events** always respect the bounds rectangle of the target view’s superview. 
 	- Coordinate System Transformations
+
+    Figure 1-6  Rotating a view and its content
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/xform_rotations.jpg)
+
 	    - How you apply the affine transform therefore depends on context:
 	    	- To modify your entire view, modify the affine transform in the `transform` property of your view.
                 - You typically modify the `transform` property of a view when you want to implement **animations**. You would not use this property to make **permanent** changes to your view.
@@ -197,8 +212,9 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
         - When you need to work with **images** or **other pixel-based technologies** such as OpenGL ES, iOS provides help in managing those pixels.
 - The Runtime Interaction Model for Views
 
-**Figure 1-7**  UIKit interactions with your view objects
-![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/drawing_model.jpg)
+    **Figure 1-7**  UIKit interactions with your view objects
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/drawing_model.jpg)
 
     - Any time a user interacts with your user interface, or any time your own code programmatically changes something, a complex sequence of events takes place inside of UIKit to handle that interaction. See Figure 1-7.
     - For more information the event sequence in Figure 1-7. see [The Runtime Interaction Model for Views](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/WindowsandViews/WindowsandViews.html#//apple_ref/doc/uid/TP40009503-CH2-SW42)  
@@ -208,6 +224,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
         - The `drawRect:` method
 - Tips for Using Views Effectively
 > **Important**: Before optimizing your drawing code, you should always gather data about your view’s current performance.
+
     - Views Do Not Always Have a Corresponding View Controller
     - Minimize Custom Drawing: Any time your content can be assembled with a combination of existing views, your best bet is to combine those view objects into a custom view hierarchy.
     - Take Advantage of Content Modes: Content modes minimize the amount of time spent redrawing your views.
