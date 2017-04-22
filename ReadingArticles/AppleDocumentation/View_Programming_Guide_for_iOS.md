@@ -223,7 +223,7 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
         - The `layoutSubviews` method
         - The `drawRect:` method
 - Tips for Using Views Effectively
-> **Important**: Before optimizing your drawing code, you should always gather data about your view’s current performance.
+    > **Important**: Before optimizing your drawing code, you should always gather data about your view’s current performance.
 
     - Views Do Not Always Have a Corresponding View Controller
     - Minimize Custom Drawing: Any time your content can be assembled with a combination of existing views, your best bet is to combine those view objects into a custom view hierarchy.
