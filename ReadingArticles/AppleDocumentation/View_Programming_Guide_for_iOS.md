@@ -177,11 +177,6 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 	- Inroduction
 		- The default coordinate system in `UIKit` has its origin in the **top-left** corner and has axes that extend down and to the right from the origin point.(Some iOS technologies define default coordinate systems whose origin point and orientation differ from those used by `UIKit`.Such as `Core Graphics` and `OpenGL ES`.)
 	- The Relationship of the Frame, Bounds, and Center Properties
-
-    **Figure 1-5**  Relationship between a view's frame and bounds
-
-    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/frame_bounds_rects.jpg)
-
 		- A view object tracks its size and location using its frame, bounds, and center properties:
 			- The `frame` property contains the frame rectangle, which specifies the size and location of the view in its **superview’s** coordinate system.
 			- The `bounds` property contains the bounds rectangle, which specifies the size of the view (and its **content origin**) in the **view’s own** local coordinate system.
@@ -190,21 +185,26 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- You use the `bounds` property primarily during drawing. 
 		- By default, a view’s frame is not clipped to its superview’s frame.You can change this behavior by setting the superview’s `clipsToBounds` property to `YES`.
 		- Regardless of whether or not subviews are clipped visually, **touch events** always respect the bounds rectangle of the target view’s superview. 
+
+    **Figure 1-5**  Relationship between a view's frame and bounds
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/frame_bounds_rects.jpg)
+
 	- Coordinate System Transformations
-
-    Figure 1-6  Rotating a view and its content
-
-    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/xform_rotations.jpg)
-
-	    - How you apply the affine transform therefore depends on context:
+        - How you apply the affine transform therefore depends on context:
 	    	- To modify your entire view, modify the affine transform in the `transform` property of your view.
                 - You typically modify the `transform` property of a view when you want to implement **animations**. You would not use this property to make **permanent** changes to your view.
                 - When modifying the `transform` property of your view, all transformations are performed relative to the center point of the view.
 	    	- To modify specific pieces of content in your view’s `drawRect:` method, modify the affine transform associated with the active graphics context.
                 - In your view’s `drawRect:` method, you use affine transforms to position and orient the items you plan to draw.
                 - You can retrieve the affine transform associated with a graphics context using the [CGContextGetCTM](https://developer.apple.com/reference/coregraphics/cgcontext/1454691-ctm) function and you can use the related Core Graphics functions to set or modify this transform during drawing.
-                - modifying your view’s transform property at runtime: see [Translating, Scaling, and Rotating Views](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/CreatingViews/CreatingViews.html#//apple_ref/doc/uid/TP40009503-CH5-SW4)
-                - how to use transforms to position content during drawing: see [Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)
+        - modifying your view’s transform property at runtime: see [Translating, Scaling, and Rotating Views](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/CreatingViews/CreatingViews.html#//apple_ref/doc/uid/TP40009503-CH5-SW4)
+        - how to use transforms to position content during drawing: see [Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)
+    
+    Figure 1-6  Rotating a view and its content
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/xform_rotations.jpg)
+
+
 	- Points Versus Pixels
         - What is *points*
         - *user coordinate space* and *device coordinate space*
