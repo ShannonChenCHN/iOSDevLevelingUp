@@ -169,6 +169,11 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- How to perform view-based animations: see [Animations](#animations).
 		- How to create animations by using Core Animation: see [Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514) and Core Animation Cookbook
 - View Geometry and Coordinate Systems
+
+    **Figure 1-4**  Coordinate system orientation in UIKit
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/native_coordinate_system.jpg)
+
 	- Inroduction
 		- The default coordinate system in `UIKit` has its origin in the **top-left** corner and has axes that extend down and to the right from the origin point.(Some iOS technologies define default coordinate systems whose origin point and orientation differ from those used by `UIKit`.Such as `Core Graphics` and `OpenGL ES`.)
 	- The Relationship of the Frame, Bounds, and Center Properties
@@ -180,21 +185,58 @@ Reading *[View Programming Guide for iOS](https://developer.apple.com/library/co
 		- You use the `bounds` property primarily during drawing. 
 		- By default, a view’s frame is not clipped to its superview’s frame.You can change this behavior by setting the superview’s `clipsToBounds` property to `YES`.
 		- Regardless of whether or not subviews are clipped visually, **touch events** always respect the bounds rectangle of the target view’s superview. 
+
+    **Figure 1-5**  Relationship between a view's frame and bounds
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/frame_bounds_rects.jpg)
+
 	- Coordinate System Transformations
-	    - How you apply the affine transform therefore depends on context:
+        - How you apply the affine transform therefore depends on context:
 	    	- To modify your entire view, modify the affine transform in the `transform` property of your view.
+                - You typically modify the `transform` property of a view when you want to implement **animations**. You would not use this property to make **permanent** changes to your view.
+                - When modifying the `transform` property of your view, all transformations are performed relative to the center point of the view.
 	    	- To modify specific pieces of content in your view’s `drawRect:` method, modify the affine transform associated with the active graphics context.
-		- You typically modify the `transform` property of a view when you want to implement **animations**. You would not use this property to make **permanent** changes to your view.
-		- When modifying the `transform` property of your view, all transformations are performed relative to the center point of the view.
+                - In your view’s `drawRect:` method, you use affine transforms to position and orient the items you plan to draw.
+                - You can retrieve the affine transform associated with a graphics context using the [CGContextGetCTM](https://developer.apple.com/reference/coregraphics/cgcontext/1454691-ctm) function and you can use the related Core Graphics functions to set or modify this transform during drawing.
+        - modifying your view’s transform property at runtime: see [Translating, Scaling, and Rotating Views](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/CreatingViews/CreatingViews.html#//apple_ref/doc/uid/TP40009503-CH5-SW4)
+        - how to use transforms to position content during drawing: see [Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010156)
+    
+    Figure 1-6  Rotating a view and its content
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/xform_rotations.jpg)
+
+
 	- Points Versus Pixels
+        - What is *points*
+        - *user coordinate space* and *device coordinate space*
+            - **One point does not necessarily correspond to one pixel on the screen.**
+        - When you need to work with **images** or **other pixel-based technologies** such as OpenGL ES, iOS provides help in managing those pixels.
 - The Runtime Interaction Model for Views
-	- Tips for Using Views Effectively
-	- Views Do Not Always Have a Corresponding View Controller
-	- Minimize Custom Drawing
-	- Take Advantage of Content Modes
-	- Declare Views as Opaque Whenever Possible
-	- Adjust Your View’s Drawing Behavior When Scrolling
-	- Do Not Customize Controls by Embedding Subviews
+
+    **Figure 1-7**  UIKit interactions with your view objects
+
+    ![](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Art/drawing_model.jpg)
+
+    - Any time a user interacts with your user interface, or any time your own code programmatically changes something, a complex sequence of events takes place inside of UIKit to handle that interaction. See Figure 1-7.
+    - For more information the event sequence in Figure 1-7. see [The Runtime Interaction Model for Views](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/WindowsandViews/WindowsandViews.html#//apple_ref/doc/uid/TP40009503-CH2-SW42)  
+    - In the preceding set of steps, the **primary** integration points for your own custom views are:
+        - The event-handling methods
+        - The `layoutSubviews` method
+        - The `drawRect:` method
+- Tips for Using Views Effectively
+    > **Important**: Before optimizing your drawing code, you should always gather data about your view’s current performance.
+
+    - Views Do Not Always Have a Corresponding View Controller
+    - Minimize Custom Drawing: Any time your content can be assembled with a combination of existing views, your best bet is to combine those view objects into a custom view hierarchy.
+    - Take Advantage of Content Modes: Content modes minimize the amount of time spent redrawing your views.
+    - Declare Views as **Opaque** Whenever Possible
+        - UIKit uses the `opaque` property of each view to determine whether the view can optimize compositing operations.
+        - if you set the opaque property to `YES`, your view must fill its bounds rectangle completely with fully opaque content.
+    - Adjust Your View’s Drawing Behavior When Scrolling
+        - Rather than trying to ensure that your view’s content is pristine at all times, consider changing your view’s behavior when a scrolling operation begins.
+        - When scrolling stops, you can then return your view to its previous state and update the contents as needed.
+    - Do Not Customize Controls by Embedding Subviews
+        - Although it is technically possible to add subviews to **the standard system controls**—objects that inherit from `UIControl`(like `UIButton`)—you should never customize them in this way.
+        - Because this might cause your application to behave incorrectly now or at some point in the future if the system control's implementation changes.
 
 ### Windows
 
