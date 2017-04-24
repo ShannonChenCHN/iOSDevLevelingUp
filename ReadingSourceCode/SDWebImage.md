@@ -4,7 +4,7 @@ SDWebImage(v3.7.3)
 ![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
 ![Process](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageSequenceDiagram.png)
 
-##特点
+## 特点
 - 提供 `UIImageView`, `UIButton`, `MKAnnotationView` 的分类，用来显示网络图片，以及缓存管理
 - 异步下载图片
 - 异步缓存（内存+磁盘），并且自动管理缓存有效性
@@ -17,15 +17,15 @@ SDWebImage(v3.7.3)
 - 支持多种图片格式（包括 WebP 格式）
 
 
-##[为什么选择 SDWebImage？](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
+## [为什么选择 SDWebImage？](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
 
 
 
-##动图（GIF）支持
+## 动图（GIF）支持
 - 4.0 之前的动图效果并不是太好
 - 4.0 以后基于 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage)加载动图
 
-##常见问题
+## 常见问题
 1. 使用 `UITableViewCell` 中的 `imageView` 加载不同尺寸的网络图片时会出现尺寸缩放问题
    解决：自定义 `UITableViewCell`，重写 `layoutSubviews` 方法，调整位置尺寸；或者直接弃用 `UITableViewCell` 的 `imageView`，自己添加一个
 2. 图片刷新问题：SDWebImage 在进行缓存时忽略了所有服务器返回的 caching control 设置，并且在缓存时没有做时间限制，这也就意味着图片 URL 必须是静态的了，要求服务器上一个 URL 对应的图片内容不允许更新。但是如果存储图片的服务器不由自己控制，也就是说 图片内容更新了，URL 却没有更新，这种情况怎么办？
@@ -37,7 +37,7 @@ SDWebImage(v3.7.3)
 	[imageView sd_setIndicatorStyle:UIActivityIndicatorViewStyleGray];
    ```
    
-##[SDWebImage 4.0 迁移指南](https://github.com/rs/SDWebImage/blob/master/Docs/SDWebImage-4.0-Migration-guide.md)
+## [SDWebImage 4.0 迁移指南](https://github.com/rs/SDWebImage/blob/master/Docs/SDWebImage-4.0-Migration-guide.md)
 
 按照[版本号惯例(Semantic Versioning)](http://semver.org/)，从版本号可以看出 SDWebImage 4.0 是一个大版本，在结构上和 API 方面都有所改动。
 
@@ -45,7 +45,7 @@ SDWebImage(v3.7.3)
 
 借助 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) 在动图支持上做了改进，尤其是 GIF。
 
-##具体使用
+## 具体使用
 ####1.UITableView 中使用 UIImageView+WebCache
 `UITabelViewCell` 中的 `UIImageView` 控件直接调用 `sd_setImageWithURL: placeholderImage:`方法即可
 
@@ -125,9 +125,27 @@ SDWebImage(v3.7.3)
 	    };
 ```
 
+----------
+## 大致实现
+从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 读起。
 
+
+```
+- [UIImageView sd_setImageWithURL: placeholderImage: options:]
+   - [UIImageView sd_setImageWithURL: placeholderImage: options: progress: completed:]
+      - [SDWebImageManager downloadImageWithURL: options: progress: completed:]
+   /**
+   sd_setImageWithURL: placeholderImage: options: progress: completed: 方法中，做了以下几件事：
+   取消当前加载
+   将 url 作为属性存起来
+   使用 SDWebImageManager 创建一个下载+缓存的 operation
+   处理 SDWebImageManager 的回调 completedBlock
+   */
+
+```
+## 实现细节
 ------------------
-##SDWebImageDownloader
+### SDWebImageDownloader
 
 **公开属性：**
 
@@ -228,7 +246,7 @@ SDWebImage(v3.7.3)
 7. NSURLCredential 
 
 ------------------
-##SDWebImageDownloaderOperation（继承 NSOperation，遵守 SDWebImageOperation、NSURLConnectionDataDelegate 协议）
+### SDWebImageDownloaderOperation（继承 NSOperation，遵守 SDWebImageOperation、NSURLConnectionDataDelegate 协议）
 
 **公开属性：**
 
