@@ -39,8 +39,8 @@ static char imageURLKey;
 }
 
 - (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
-    [self sd_cancelCurrentImageLoad];  // TODO: 为什么要取消，是为了解决 tableViewCell 复用问题吗？
-    objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC); // 将 url 作为属性存起来
+    [self sd_cancelCurrentImageLoad];  // TODO: 取消当前正在进行的加载，因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
+    objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC); // 将 url 作为属性存起来，外面暴露一个 url 属性
 
     if (!(options & SDWebImageDelayPlaceholder)) {  // 如果不是等到图片下载结束时才需要设置占位图
         dispatch_main_async_safe(^{  // MARK: 保证主线程操作 UI
@@ -73,7 +73,7 @@ static char imageURLKey;
                 }
             });
         }];
-        [self sd_setImageLoadOperation:operation forKey:@"UIImageViewImageLoad"]; // TODO: 这里为什么要设置 operation？
+        [self sd_setImageLoadOperation:operation forKey:@"UIImageViewImageLoad"]; // TODO: 这里为什么要设置 operation？因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
     } else {
         dispatch_main_async_safe(^{
             NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:-1 userInfo:@{NSLocalizedDescriptionKey : @"Trying to load a nil url"}];

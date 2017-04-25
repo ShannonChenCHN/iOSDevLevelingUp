@@ -127,8 +127,10 @@ SDWebImage(v3.7.3)
 
 ----------
 ## 大致实现
-从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 读起。
 
+从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
+
+UIImageView+WebCache
 
 ```
 - [UIImageView sd_setImageWithURL: placeholderImage: options:]
@@ -136,13 +138,22 @@ SDWebImage(v3.7.3)
       - [SDWebImageManager downloadImageWithURL: options: progress: completed:]
    /**
    sd_setImageWithURL: placeholderImage: options: progress: completed: 方法中，做了以下几件事：
-   取消当前加载
+   取消当前正在进行的加载，因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
    将 url 作为属性存起来
    使用 SDWebImageManager 创建一个下载+缓存的 operation
    处理 SDWebImageManager 的回调 completedBlock
    */
 
 ```
+
+SDWebImageManager
+```
+- [SDWebImageManager downloadImageWithURL:options:progress:completed:]
+- 
+
+```
+
+
 ## 实现细节
 ------------------
 ### SDWebImageDownloader
@@ -361,7 +372,10 @@ BOOL responseFromCached;
 ```
 
 
-问题：
+### 总结
+1. UIImageView 是如何通过 SDWebImage 加载图片的？
+
+### 问题：
 1. `NSOperation` 的 `start` 方法和 `cancel` 方法
 
 2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
@@ -384,3 +398,10 @@ http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
 http://blog.ibireme.com/2015/05/18/runloop/
 https://github.com/rs/SDWebImage/issues/497
 https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
+
+7.SDWebImage 文档中的两张 Architecture 图怎么看？
+
+## 解读参考
+- [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
+- [SDWebImage实现分析](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)（南峰子老驴）
+

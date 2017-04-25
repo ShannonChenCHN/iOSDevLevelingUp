@@ -194,11 +194,12 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         return;
     }
 
+    // 内存缓存
     NSUInteger cost = SDCacheCostForImage(image);
     [self.memCache setObject:image forKey:key cost:cost];
 
     if (toDisk) {
-        dispatch_async(self.ioQueue, ^{
+        dispatch_async(self.ioQueue, ^{  // TODO: 为什么是 ioQueue？
             NSData *data = imageData;
 
             if (image && (recalculate || !data)) {
@@ -345,20 +346,20 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     UIImage *image = [self imageFromMemoryCacheForKey:key];
     if (image) {
         doneBlock(image, SDImageCacheTypeMemory);
-        return nil;
+        return nil;  // 不是磁盘缓存的话，就返回 nil
     }
 
-    NSOperation *operation = [NSOperation new];
-    dispatch_async(self.ioQueue, ^{
-        if (operation.isCancelled) {
+    NSOperation *operation = [NSOperation new];  // MARK: 这里的 operation 好像是专门用来进行 cancel 操作的
+    dispatch_async(self.ioQueue, ^{ // MARK: 开启异步线程，读取硬盘缓存
+        if (operation.isCancelled) { // TODO: 为什么需要检测是否被取消掉？这里的 operation 好像是专门用来进行 cancel 操作的
             return;
         }
 
-        @autoreleasepool {
+        @autoreleasepool { // 创建 autorelease pool，防止内存峰值过高
             UIImage *diskImage = [self diskImageForKey:key];
             if (diskImage) {
                 NSUInteger cost = SDCacheCostForImage(diskImage);
-                [self.memCache setObject:diskImage forKey:key cost:cost];
+                [self.memCache setObject:diskImage forKey:key cost:cost];  // 更新内存缓存
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
