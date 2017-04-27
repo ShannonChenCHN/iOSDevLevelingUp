@@ -374,6 +374,9 @@ BOOL responseFromCached;
 
 ### 总结
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
+2. SDWebImage 相比其他的库的优势在哪里？[How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
+3. SDWebImage 在设计上有哪些巧妙之处？
+4. 知识点
 
 ### 问题：
 1. `NSOperation` 的 `start` 方法和 `cancel` 方法
@@ -400,6 +403,20 @@ https://github.com/rs/SDWebImage/issues/497
 https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
 
 7.SDWebImage 文档中的两张 Architecture 图怎么看？
+UML 图
+
+
+8.SDWebImageDownloaderOperation 中是什么时候开启异步线程的？
+
+9.NSURLConnection 的几个代理方法分别在什么时候调用？
+
+10.SDWebImage 的缓存路径？
+从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出：
+defaultDiskCachePath: /cache/fullNamespace/MD5_filename
+
+11.文件的缓存有效期及最大缓存空间大小
+默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
+默认最大缓存空间：maxCacheSize = unlimited
 
 ## 解读参考
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
