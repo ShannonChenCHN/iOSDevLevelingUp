@@ -41,15 +41,18 @@ A checklist for leveling up iOS dev knowledge and skills.
     - [ ] AFNetworking *****
     - [ ] YTKNetwork *****
     - [ ] RTNetwork *****
+    - Alamofire
     - XMNetworking
 - Image Download 
     - [ ] SDWebImage *****
-    - YYWebImage
+    - [ ] YYWebImage
+    - Kingfisher
 - Model
     - [ ] MJExtension *****
-    - [ ] Mantle
+    - [ ] Mantle ****
     - [ ] YYModel
     - JSONModel
+    - SwiftyJSON
 - Refresh
     - MJRefresh
 - Database/Cache
