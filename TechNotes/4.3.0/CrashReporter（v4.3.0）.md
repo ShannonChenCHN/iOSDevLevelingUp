@@ -1,8 +1,8 @@
-Crash Reporter
---------
+# Crash Reporter
+
 
 	
-1.崩溃监控的原理：
+#### 1.崩溃监控的原理：
 
  - 监听崩溃，崩溃发生的原因有三类：
  	- 理论上应该可以 try-catch 到的、但没有处理的 UncaughtException：可以通过 NSSetUncaughtExceptionHandler() 注册监听异常
@@ -12,7 +12,7 @@ Crash Reporter
  - 采集崩溃信息：可以从监听函数的行参（NSException 对象）获取当前异常堆栈信息
  - 分析崩溃信息:对于 iOS 应用的崩溃堆栈，需要进行堆栈地址的符号化处理，这个处理过程使用系统的atos工具，借助iOS应用的符号调试信息文件dSYM 就可以完成。
 
-2.相关开源框架和平台：
+#### 2.相关开源框架和平台：
 
 开源框架：
 
@@ -26,13 +26,13 @@ Crash Reporter
 - [Crashlytics](http://try.crashlytics.com/)（Fabric）
 - [Bugly](http://bugly.qq.com/)
 
-3.选用第三方平台的考察点：
+#### 3.选用第三方平台的考察点：
 
 	- 免费
 	- 方便追踪和分析 bug
 	- 不存在审核被拒风险
 	
-4.第三方平台对比
+#### 4.第三方平台对比
 
 |  | [Bugly](http://bugly.qq.com/) | [BugHUD](http://bughd.com/doc/index) |  [Crashlytics(Fabric)]((http://try.crashlytics.com/)) | [友盟](http://dev.umeng.com/analytics/reports/errors#2) |
 | --------- | --- | -----| ---- | ---- |
@@ -62,16 +62,16 @@ Bugly 相比 BugHD 和 友盟 的优点在于以下几个方面：
 - 技术实力上，腾讯有更强的技术储备和人力。
 - 个人使用经历上，之前使用过 Bugly，通过 Bugly 来记录、分析崩溃和上传日志，感觉都还不错，具体有什么坑还没碰到过。没用过BugHD，但是看过 BugHD 的演示 Demo，比较简单，更多地是用来单纯查看 crash 记录的。
 
-4.问题
+#### 5.问题
 
-	4.1 Crash 堆栈不可读，需要上传符号表？
+	5.1 Crash 堆栈不可读，需要上传符号表？
 	上报的崩溃堆栈是应用部分只有地址信息的，需要配置符号表才能对上报的崩溃进行符号化，或者可以开启进程内还原。
 
-	4.2 什么是符号表？
+	5.2 什么是符号表？
 	iOS 的应用编译的时候生产的 dSYM 文件，一般在 build 目录下，名称为 *.app.dSYM 的一个目录。 BugHD 或者 bugly 会对这个符号表文件进行解析，取出有用的信息，得到一个较小的新符号表用于上传。
 	
 
-5.崩溃预防措施：
+#### 6.崩溃预防措施：
 
 - 记录每一次发生崩溃的原因，减少同样问题的重复发生
 - [AvoidCrash](https://github.com/chenfanfang/AvoidCrash)
@@ -89,7 +89,7 @@ Bugly 相比 BugHD 和 友盟 的优点在于以下几个方面：
 	- [How Not to Crash](http://inessential.com/hownottocrash)
 	- [iOS崩溃crash大解析](http://www.jianshu.com/p/1b804426d212)
 
-6.参考：
+#### 7.参考：
 
 - [漫谈iOS Crash收集框架](https://nianxi.net/ios/ios-crash-reporter.html)
 
