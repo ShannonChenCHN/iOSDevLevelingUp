@@ -199,10 +199,13 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     [self.memCache setObject:image forKey:key cost:cost];
 
     if (toDisk) {
+        // 开启异步线程执行存储任务
         dispatch_async(self.ioQueue, ^{  // TODO: 为什么是 ioQueue？
             NSData *data = imageData;
 
+            // 如果需要重新转 data 或者传进来的 imageData 为空的话，就再转一次 data，因为存为文件的必须是二进制数据
             if (image && (recalculate || !data)) {
+                // iPhone 里面需要判断图片类型
 #if TARGET_OS_IPHONE
                 // We need to determine if the image is a PNG or a JPEG
                 // PNGs are easier to detect because they have a unique signature (http://www.w3.org/TR/PNG-Structure.html)
@@ -218,7 +221,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
                 BOOL imageIsPng = hasAlpha;
 
                 // But if we have an image data, we will look at the preffix
-                if ([imageData length] >= [kPNGSignatureData length]) {
+                if ([imageData length] >= [kPNGSignatureData length]) {  // 根据二进制数据的前 8 位来判断是不是 PNG 格式的
                     imageIsPng = ImageDataHasPNGPreffix(imageData);
                 }
 
@@ -455,13 +458,14 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 - (void)cleanDiskWithCompletionBlock:(SDWebImageNoParamsBlock)completionBlock {
     dispatch_async(self.ioQueue, ^{
         NSURL *diskCacheURL = [NSURL fileURLWithPath:self.diskCachePath isDirectory:YES];
-        NSArray *resourceKeys = @[NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLTotalFileAllocatedSizeKey];
+        NSArray *resourceKeys = @[NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLTotalFileAllocatedSizeKey]; // TODO: ???
 
+        // 通过枚举器提前快速获取缓存文件的属性
         // This enumerator prefetches useful properties for our cache files.
         NSDirectoryEnumerator *fileEnumerator = [_fileManager enumeratorAtURL:diskCacheURL
                                                    includingPropertiesForKeys:resourceKeys
                                                                       options:NSDirectoryEnumerationSkipsHiddenFiles
-                                                                 errorHandler:NULL];
+                                                                 errorHandler:NULL];  // TODO: NSDirectoryEnumerator????
 
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-self.maxCacheAge];
         NSMutableDictionary *cacheFiles = [NSMutableDictionary dictionary];
@@ -476,23 +480,24 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
             NSDictionary *resourceValues = [fileURL resourceValuesForKeys:resourceKeys error:NULL];
 
             // Skip directories.
-            if ([resourceValues[NSURLIsDirectoryKey] boolValue]) {
+            if ([resourceValues[NSURLIsDirectoryKey] boolValue]) { // 如果是文件夹就跳过
                 continue;
             }
 
             // Remove files that are older than the expiration date;
-            NSDate *modificationDate = resourceValues[NSURLContentModificationDateKey];
-            if ([[modificationDate laterDate:expirationDate] isEqualToDate:expirationDate]) {
-                [urlsToDelete addObject:fileURL];
+            NSDate *modificationDate = resourceValues[NSURLContentModificationDateKey]; // 文件修改时间
+            if ([[modificationDate laterDate:expirationDate] isEqualToDate:expirationDate]) { // 因为过期需要删除的文件
+                [urlsToDelete addObject:fileURL];  // 因为过期需要删除的文件
                 continue;
             }
 
             // Store a reference to this file and account for its total size.
             NSNumber *totalAllocatedSize = resourceValues[NSURLTotalFileAllocatedSizeKey];
-            currentCacheSize += [totalAllocatedSize unsignedIntegerValue];
-            [cacheFiles setObject:resourceValues forKey:fileURL];
+            currentCacheSize += [totalAllocatedSize unsignedIntegerValue]; // 计算过期文件之外的总文件大小
+            [cacheFiles setObject:resourceValues forKey:fileURL];  // 记录过期文件之外的文件到 cacheFiles 中，留到后面用
         }
         
+        // 删除过期文件
         for (NSURL *fileURL in urlsToDelete) {
             [_fileManager removeItemAtURL:fileURL error:nil];
         }
@@ -501,14 +506,16 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         // size-based cleanup pass.  We delete the oldest files first.
         if (self.maxCacheSize > 0 && currentCacheSize > self.maxCacheSize) {
             // Target half of our maximum cache size for this cleanup pass.
-            const NSUInteger desiredCacheSize = self.maxCacheSize / 2;
+            const NSUInteger desiredCacheSize = self.maxCacheSize / 2; // 以 maxCacheSize 的一半为清理目标
 
+            // 按最近修改时间排序
             // Sort the remaining cache files by their last modification time (oldest first).
             NSArray *sortedFiles = [cacheFiles keysSortedByValueWithOptions:NSSortConcurrent
                                                             usingComparator:^NSComparisonResult(id obj1, id obj2) {
                                                                 return [obj1[NSURLContentModificationDateKey] compare:obj2[NSURLContentModificationDateKey]];
                                                             }];
 
+            // 删除文件直到 desiredCacheSize
             // Delete files until we fall below our desired cache size.
             for (NSURL *fileURL in sortedFiles) {
                 if ([_fileManager removeItemAtURL:fileURL error:nil]) {

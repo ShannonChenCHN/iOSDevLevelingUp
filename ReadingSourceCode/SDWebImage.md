@@ -1,4 +1,4 @@
-SDWebImage(v3.7.3)
+[SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3)
 -----
 
 ![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
@@ -46,10 +46,10 @@ SDWebImage(v3.7.3)
 借助 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) 在动图支持上做了改进，尤其是 GIF。
 
 ## 具体使用
-####1.UITableView 中使用 UIImageView+WebCache
+#### 1.UITableView 中使用 UIImageView+WebCache
 `UITabelViewCell` 中的 `UIImageView` 控件直接调用 `sd_setImageWithURL: placeholderImage:`方法即可
 
-####2.使用回调 blocks
+#### 2.使用回调 blocks
 在 block 中得到图片下载进度和图片加载完成（下载完成或者读取缓存）的回调，如果你在图片加载完成前取消了请求操作，就不会收到成功或失败的回调
 ```
 	[cell.imageView sd_setImageWithURL:[NSURL URLWithString:@"http://www.domain.com/path/to/image.jpg"]
@@ -59,7 +59,7 @@ SDWebImage(v3.7.3)
 	                             }];
 ```
 
-####3.SDWebImageManager 的使用
+#### 3.SDWebImageManager 的使用
 `UIImageView(WebCache)` 分类的核心在于 `SDWebImageManager` 的下载和缓存处理，`SDWebImageManager`将图片下载和图片缓存组合起来了。`SDWebImageManager`也可以单独使用。
 ```
 	SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -76,7 +76,7 @@ SDWebImage(v3.7.3)
 ```
 
 
-####4.单独使用 SDWebImageDownloader 异步下载图片 
+#### 4.单独使用 SDWebImageDownloader 异步下载图片 
 我们还可以单独使用 `SDWebImageDownloader` 来下载图片，但是图片内容不会缓存。
 
 ```
@@ -93,7 +93,7 @@ SDWebImage(v3.7.3)
 	                        }];
 ```
 
-####5.单独使用 SDImageCache 异步缓存图片
+#### 5.单独使用 SDImageCache 异步缓存图片
 `SDImageCache` 支持内存缓存和异步的磁盘缓存（可选），如果你想单独使用 `SDImageCache` 来缓存数据的话，可以使用单例，也可以创建一个有独立命名空间的 `SDImageCache` 实例。
 
 添加缓存的方法：
@@ -115,7 +115,7 @@ SDWebImage(v3.7.3)
 ```
 
 
-####6.自定义缓存 key
+#### 6.自定义缓存 key
 有时候，一张图片的 URL 中的一部分可能是动态变化的（比如获取权限上的限制），所以我们只需要把 URL 中不变的部分作为缓存用的 key。
 
 ```
@@ -125,7 +125,7 @@ SDWebImage(v3.7.3)
 	    };
 ```
 
-----------
+
 ## 大致实现
 
 从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
@@ -155,7 +155,7 @@ SDWebImageManager
 
 
 ## 实现细节
-------------------
+
 ### SDWebImageDownloader
 
 **公开属性：**
@@ -256,7 +256,7 @@ SDWebImageManager
 6. NSURLRequest 的 cachePolicy、HTTPShouldHandleCookies、HTTPShouldUsePipelining
 7. NSURLCredential 
 
-------------------
+
 ### SDWebImageDownloaderOperation（继承 NSOperation，遵守 SDWebImageOperation、NSURLConnectionDataDelegate 协议）
 
 **公开属性：**
@@ -374,6 +374,9 @@ BOOL responseFromCached;
 
 ### 总结
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
+2. SDWebImage 相比其他的库的优势在哪里？[How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
+3. SDWebImage 在设计上有哪些巧妙之处？
+4. 知识点
 
 ### 问题：
 1. `NSOperation` 的 `start` 方法和 `cancel` 方法
@@ -393,13 +396,27 @@ http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-ve
 
 6. `-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？
 参考：
-http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
-http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
-http://blog.ibireme.com/2015/05/18/runloop/
-https://github.com/rs/SDWebImage/issues/497
-https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
+- http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
+- http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
+- http://blog.ibireme.com/2015/05/18/runloop/
+- https://github.com/rs/SDWebImage/issues/497
+- https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
 
 7.SDWebImage 文档中的两张 Architecture 图怎么看？
+UML 图
+
+
+8.SDWebImageDownloaderOperation 中是什么时候开启异步线程的？
+
+9.NSURLConnection 的几个代理方法分别在什么时候调用？
+
+10.SDWebImage 的缓存路径？
+从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出：
+defaultDiskCachePath: /cache/fullNamespace/MD5_filename
+
+11.文件的缓存有效期及最大缓存空间大小
+默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
+默认最大缓存空间：maxCacheSize = unlimited
 
 ## 解读参考
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
