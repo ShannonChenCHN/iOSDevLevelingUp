@@ -341,4 +341,5 @@ A checklist for leveling up iOS dev knowledge and skills.
 - [PSPDFKit blog](https://pspdfkit.com/blog/)
 - [The Big Nerd Ranch Blog](https://www.bignerdranch.com/blog/)
 - [Yalantis blog](https://yalantis.com/blog/)
+- [Ray Wenderlich](https://www.raywenderlich.com)
 
