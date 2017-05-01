@@ -12,7 +12,7 @@
    - [架构图](#1-架构图uml-类图)
    - [流程图](#2-流程图方法调用顺序图)
    - [目录结构](#3-目录结构)
-   - [主要逻辑](#4-主要逻辑)
+   - [核心逻辑](#4-核心逻辑)
 - [实现细节](#三实现细节)
 - [知识点](#四知识点)
 - [收获与疑问](#五收获与疑问)
@@ -37,6 +37,7 @@
    - 4.0 之前的动图效果并不是太好
    - 4.0 以后基于 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage)加载动图
 
+> 注：本文选读的代码是 3.7.3 版本的，所以动图加载还不支持 `FLAnimatedImage`。
 
 ### 3. [SDWebImage 与其他框架的对比]
 - [How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
@@ -178,9 +179,9 @@
 
 类名|功能|
 --|--|
-`SDWebImageDownloader`|是专门用来下载图片和优化图片加载的，跟缓存没有关系。|
+`SDWebImageDownloader`|是专门用来下载图片和优化图片加载的，跟缓存没有关系|
 `SDWebImageDownloaderOperation `|继承于 `NSOperation`，用来处理下载任务的|
-`SDImageCache`|用来处理内存缓存和磁盘缓存（可选)的，其中磁盘缓存是异步进行的，因此不会阻塞主线程。|
+`SDImageCache`|用来处理内存缓存和磁盘缓存（可选)的，其中磁盘缓存是异步进行的，因此不会阻塞主线程|
 `SDWebImageManager`|作为 `UIImageView+WebCache` 背后的默默付出者，主要功能是将图片下载（`SDWebImageDownloader `）和图片缓存（`SDImageCache `）两个独立的功能组合起来|
 `SDWebImageDecoder`|图片解码器，用于图片下载完成后进行解码|
 `SDWebImagePrefetcher`|预下载图片，方便后续使用，图片下载的优先级低，其内部由 `SDWebImageManager` 来处理图片下载和缓存|
@@ -194,32 +195,22 @@
 `UIImage+MultiFormat`|根据不同格式的二进制数据转成 `UIImage` 对象|
 `UIImage+WebP`|用于解码并加载 WebP 图片|
  
-### 4. 主要逻辑
+### 4. 核心逻辑
  
-从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
+下载 [Source code(3.7.3)](https://github.com/rs/SDWebImage/archive/3.7.3.zip)，打开 `SDWebImage Demo.xcodeproj`，从 `MasterViewController` 中的 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
 
-UIImageView+WebCache
+经过层层调用，直到 `UIImageView+WebCache` 中最核心的方法 `sd_setImageWithURL: placeholderImage: options: progress: completed:`。该方法中，主要做了以下几件事：
+   - 取消当前正在进行的加载任务 operation
+   - 设置 placeholder
+   - 如果 URL 不为 `nil`，就通过 `SDWebImageManager` 单例开启图片加载任务 operation，`SDWebImageManager` 的图片加载方法中会返回一个 `SDWebImageCombinedOperation` 对象，这个对象包含一个 cacheOperation 和一个 cancelBlock。
 
-```
-- [UIImageView sd_setImageWithURL: placeholderImage: options:]
-   - [UIImageView sd_setImageWithURL: placeholderImage: options: progress: completed:]
-      - [SDWebImageManager downloadImageWithURL: options: progress: completed:]
-   /**
-   sd_setImageWithURL: placeholderImage: options: progress: completed: 方法中，做了以下几件事：
-   取消当前正在进行的加载，因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
-   将 url 作为属性存起来
-   使用 SDWebImageManager 创建一个下载+缓存的 operation
-   处理 SDWebImageManager 的回调 completedBlock
-   */
+`SDWebImageManager` 的图片加载方法 `downloadImageWithURL:options:progress:completed:` 中会先拿图片缓存的 key （这个 key 默认是图片 URL）去 `SDImageCache` 单例中读取内存缓存，如果有，就返回给 `SDWebImageManager`；如果内存缓存没有，就开启异步线程，拿经过 MD5 处理的 key 去读取磁盘缓存，如果找到磁盘缓存了，就同步到内存缓存中去，然后再返回给 `SDWebImageManager`。
 
-```
+如果内存缓存和磁盘缓存中都没有，`SDWebImageManager` 就会调用 `SDWebImageDownloader` 单例的 `downloadImageWithURL: options: progress: completed:` 方法去下载，该会先将传入的 `progressBlock` 和 `completedBlock` 保存起来，并在第一次下载该 URL 的图片时，创建一个 `NSMutableURLRequest` 对象和一个 `SDWebImageDownloaderOperation` 对象，并将该 `SDWebImageDownloaderOperation` 对象添加到 `SDWebImageDownloader` 的`downloadQueue` 来启动异步下载任务。
 
-SDWebImageManager
-```
-- [SDWebImageManager downloadImageWithURL:options:progress:completed:]
-- 
+`SDWebImageDownloaderOperation` 中包装了一个 `NSURLConnection` 的网络请求，并通过 runloop 来保持 `NSURLConnection` 在 start 后、收到响应前不被干掉，下载图片时，监听 `NSURLConnection` 回调的 `-connection:didReceiveData:` 方法中会负责 progress 相关的处理和回调，`- connectionDidFinishLoading:` 方法中会负责将 data 转为 image，以及图片解码操作，并最终回调 completedBlock。
 
-```
+`SDWebImageDownloaderOperation` 中的图片下载请求完成后，会回调给 `SDWebImageDownloader`，然后 `SDWebImageDownloader` 再回调给 `SDWebImageManager`，`SDWebImageManager` 中再将图片分别缓存到内存和磁盘上（可选），并回调给 `UIImageView`，`UIImageView` 中再回到主线程设置 `image` 属性。至此，图片的下载和缓存操作就圆满结束了。
 
 
 ## 三、实现细节

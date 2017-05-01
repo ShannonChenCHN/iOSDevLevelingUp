@@ -167,7 +167,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 }
 
 #pragma mark SDImageCache (private)
-
+// 为了防止名称重复，对其进行 md5 运算
 - (NSString *)cachedFileNameForKey:(NSString *)key {
     const char *str = [key UTF8String];
     if (str == NULL) {
@@ -194,16 +194,16 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         return;
     }
 
-    // 内存缓存
+    // 1.内存缓存
     NSUInteger cost = SDCacheCostForImage(image);
     [self.memCache setObject:image forKey:key cost:cost];
 
     if (toDisk) {
-        // 开启异步线程执行存储任务
+        // 2.开启异步线程执行存储任务
         dispatch_async(self.ioQueue, ^{  // TODO: 为什么是 ioQueue？
             NSData *data = imageData;
 
-            // 如果需要重新转 data 或者传进来的 imageData 为空的话，就再转一次 data，因为存为文件的必须是二进制数据
+            // 2.1 如果需要重新转 data 或者传进来的 imageData 为空的话，就再转一次 data，因为存为文件的必须是二进制数据
             if (image && (recalculate || !data)) {
                 // iPhone 里面需要判断图片类型
 #if TARGET_OS_IPHONE
@@ -235,7 +235,8 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
                 data = [NSBitmapImageRep representationOfImageRepsInArray:image.representations usingType: NSJPEGFileType properties:nil];
 #endif
             }
-
+            
+            // 2.2 存到沙盒里
             if (data) {
                 if (![_fileManager fileExistsAtPath:_diskCachePath]) {
                     [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
@@ -345,26 +346,32 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         return nil;
     }
 
+    // 1.先检查内存缓存
     // First check the in-memory cache...
     UIImage *image = [self imageFromMemoryCacheForKey:key];
     if (image) {
         doneBlock(image, SDImageCacheTypeMemory);
-        return nil;  // 不是磁盘缓存的话，就返回 nil
+        return nil;  // 不是磁盘缓存的话，就返回 nil，因为不是异步操作
     }
 
+    // 2.开启异步队列，读取硬盘缓存
     NSOperation *operation = [NSOperation new];  // MARK: 这里的 operation 好像是专门用来进行 cancel 操作的
-    dispatch_async(self.ioQueue, ^{ // MARK: 开启异步线程，读取硬盘缓存
+    dispatch_async(self.ioQueue, ^{
         if (operation.isCancelled) { // TODO: 为什么需要检测是否被取消掉？这里的 operation 好像是专门用来进行 cancel 操作的
             return;
         }
 
-        @autoreleasepool { // 创建 autorelease pool，防止内存峰值过高
+        @autoreleasepool { // MARK: 创建 autorelease pool，防止内存峰值过高
             UIImage *diskImage = [self diskImageForKey:key];
+            
+            
+            // 3. 更新内存缓存
             if (diskImage) {
                 NSUInteger cost = SDCacheCostForImage(diskImage);
-                [self.memCache setObject:diskImage forKey:key cost:cost];  // 更新内存缓存
+                [self.memCache setObject:diskImage forKey:key cost:cost];
             }
 
+            // 4.回调 doneBlock（不管 diskImage 有没有）
             dispatch_async(dispatch_get_main_queue(), ^{
                 doneBlock(diskImage, SDImageCacheTypeDisk);
             });

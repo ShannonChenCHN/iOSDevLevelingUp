@@ -140,6 +140,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         operation = [[wself.operationClass alloc] initWithRequest:request
                                                           options:options
                                                          progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                                             // _1. 回调 progressBlock
                                                              SDWebImageDownloader *sself = wself; // MARK: weak-strong dance
                                                              if (!sself) return;
                                                              __block NSArray *callbacksForURL;
@@ -148,47 +149,60 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                                              });
                                                              for (NSDictionary *callbacks in callbacksForURL) {
                                                                  SDWebImageDownloaderProgressBlock callback = callbacks[kProgressCallbackKey];
-                                                                 if (callback) callback(receivedSize, expectedSize); // 进度回调
+                                                                 if (callback) callback(receivedSize, expectedSize);
                                                              }
                                                          }
                                                         completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                            
+                                                            
                                                             SDWebImageDownloader *sself = wself;
                                                             if (!sself) return;
                                                             __block NSArray *callbacksForURL;
-                                                            dispatch_barrier_sync(sself.barrierQueue, ^{ // 这里用的是 sync
+                                                            
+                                                            // _1. 从 URLCallbacks 中移除 callback
+                                                            dispatch_barrier_sync(sself.barrierQueue, ^{ // MARK: 这里用的是 sync
                                                                 callbacksForURL = [sself.URLCallbacks[url] copy];
                                                                 if (finished) {
-                                                                    [sself.URLCallbacks removeObjectForKey:url];  // 从 URLCallbacks 中移除 callback
+                                                                    [sself.URLCallbacks removeObjectForKey:url];
                                                                 }
                                                             });
+                                                            
+                                                            // _2. 回调 completedBlock
                                                             for (NSDictionary *callbacks in callbacksForURL) {
                                                                 SDWebImageDownloaderCompletedBlock callback = callbacks[kCompletedCallbackKey];
-                                                                if (callback) callback(image, data, error, finished); // completedBlock 回调
+                                                                if (callback) callback(image, data, error, finished);
                                                             }
                                                         }
                                                         cancelled:^{
+                                                            // _1. 从 URLCallbacks 中移除 callback
                                                             SDWebImageDownloader *sself = wself;
                                                             if (!sself) return;
                                                             dispatch_barrier_async(sself.barrierQueue, ^{
-                                                                [sself.URLCallbacks removeObjectForKey:url]; // 从 URLCallbacks 中移除 callback
+                                                                [sself.URLCallbacks removeObjectForKey:url];
                                                             });
+                                                            
+                                                            // _2.cancel 掉的没有回调？？
                                                         }];
-        operation.shouldDecompressImages = wself.shouldDecompressImages;  // TODO: ???
+        // 4.设置下载完成后是否需要解码
+        operation.shouldDecompressImages = wself.shouldDecompressImages;
         
-        // 设置 operation 的 credential
+        // 5.设置 operation 的 credential
         if (wself.username && wself.password) {
             operation.credential = [NSURLCredential credentialWithUser:wself.username password:wself.password persistence:NSURLCredentialPersistenceForSession];
         }
         
-        // 设置 operation 的优先级
+        // 6.设置 operation 的优先级
         if (options & SDWebImageDownloaderHighPriority) {
             operation.queuePriority = NSOperationQueuePriorityHigh;
         } else if (options & SDWebImageDownloaderLowPriority) {
             operation.queuePriority = NSOperationQueuePriorityLow;
         }
 
-        [wself.downloadQueue addOperation:operation]; // 3. 开启下载任务，因为 NSOperation 实例只有在调用 start 方法或者加入 NSOperationQueue 才会执行
-        if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) { // 设置下载任务先后顺序
+        // 7.开启下载任务，因为 NSOperation 实例只有在手动调用 start 方法或者加入 NSOperationQueue 才会执行
+        [wself.downloadQueue addOperation:operation];
+        
+        // 8.设置下载任务先后顺序
+        if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
             // Emulate LIFO execution order by systematically adding new operations as last operation's dependency
             [wself.lastAddedOperation addDependency:operation]; // TODO: 上一个创建的 operation 要等到最新的 operation 执行完毕才开始执行
             wself.lastAddedOperation = operation;
@@ -199,15 +213,17 @@ static NSString *const kCompletedCallbackKey = @"completed";
 }
 
 - (void)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock andCompletedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock forURL:(NSURL *)url createCallback:(SDWebImageNoParamsBlock)createCallback {
+    
+    // 1.错误检查：URL 为空就直接返回
     // The URL will be used as the key to the callbacks dictionary so it cannot be nil. If it is nil immediately call the completed block with no image or data.
-    if (url == nil) { // URL 为空就直接返回
+    if (url == nil) {
         if (completedBlock != nil) {
             completedBlock(nil, nil, nil, NO);
         }
         return;
     }
 
-    
+    // 2.保存 progressBlock 和 completedBlock 到 URLCallbacks 中
     dispatch_barrier_sync(self.barrierQueue, ^{  // MARK: 使用 dispatch_barrier_sync 来保证同一时间只有一个线程能对 URLCallbacks 进行操作，实现读写操作之间的隔离
         BOOL first = NO;
         if (!self.URLCallbacks[url]) {
@@ -223,7 +239,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         [callbacksForURL addObject:callbacks];     // 添加新的 callbacks
         self.URLCallbacks[url] = callbacksForURL;
 
-        // 只在第一次加载这张图片的 url 时，执行下载 block，也就是为了防止重复下载
+        // 3.只在第一次加载这张图片的 url 时，执行下载 block，也就是为了防止重复下载
         if (first) {
             createCallback();
         }

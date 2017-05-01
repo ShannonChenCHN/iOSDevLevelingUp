@@ -39,42 +39,52 @@ static char imageURLKey;
 }
 
 - (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
-    [self sd_cancelCurrentImageLoad];  // TODO: 取消当前正在进行的加载，因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
-    objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC); // 将 url 作为属性存起来，外面暴露一个 url 属性
-
-    if (!(options & SDWebImageDelayPlaceholder)) {  // 如果不是等到图片下载结束时才需要设置占位图
+    // 1.取消当前正在进行的加载任务
+    [self sd_cancelCurrentImageLoad];  // TODO: 为什么这么做？因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
+    // 2.将 url 作为属性存起来，外面暴露一个 url 属性
+    objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    
+    // 3.设置占位图
+    if (!(options & SDWebImageDelayPlaceholder)) {
         dispatch_main_async_safe(^{  // MARK: 保证主线程操作 UI
             self.image = placeholder;
         });
     }
     
-    if (url) {
+    if (url) { // 4.1 URL 不为 nil
         __weak __typeof(self)wself = self;
         id <SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadImageWithURL:url options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            
             if (!wself) return; // MARK: 判断 self 是否还存活
             dispatch_main_sync_safe(^{  // 保证主线程操作 UI
                 if (!wself) return;
-                if (image && (options & SDWebImageAvoidAutoSetImage) && completedBlock) // 如果不需要自动设置 image
-                {
+                
+                // _1.设置 image
+                if (image && (options & SDWebImageAvoidAutoSetImage) && completedBlock) { // 如果不需要自动设置 image，直接 return 掉
                     completedBlock(image, error, cacheType, url);
-                    return;  // 直接 return 掉
-                }
-                else if (image) {  // 自动设置 image
+                    return;
+                    
+                } else if (image) {  // 自动设置 image
                     wself.image = image;
                     [wself setNeedsLayout];  // TODO: 这里为什么还要调用 setNeedsLayout 方法来触发 layout ？
-                } else {
+                    
+                } else { // 图片为 nil
                     if ((options & SDWebImageDelayPlaceholder)) {  // 如果是等到图片下载结束时才需要设置占位图
                         wself.image = placeholder;
                         [wself setNeedsLayout];
                     }
                 }
-                if (completedBlock && finished) { // 回调
+                
+                // _2.回调 completedBlock
+                if (completedBlock && finished) {
                     completedBlock(image, error, cacheType, url);
                 }
             });
         }];
         [self sd_setImageLoadOperation:operation forKey:@"UIImageViewImageLoad"]; // TODO: 这里为什么要设置 operation？因为每个 UIView 都会通过 sd_setImageLoadOperation:forKey 将 operation 存到属性里，方便取消和移除 operation
-    } else {
+        
+    } else { // 4.2 URL 为空时，直接回调 completedBlock
         dispatch_main_async_safe(^{
             NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:-1 userInfo:@{NSLocalizedDescriptionKey : @"Trying to load a nil url"}];
             if (completedBlock) {
