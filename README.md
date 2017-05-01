@@ -80,6 +80,7 @@ A checklist for leveling up iOS dev knowledge and skills.
 - [x] [Zen and the Art of the Objective-C Craftsmanship](https://github.com/objc-zen/objc-zen-book) ****
 - [x] The Swift Programming Language *****
 - Swifter
+- Advanced Swift
 - Objc.io
 - [NSHipster]Obscure Topics In Cocoa & Objective-C
 - iOS Core Animation Advanced Techniques
