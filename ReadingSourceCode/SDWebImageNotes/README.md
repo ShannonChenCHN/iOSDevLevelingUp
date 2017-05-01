@@ -197,7 +197,9 @@
  
 ### 4. 核心逻辑
  
-下载 [Source code(3.7.3)](https://github.com/rs/SDWebImage/archive/3.7.3.zip)，打开 `SDWebImage Demo.xcodeproj`，从 `MasterViewController` 中的 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
+下载 [Source code(3.7.3)](https://github.com/rs/SDWebImage/archive/3.7.3.zip)，运行 `pod install`，然后打开 `SDWebImage.xcworkspace`，先 run 起来感受一下。
+
+我们从 `MasterViewController` 中的 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看起。
 
 经过层层调用，直到 `UIImageView+WebCache` 中最核心的方法 `sd_setImageWithURL: placeholderImage: options: progress: completed:`。该方法中，主要做了以下几件事：
    - 取消当前正在进行的加载任务 operation
@@ -206,14 +208,18 @@
 
 `SDWebImageManager` 的图片加载方法 `downloadImageWithURL:options:progress:completed:` 中会先拿图片缓存的 key （这个 key 默认是图片 URL）去 `SDImageCache` 单例中读取内存缓存，如果有，就返回给 `SDWebImageManager`；如果内存缓存没有，就开启异步线程，拿经过 MD5 处理的 key 去读取磁盘缓存，如果找到磁盘缓存了，就同步到内存缓存中去，然后再返回给 `SDWebImageManager`。
 
-如果内存缓存和磁盘缓存中都没有，`SDWebImageManager` 就会调用 `SDWebImageDownloader` 单例的 `downloadImageWithURL: options: progress: completed:` 方法去下载，该会先将传入的 `progressBlock` 和 `completedBlock` 保存起来，并在第一次下载该 URL 的图片时，创建一个 `NSMutableURLRequest` 对象和一个 `SDWebImageDownloaderOperation` 对象，并将该 `SDWebImageDownloaderOperation` 对象添加到 `SDWebImageDownloader` 的`downloadQueue` 来启动异步下载任务。
+如果内存缓存和磁盘缓存中都没有，`SDWebImageManager` 就会调用 `SDWebImageDownloader` 单例的 `-downloadImageWithURL: options: progress: completed:` 方法去下载，该会先将传入的 `progressBlock` 和 `completedBlock` 保存起来，并在第一次下载该 URL 的图片时，创建一个 `NSMutableURLRequest` 对象和一个 `SDWebImageDownloaderOperation` 对象，并将该 `SDWebImageDownloaderOperation` 对象添加到 `SDWebImageDownloader` 的`downloadQueue` 来启动异步下载任务。
 
 `SDWebImageDownloaderOperation` 中包装了一个 `NSURLConnection` 的网络请求，并通过 runloop 来保持 `NSURLConnection` 在 start 后、收到响应前不被干掉，下载图片时，监听 `NSURLConnection` 回调的 `-connection:didReceiveData:` 方法中会负责 progress 相关的处理和回调，`- connectionDidFinishLoading:` 方法中会负责将 data 转为 image，以及图片解码操作，并最终回调 completedBlock。
 
 `SDWebImageDownloaderOperation` 中的图片下载请求完成后，会回调给 `SDWebImageDownloader`，然后 `SDWebImageDownloader` 再回调给 `SDWebImageManager`，`SDWebImageManager` 中再将图片分别缓存到内存和磁盘上（可选），并回调给 `UIImageView`，`UIImageView` 中再回到主线程设置 `image` 属性。至此，图片的下载和缓存操作就圆满结束了。
 
+当然，`SDWebImage` 中还有很多细节可以深挖，包括一些巧妙设计和知识点，接下来再看看`SDWebImage` 中的实现细节。
+
 
 ## 三、实现细节
+
+> 注：为了节省篇幅，这里使用伪代码的方式来解读，具体的阅读注解见 [ShannonChenCHN/SDWebImage-3.7.3](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes)。
 
 ### 1. 设置 UIImageView 的图片——UIImageView+WebCache
 
@@ -442,9 +448,9 @@ BOOL responseFromCached;
 ### 5. 图片解码——SDWebImageDecoder
 
 ## 四、知识点
-1. `NSOperation` 的 `start` 方法和 `cancel` 方法
+1.`NSOperation` 的 `start` 方法和 `cancel` 方法
 
-2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
+2.`TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
 这两个宏都是用于**编译时**进行 SDK 版本适配的宏，主要用于模拟器上的调试，而针对真机上的 iOS 版本适配就需要采用**运行时**的判断方式了，比如使用 respondsToSelector: 方法来判断当前运行环境是否支持该方法的调用。
 参考：http://stackoverflow.com/questions/3269344/what-is-difference-between-these-2-macros/3269562#3269562
 http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iphone-os-version-max-allowed
@@ -452,12 +458,13 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 3.`typeof` 和 `__typeof`，`__typeof__` 的区别
 http://stackoverflow.com/questions/14877415/difference-between-typeof-typeof-and-typeof-objective-c
 
-4.使用 -[UIApplication beginBackgroundTaskWithExpirationHandler:] 方法在 app 后台执行任务
+4.使用 `-[UIApplication beginBackgroundTaskWithExpirationHandler:]` 方法在 app 后台执行任务
 
 5.`NSFoundationVersionNumber` 的使用
 http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-versions
 
-6. `-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？
+6.`-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？
+
 参考：
 - http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
 - http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
@@ -467,33 +474,41 @@ http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-ve
 
 7.SDWebImage 文档中的两张 Architecture 图怎么看？什么是 UML 类图？
 
-
 8.SDWebImageDownloaderOperation 中是什么时候开启异步线程的？
 
 9.NSURLConnection 的几个代理方法分别在什么时候调用？
 
 10.SDWebImage 的缓存路径？
-从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出：
-defaultDiskCachePath: /cache/fullNamespace/MD5_filename
+
+从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出 `defaultDiskCachePath` 是 `/cache/fullNamespace/MD5_filename`
 
 11.文件的缓存有效期及最大缓存空间大小
-默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
-默认最大缓存空间：maxCacheSize = unlimited
+- 默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
+- 默认最大缓存空间：maxCacheSize = unlimited
  
 12.`MKAnnotationView` 是用来干嘛的？
 `MKAnnotationView` 是属于 `MapKit` 框架的一个类，继承自 `UIView`，是用来展示地图上的 annotation 信息的，它有一个用来设置图片的属性 `image` 。See [API Reference: MKAnnotationView](https://developer.apple.com/reference/mapkit/mkannotationview)
 
 13.图片下载完成后，为什么需要用 `SDWebImageDecoder` 进行解码？
+
+14.`SDWebImage` 中图片缓存的 key 是按照什么规则取的？
+
+15.`SDImageCache` 清除磁盘缓存的过程？
  
 ## 五、收获与疑问
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
 2. SDWebImage 在设计上有哪些巧妙之处？
+3. 假如我自己来实现一个图片下载工具，我该怎么写？
+4. SDWebImage 的进化史
+5. SDWebImage 的性能怎么看？
 
 
 ## 六、延伸阅读
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
 - [SDWebImage实现分析](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)（南峰子老驴）
-- [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)
+- [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)（bpoplauschi）
 - [使用SDWebImage和YYImage下载高分辨率图，导致内存暴增的解决办法](http://www.jianshu.com/p/1c9de8dea3ea)
+- [SDWebImage 图片下载缓存框架 常用方法及原理](http://www.jianshu.com/p/4191017c8b39)
+- [SDWebImage 源码阅读笔记](http://itangqi.me/2016/03/19/the-notes-of-learning-sdwebimage-one/)
  
 
