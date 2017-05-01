@@ -1,22 +1,22 @@
 # [SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3) 学习笔记
 
 ## 目录
-- [简介](#简介)
-   - 设计目的
-   - 特性
-   - SDWebImage 与其他框架的对比
-   - 常见问题
-   - 用法
-   - SDWebImage 4.0 迁移指南
-- 实现原理
-   - 架构图
-   - 流程图
-   - 目录结构
-   - 主要逻辑
-- 实现细节
-- 知识点
-- 收获与疑问
-- 延伸阅读
+- [简介](#一简介)
+   - [设计目的](#1-设计目的)
+   - [特性](#2-特性)
+   - [SDWebImage 与其他框架的对比](#3-sdwebimage-与其他框架的对比)
+   - [常见问题](#4-常见问题)
+   - [用法](#5-用法)
+   - [SDWebImage 4.0 迁移指南](#6-sdwebimage-40-迁移指南)
+- [实现原理](#二实现原理)
+   - [架构图](#1-架构图uml-类图)
+   - [流程图](#2-流程图方法调用顺序图)
+   - [目录结构](#3-目录结构)
+   - [主要逻辑](#4-主要逻辑)
+- [实现细节](#三实现细节)
+- [知识点](#四知识点)
+- [收获与疑问](#五收获与疑问)
+- [延伸阅读](#六延伸阅读)
 
 ## 一、简介
 ### 1. 设计目的
@@ -457,5 +457,7 @@ defaultDiskCachePath: /cache/fullNamespace/MD5_filename
 ## 六、延伸阅读
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
 - [SDWebImage实现分析](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)（南峰子老驴）
+- [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)
+- [使用SDWebImage和YYImage下载高分辨率图，导致内存暴增的解决办法](http://www.jianshu.com/p/1c9de8dea3ea)
  
 
