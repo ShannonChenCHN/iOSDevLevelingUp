@@ -1,12 +1,13 @@
-[SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3) 学习笔记
+# [SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3) 学习笔记
 
 ## 目录
-- 功能介绍
+- [简介](#简介)
    - 设计目的
    - 特性
-   - 为什么 SDWebImage 比其他框架好在哪里？
+   - SDWebImage 与其他框架的对比
    - 常见问题
    - 用法
+   - SDWebImage 4.0 迁移指南
 - 实现原理
    - 架构图
    - 流程图
@@ -17,9 +18,9 @@
 - 收获与疑问
 - 延伸阅读
 
-## 功能介绍
-### 设计目的
-### 特性
+## 一、简介
+### 1. 设计目的
+### 2. 特性
 - 提供 `UIImageView`, `UIButton`, `MKAnnotationView` 的分类，用来显示网络图片，以及缓存管理
 - 异步下载图片
 - 异步缓存（内存+磁盘），并且自动管理缓存有效性
@@ -35,34 +36,30 @@
    - 4.0 以后基于 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage)加载动图
 
 
-### [为什么 SDWebImage 比其他框架好在哪里？](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
+### 3. [SDWebImage 与其他框架的对比]
+- [How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
 
 
-### 常见问题
-1. 使用 `UITableViewCell` 中的 `imageView` 加载不同尺寸的网络图片时会出现尺寸缩放问题
-   解决：自定义 `UITableViewCell`，重写 `layoutSubviews` 方法，调整位置尺寸；或者直接弃用 `UITableViewCell` 的 `imageView`，自己添加一个
-2. 图片刷新问题：SDWebImage 在进行缓存时忽略了所有服务器返回的 caching control 设置，并且在缓存时没有做时间限制，这也就意味着图片 URL 必须是静态的了，要求服务器上一个 URL 对应的图片内容不允许更新。但是如果存储图片的服务器不由自己控制，也就是说 图片内容更新了，URL 却没有更新，这种情况怎么办？
-   解决：在调用 `sd_setImageWithURL: placeholderImage: options:`方法时设置 options 参数为 `SDWebImageRefreshCached`，这样虽然会降低性能，但是下载图片时会照顾到服务器返回的 caching control。
-3. 如何添加默认的 progress indicator？
-   解决：在调用 `sd_setImageWithURL:`方法前，先调用下面的方法：
+### 4. 常见问题
+- 问题 1：使用 `UITableViewCell` 中的 `imageView` 加载不同尺寸的网络图片时会出现尺寸缩放问题
+
+  > 解决方案：自定义 `UITableViewCell`，重写 `layoutSubviews` 方法，调整位置尺寸；或者直接弃用 `UITableViewCell` 的 `imageView`，自己添加一个
+- 问题 2：图片刷新问题：SDWebImage 在进行缓存时忽略了所有服务器返回的 caching control 设置，并且在缓存时没有做时间限制，这也就意味着图片 URL 必须是静态的了，要求服务器上一个 URL 对应的图片内容不允许更新。但是如果存储图片的服务器不由自己控制，也就是说 图片内容更新了，URL 却没有更新，这种情况怎么办？
+
+  > 解决方案：在调用 `sd_setImageWithURL: placeholderImage: options:`方法时设置 options 参数为 `SDWebImageRefreshCached`，这样虽然会降低性能，但是下载图片时会照顾到服务器返回的 caching control。
+- 问题 3：如何添加默认的 progress indicator ？
+
+  > 解决方案：在调用 `sd_setImageWithURL:`方法前，先调用下面的方法：
    ```
 	[imageView sd_setShowActivityIndicatorView:YES];
 	[imageView sd_setIndicatorStyle:UIActivityIndicatorViewStyleGray];
    ```
-   
-### [SDWebImage 4.0 迁移指南](https://github.com/rs/SDWebImage/blob/master/Docs/SDWebImage-4.0-Migration-guide.md)
 
-按照[版本号惯例(Semantic Versioning)](http://semver.org/)，从版本号可以看出 SDWebImage 4.0 是一个大版本，在结构上和 API 方面都有所改动。
-
-除了 iOS 和 tvOS 之外，SDWebImage 4.0 还支持更多的平台——watchOS 和 Max OS X。
-
-借助 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) 在动图支持上做了改进，尤其是 GIF。
-
-### 用法
-#### 1.UITableView 中使用 UIImageView+WebCache
+### 5. 用法
+#### 5.1 UITableView 中使用 UIImageView+WebCache
 `UITabelViewCell` 中的 `UIImageView` 控件直接调用 `sd_setImageWithURL: placeholderImage:`方法即可
 
-#### 2.使用回调 blocks
+#### 5.2 使用回调 blocks
 在 block 中得到图片下载进度和图片加载完成（下载完成或者读取缓存）的回调，如果你在图片加载完成前取消了请求操作，就不会收到成功或失败的回调
 ```
 	[cell.imageView sd_setImageWithURL:[NSURL URLWithString:@"http://www.domain.com/path/to/image.jpg"]
@@ -72,7 +69,7 @@
 	                             }];
 ```
 
-#### 3.SDWebImageManager 的使用
+#### 5.3 SDWebImageManager 的使用
 `UIImageView(WebCache)` 分类的核心在于 `SDWebImageManager` 的下载和缓存处理，`SDWebImageManager`将图片下载和图片缓存组合起来了。`SDWebImageManager`也可以单独使用。
 ```
 	SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -89,7 +86,7 @@
 ```
 
 
-#### 4.单独使用 SDWebImageDownloader 异步下载图片 
+#### 5.4 单独使用 SDWebImageDownloader 异步下载图片 
 我们还可以单独使用 `SDWebImageDownloader` 来下载图片，但是图片内容不会缓存。
 
 ```
@@ -106,7 +103,7 @@
 	                        }];
 ```
 
-#### 5.单独使用 SDImageCache 异步缓存图片
+#### 5.5 单独使用 SDImageCache 异步缓存图片
 `SDImageCache` 支持内存缓存和异步的磁盘缓存（可选），如果你想单独使用 `SDImageCache` 来缓存数据的话，可以使用单例，也可以创建一个有独立命名空间的 `SDImageCache` 实例。
 
 添加缓存的方法：
@@ -128,7 +125,7 @@
 ```
 
 
-#### 6.自定义缓存 key
+#### 5.6 自定义缓存 key
 有时候，一张图片的 URL 中的一部分可能是动态变化的（比如获取权限上的限制），所以我们只需要把 URL 中不变的部分作为缓存用的 key。
 
 ```
@@ -138,18 +135,25 @@
 	    };
 ```
 
+### 6. [SDWebImage 4.0 迁移指南](https://github.com/rs/SDWebImage/blob/master/Docs/SDWebImage-4.0-Migration-guide.md)
 
-## 实现原理
-### 架构图（UML 类图）
+按照[版本号惯例(Semantic Versioning)](http://semver.org/)，从版本号可以看出 SDWebImage 4.0 是一个大版本，在结构上和 API 方面都有所改动。
+
+除了 iOS 和 tvOS 之外，SDWebImage 4.0 还支持更多的平台——watchOS 和 Max OS X。
+
+借助 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) 在动图支持上做了改进，尤其是 GIF。
+
+## 二、实现原理
+### 1. 架构图（UML 类图）
  ![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
  
  
-### 流程图（方法调用顺序图）
+### 2. 流程图（方法调用顺序图）
  ![Process](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageSequenceDiagram.png)
 
-### 目录结构
+### 3. 目录结构
  
-### 主要逻辑
+### 4. 主要逻辑
  
 从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
 
@@ -177,9 +181,16 @@ SDWebImageManager
 ```
 
 
-## 实现细节
+## 三、实现细节
 
-### SDWebImageDownloader
+### 1. 设置 UIImageView 的图片——UIImageView+WebCache
+
+### 2. 图片加载管理器——SDWebImageManager
+
+### 3. 图片缓存——SDImageCache
+
+### 4. 图片下载
+### 4.1 SDWebImageDownloader
 
 **公开属性：**
 
@@ -280,7 +291,9 @@ SDWebImageManager
 7. NSURLCredential 
 
 
-### SDWebImageDownloaderOperation（继承 NSOperation，遵守 SDWebImageOperation、NSURLConnectionDataDelegate 协议）
+### 4.2 SDWebImageDownloaderOperation
+
+`SDWebImageDownloaderOperation` 继承 `NSOperation`，遵守 `SDWebImageOperation`、`NSURLConnectionDataDelegate` 协议。
 
 **公开属性：**
 
@@ -394,7 +407,9 @@ BOOL responseFromCached;
 }
 ```
 
-## 知识点
+### 5. 图片解码——SDWebImageDecoder
+
+## 四、知识点
 1. `NSOperation` 的 `start` 方法和 `cancel` 方法
 
 2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
@@ -434,12 +449,12 @@ defaultDiskCachePath: /cache/fullNamespace/MD5_filename
 默认最大缓存空间：maxCacheSize = unlimited
  
  
-## 收获与疑问
+## 五、收获与疑问
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
 2. SDWebImage 在设计上有哪些巧妙之处？
 
 
-## 延伸阅读
+## 六、延伸阅读
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
 - [SDWebImage实现分析](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)（南峰子老驴）
  
