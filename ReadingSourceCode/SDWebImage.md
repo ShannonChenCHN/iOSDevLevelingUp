@@ -20,6 +20,8 @@
 
 ## 一、简介
 ### 1. 设计目的
+`SDWebImage` 提供了 `UIImageView`、`UIButton` 、`MKAnnotationView` 的图片下载分类，只要一行代码就可以实现图片异步下载和缓存功能。这样开发者就无须花太多精力在图片下载细节上，专心处理业务逻辑。
+
 ### 2. 特性
 - 提供 `UIImageView`, `UIButton`, `MKAnnotationView` 的分类，用来显示网络图片，以及缓存管理
 - 异步下载图片
@@ -37,19 +39,22 @@
 
 
 ### 3. [SDWebImage 与其他框架的对比]
+// TODO:
 - [How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
-
+- [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)
 
 ### 4. 常见问题
 - 问题 1：使用 `UITableViewCell` 中的 `imageView` 加载不同尺寸的网络图片时会出现尺寸缩放问题
 
-  > 解决方案：自定义 `UITableViewCell`，重写 `layoutSubviews` 方法，调整位置尺寸；或者直接弃用 `UITableViewCell` 的 `imageView`，自己添加一个
-- 问题 2：图片刷新问题：SDWebImage 在进行缓存时忽略了所有服务器返回的 caching control 设置，并且在缓存时没有做时间限制，这也就意味着图片 URL 必须是静态的了，要求服务器上一个 URL 对应的图片内容不允许更新。但是如果存储图片的服务器不由自己控制，也就是说 图片内容更新了，URL 却没有更新，这种情况怎么办？
+  > 解决方案：自定义 `UITableViewCell`，重写 `-layoutSubviews` 方法，调整位置尺寸；或者直接弃用 `UITableViewCell` 的 `imageView`，自己添加一个 imageView 作为子控件。
+
+- 问题 2：图片刷新问题：`SDWebImage` 在进行缓存时忽略了所有服务器返回的 caching control 设置，并且在缓存时没有做时间限制，这也就意味着图片 URL 必须是静态的了，要求服务器上一个 URL 对应的图片内容不允许更新。但是如果存储图片的服务器不由自己控制，也就是说 图片内容更新了，URL 却没有更新，这种情况怎么办？
 
   > 解决方案：在调用 `sd_setImageWithURL: placeholderImage: options:`方法时设置 options 参数为 `SDWebImageRefreshCached`，这样虽然会降低性能，但是下载图片时会照顾到服务器返回的 caching control。
-- 问题 3：如何添加默认的 progress indicator ？
 
-  > 解决方案：在调用 `sd_setImageWithURL:`方法前，先调用下面的方法：
+- 问题 3：在加载图片时，如何添加默认的 progress indicator ？
+
+  > 解决方案：在调用 `-sd_setImageWithURL:`方法之前，先调用下面的方法：
    ```
 	[imageView sd_setShowActivityIndicatorView:YES];
 	[imageView sd_setIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -448,6 +453,8 @@ defaultDiskCachePath: /cache/fullNamespace/MD5_filename
 默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
 默认最大缓存空间：maxCacheSize = unlimited
  
+12.`MKAnnotationView` 是用来干嘛的？
+`MKAnnotationView` 是属于 `MapKit` 框架的一个类，继承自 `UIView`，是用来展示地图上的 annotation 信息的，它有一个用来设置图片的属性 `image` 。See [API Reference: MKAnnotationView](https://developer.apple.com/reference/mapkit/mkannotationview)
  
 ## 五、收获与疑问
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
