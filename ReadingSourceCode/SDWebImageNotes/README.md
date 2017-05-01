@@ -219,7 +219,7 @@
 
 ## 三、实现细节
 
-> 注：为了节省篇幅，这里使用伪代码的方式来解读，具体的阅读注解见 [ShannonChenCHN/SDWebImage-3.7.3](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes)。
+> 注：为了节省篇幅，这里使用伪代码的方式来解读，具体的阅读注解见 [ShannonChenCHN/SDWebImage-3.7.3](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes/SDWebImage-3.7.3)。
 
 ### 1. 设置 UIImageView 的图片——UIImageView+WebCache
 
