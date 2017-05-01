@@ -1,14 +1,25 @@
-[SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3)
------
-## 架构
-1.UML 类图
-![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
+[SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3) 学习笔记
 
+## 目录
+- 功能介绍
+   - 设计目的
+   - 特性
+   - 为什么 SDWebImage 比其他框架好在哪里？
+   - 常见问题
+   - 用法
+- 实现原理
+   - 架构图
+   - 流程图
+   - 目录结构
+   - 主要逻辑
+- 实现细节
+- 知识点
+- 收获与疑问
+- 延伸阅读
 
-2.方法调用顺序图
-![Process](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageSequenceDiagram.png)
-
-## 特点
+## 功能介绍
+### 设计目的
+### 特性
 - 提供 `UIImageView`, `UIButton`, `MKAnnotationView` 的分类，用来显示网络图片，以及缓存管理
 - 异步下载图片
 - 异步缓存（内存+磁盘），并且自动管理缓存有效性
@@ -19,17 +30,15 @@
 - 高性能
 - 使用 GCD 和 ARC
 - 支持多种图片格式（包括 WebP 格式）
+- 支持动图（GIF）
+   - 4.0 之前的动图效果并不是太好
+   - 4.0 以后基于 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage)加载动图
 
 
-## [为什么选择 SDWebImage？](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
+### [为什么 SDWebImage 比其他框架好在哪里？](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
 
 
-
-## 动图（GIF）支持
-- 4.0 之前的动图效果并不是太好
-- 4.0 以后基于 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage)加载动图
-
-## 常见问题
+### 常见问题
 1. 使用 `UITableViewCell` 中的 `imageView` 加载不同尺寸的网络图片时会出现尺寸缩放问题
    解决：自定义 `UITableViewCell`，重写 `layoutSubviews` 方法，调整位置尺寸；或者直接弃用 `UITableViewCell` 的 `imageView`，自己添加一个
 2. 图片刷新问题：SDWebImage 在进行缓存时忽略了所有服务器返回的 caching control 设置，并且在缓存时没有做时间限制，这也就意味着图片 URL 必须是静态的了，要求服务器上一个 URL 对应的图片内容不允许更新。但是如果存储图片的服务器不由自己控制，也就是说 图片内容更新了，URL 却没有更新，这种情况怎么办？
@@ -41,7 +50,7 @@
 	[imageView sd_setIndicatorStyle:UIActivityIndicatorViewStyleGray];
    ```
    
-## [SDWebImage 4.0 迁移指南](https://github.com/rs/SDWebImage/blob/master/Docs/SDWebImage-4.0-Migration-guide.md)
+### [SDWebImage 4.0 迁移指南](https://github.com/rs/SDWebImage/blob/master/Docs/SDWebImage-4.0-Migration-guide.md)
 
 按照[版本号惯例(Semantic Versioning)](http://semver.org/)，从版本号可以看出 SDWebImage 4.0 是一个大版本，在结构上和 API 方面都有所改动。
 
@@ -49,7 +58,7 @@
 
 借助 [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage) 在动图支持上做了改进，尤其是 GIF。
 
-## 具体使用
+### 用法
 #### 1.UITableView 中使用 UIImageView+WebCache
 `UITabelViewCell` 中的 `UIImageView` 控件直接调用 `sd_setImageWithURL: placeholderImage:`方法即可
 
@@ -130,8 +139,18 @@
 ```
 
 
-## 大致实现
+## 实现原理
+### 架构图（UML 类图）
+ ![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
+ 
+ 
+### 流程图（方法调用顺序图）
+ ![Process](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageSequenceDiagram.png)
 
+### 目录结构
+ 
+### 主要逻辑
+ 
 从 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看。
 
 UIImageView+WebCache
@@ -375,14 +394,7 @@ BOOL responseFromCached;
 }
 ```
 
-
-### 总结
-1. UIImageView 是如何通过 SDWebImage 加载图片的？
-2. SDWebImage 相比其他的库的优势在哪里？[How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
-3. SDWebImage 在设计上有哪些巧妙之处？
-4. 知识点
-
-### 问题：
+## 知识点
 1. `NSOperation` 的 `start` 方法和 `cancel` 方法
 
 2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
@@ -406,8 +418,7 @@ http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-ve
 - https://github.com/rs/SDWebImage/issues/497
 - https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
 
-7.SDWebImage 文档中的两张 Architecture 图怎么看？
-UML 图
+7.SDWebImage 文档中的两张 Architecture 图怎么看？什么是 UML 类图？
 
 
 8.SDWebImageDownloaderOperation 中是什么时候开启异步线程的？
@@ -421,8 +432,15 @@ defaultDiskCachePath: /cache/fullNamespace/MD5_filename
 11.文件的缓存有效期及最大缓存空间大小
 默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
 默认最大缓存空间：maxCacheSize = unlimited
+ 
+ 
+## 收获与疑问
+1. UIImageView 是如何通过 SDWebImage 加载图片的？
+2. SDWebImage 在设计上有哪些巧妙之处？
 
-## 解读参考
+
+## 延伸阅读
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
 - [SDWebImage实现分析](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)（南峰子老驴）
+ 
 
