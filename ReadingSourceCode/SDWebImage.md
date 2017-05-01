@@ -1,7 +1,11 @@
 [SDWebImage](https://github.com/rs/SDWebImage)(v3.7.3)
 -----
-
+## 架构
+UML 类图
 ![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
+
+
+方法调用顺序图
 ![Process](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageSequenceDiagram.png)
 
 ## 特点
