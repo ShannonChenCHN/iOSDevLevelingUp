@@ -80,12 +80,14 @@
     [_indicator startAnimating];
     __weak typeof(self) _self = self;
     
+    // TODO: 这里为什么需要用到 CATransaction？
     [CATransaction begin];
     [CATransaction setDisableActions: YES];
     self.progressLayer.hidden = YES;
     self.progressLayer.strokeEnd = 0;
     [CATransaction commit];
 
+    // 开始加载图片
     [_webImageView yy_setImageWithURL:url
                           placeholder:nil
                           options:YYWebImageOptionProgressiveBlur | YYWebImageOptionShowNetworkActivity | YYWebImageOptionSetImageWithFadeAnimation
@@ -94,7 +96,7 @@
                                   CGFloat progress = (CGFloat)receivedSize / expectedSize;
                                   progress = progress < 0 ? 0 : progress > 1 ? 1 : progress;
                                   if (_self.progressLayer.hidden) _self.progressLayer.hidden = NO;
-                                  _self.progressLayer.strokeEnd = progress;
+                                  _self.progressLayer.strokeEnd = progress; // MARK: 利用 CALayer 来绘制进度条
                               }
                           }
                           transform:nil

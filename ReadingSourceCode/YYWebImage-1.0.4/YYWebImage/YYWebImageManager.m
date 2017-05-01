@@ -82,6 +82,7 @@ static UIApplication *_YYSharedApplication() {
                                    transform:(YYWebImageTransformBlock)transform
                                   completion:(YYWebImageCompletionBlock)completion {
     
+    // 创建 request
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.timeoutInterval = _timeout;
     request.HTTPShouldHandleCookies = (options & YYWebImageOptionHandleCookies) != 0;
@@ -90,6 +91,7 @@ static UIApplication *_YYSharedApplication() {
     request.cachePolicy = (options & YYWebImageOptionUseNSURLCache) ?
         NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
     
+    // 创建 YYWebImageOperation
     YYWebImageOperation *operation = [[YYWebImageOperation alloc] initWithRequest:request
                                                                           options:options
                                                                             cache:_cache
@@ -98,9 +100,12 @@ static UIApplication *_YYSharedApplication() {
                                                                         transform:transform ? transform : _sharedTransformBlock
                                                                        completion:completion];
 
+    // 设置请求认证
     if (_username && _password) {
         operation.credential = [NSURLCredential credentialWithUser:_username password:_password persistence:NSURLCredentialPersistenceForSession];
     }
+    
+    // 开启任务
     if (operation) {
         NSOperationQueue *queue = _queue;
         if (queue) {

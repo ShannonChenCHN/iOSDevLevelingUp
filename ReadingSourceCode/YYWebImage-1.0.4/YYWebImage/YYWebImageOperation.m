@@ -188,7 +188,7 @@ static void URLInBlackListAdd(NSURL *url) {
 @synthesize cancelled = _cancelled;
 
 /// Network thread entry point.
-+ (void)_networkThreadMain:(id)object {
++ (void)_networkThreadMain:(id)object { // TODO: 开启一个 runloop
     @autoreleasepool {
         [[NSThread currentThread] setName:@"com.ibireme.webimage.request"];
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -314,11 +314,15 @@ static void URLInBlackListAdd(NSURL *url) {
 // runs on network thread
 - (void)_startOperation {
     if ([self isCancelled]) return;
-    @autoreleasepool {
+    
+    @autoreleasepool { // 创建 autorelease pool
+        
         // get image from cache
         if (_cache &&
             !(_options & YYWebImageOptionUseNSURLCache) &&
             !(_options & YYWebImageOptionRefreshImageCache)) {
+            
+            // 读取内存缓存
             UIImage *image = [_cache getImageForKey:_cacheKey withType:YYImageCacheTypeMemory];
             if (image) {
                 [_lock lock];
@@ -329,16 +333,23 @@ static void URLInBlackListAdd(NSURL *url) {
                 [_lock unlock];
                 return;
             }
+            
+            // 读取磁盘缓存
             if (!(_options & YYWebImageOptionIgnoreDiskCache)) {
-                __weak typeof(self) _self = self;
-                dispatch_async([self.class _imageQueue], ^{
-                    __strong typeof(_self) self = _self;
+                __weak typeof(self) _self = self; // TODO: 这里为什么要用 weak self ？
+                dispatch_async([self.class _imageQueue], ^{ // 开启异步队列
+                    __strong typeof(_self) self = _self; // weak-strong dance
                     if (!self || [self isCancelled]) return;
                     UIImage *image = [self.cache getImageForKey:self.cacheKey withType:YYImageCacheTypeDisk];
                     if (image) {
+                        // 设置内存缓存
                         [self.cache setImage:image imageData:nil forKey:self.cacheKey withType:YYImageCacheTypeMemory];
+                        
+                        // 处理回调
                         [self performSelector:@selector(_didReceiveImageFromDiskCache:) onThread:[self.class _networkThread] withObject:image waitUntilDone:NO];
                     } else {
+                        
+                        // 网络请求
                         [self performSelector:@selector(_startRequest:) onThread:[self.class _networkThread] withObject:nil waitUntilDone:NO];
                     }
                 });
@@ -346,6 +357,7 @@ static void URLInBlackListAdd(NSURL *url) {
             }
         }
     }
+    // 网络请求
     [self performSelector:@selector(_startRequest:) onThread:[self.class _networkThread] withObject:nil waitUntilDone:NO];
 }
 
@@ -353,6 +365,7 @@ static void URLInBlackListAdd(NSURL *url) {
 - (void)_startRequest:(id)object {
     if ([self isCancelled]) return;
     @autoreleasepool {
+        // 检查是否是下载失败过的图片 url
         if ((_options & YYWebImageOptionIgnoreFailedURL) && URLBlackListContains(_request.URL)) {
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:@{ NSLocalizedDescriptionKey : @"Failed to load URL, blacklisted." }];
             [_lock lock];
@@ -364,6 +377,7 @@ static void URLInBlackListAdd(NSURL *url) {
             return;
         }
         
+        // 文件路径 URL
         if (_request.URL.isFileURL) {
             NSArray *keys = @[NSURLFileSizeKey];
             NSDictionary *attr = [_request.URL resourceValuesForKeys:keys error:nil];
@@ -371,10 +385,13 @@ static void URLInBlackListAdd(NSURL *url) {
             _expectedSize = fileSize ? fileSize.unsignedIntegerValue : -1;
         }
         
+        // 创建 NSURLConnection，发起网络请求
         // request image from web
         [_lock lock];
         if (![self isCancelled]) {
             _connection = [[NSURLConnection alloc] initWithRequest:_request delegate:[_YYWebImageWeakProxy proxyWithTarget:self]];
+            
+            // 设置是否在状态栏上显示网络请求状态指示器
             if (![_request.URL isFileURL] && (_options & YYWebImageOptionShowNetworkActivity)) {
                 [YYWebImageManager incrementNetworkActivityCount];
             }
@@ -404,7 +421,7 @@ static void URLInBlackListAdd(NSURL *url) {
     @autoreleasepool {
         [_lock lock];
         if (![self isCancelled]) {
-            if (image) {
+            if (image) { // 这里为什么又判断图片有没有？
                 if (_completion) _completion(image, _request.URL, YYWebImageFromDiskCache, YYWebImageStageFinished, nil);
                 [self _finish];
             } else {
@@ -522,6 +539,8 @@ static void URLInBlackListAdd(NSURL *url) {
         if (canceled) return;
         
         if (data) [_data appendData:data];
+        
+        // progress 回调
         if (_progress) {
             [_lock lock];
             if (![self isCancelled]) {
@@ -628,6 +647,7 @@ static void URLInBlackListAdd(NSURL *url) {
             }
             image = [image yy_imageByBlurRadius:radius tintColor:nil tintMode:0 saturation:1 maskImage:nil];
             
+            // completion 回调，实现 progress loading
             if (image) {
                 [_lock lock];
                 if (![self isCancelled]) {
@@ -654,13 +674,13 @@ static void URLInBlackListAdd(NSURL *url) {
                 BOOL allowAnimation = (self.options & YYWebImageOptionIgnoreAnimatedImage) == 0;
                 UIImage *image;
                 BOOL hasAnimation = NO;
-                if (allowAnimation) {
+                if (allowAnimation) { // 非动图
                     image = [[YYImage alloc] initWithData:self.data scale:[UIScreen mainScreen].scale];
                     if (shouldDecode) image = [image yy_imageByDecoded];
                     if ([((YYImage *)image) animatedImageFrameCount] > 1) {
                         hasAnimation = YES;
                     }
-                } else {
+                } else { // 动图
                     YYImageDecoder *decoder = [YYImageDecoder decoderWithData:self.data scale:[UIScreen mainScreen].scale];
                     image = [decoder frameAtIndex:0 decodeForDisplay:shouldDecode].image;
                 }
@@ -738,22 +758,25 @@ static void URLInBlackListAdd(NSURL *url) {
 #pragma mark - Override NSOperation
 
 - (void)start {
-    @autoreleasepool {
+    @autoreleasepool { // 为什么要创建 autorelease pool
         [_lock lock];
         self.started = YES;
-        if ([self isCancelled]) {
+        if ([self isCancelled]) { // operation 被取消了
             [self performSelector:@selector(_cancelOperation) onThread:[[self class] _networkThread] withObject:nil waitUntilDone:NO modes:@[NSDefaultRunLoopMode]];
             self.finished = YES;
         } else if ([self isReady] && ![self isFinished] && ![self isExecuting]) {
-            if (!_request) {
+            if (!_request) { // request 为 nil
                 self.finished = YES;
                 if (_completion) {
                     NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:@{NSLocalizedDescriptionKey:@"request in nil"}];
                     _completion(nil, _request.URL, YYWebImageFromNone, YYWebImageStageFinished, error);
                 }
             } else {
+                // 开启 operation
                 self.executing = YES;
                 [self performSelector:@selector(_startOperation) onThread:[[self class] _networkThread] withObject:nil waitUntilDone:NO modes:@[NSDefaultRunLoopMode]];
+                
+                // 后台任务
                 if ((_options & YYWebImageOptionAllowBackgroundTask) && _YYSharedApplication()) {
                     __weak __typeof__ (self) _self = self;
                     if (_taskID == UIBackgroundTaskInvalid) {

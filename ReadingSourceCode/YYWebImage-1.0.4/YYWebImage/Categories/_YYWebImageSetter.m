@@ -27,7 +27,7 @@ const NSTimeInterval _YYWebImageProgressiveFadeTime = 0.4;
 
 - (instancetype)init {
     self = [super init];
-    _lock = dispatch_semaphore_create(1);
+    _lock = dispatch_semaphore_create(1); // 初始值为 1
     return self;
 }
 
@@ -50,18 +50,23 @@ const NSTimeInterval _YYWebImageProgressiveFadeTime = 0.4;
                            progress:(YYWebImageProgressBlock)progress
                           transform:(YYWebImageTransformBlock)transform
                          completion:(YYWebImageCompletionBlock)completion {
+    // MARK：这里为什么要判断是否被取消？
     if (sentinel != _sentinel) {
         if (completion) completion(nil, imageURL, YYWebImageFromNone, YYWebImageStageCancelled, nil);
         return _sentinel;
     }
     
+    // 将图片请求任务交给 YYWebImageManager
     NSOperation *operation = [manager requestImageWithURL:imageURL options:options progress:progress transform:transform completion:completion];
+    
+    // operation 创建失败，回调 completion
     if (!operation && completion) {
         NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"YYWebImageOperation create failed." };
         completion(nil, imageURL, YYWebImageFromNone, YYWebImageStageFinished, [NSError errorWithDomain:@"com.ibireme.webimage" code:-1 userInfo:userInfo]);
     }
     
-    dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER);
+    // MARK：防止资源竞争
+    dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER); // 一直等待，直到 semaphore 计数值大于或等于 1 时或者等待超时；并且等待结束时，会将 semaphore 计数值减 1
     if (sentinel == _sentinel) {
         if (_operation) [_operation cancel];
         _operation = operation;
@@ -69,7 +74,7 @@ const NSTimeInterval _YYWebImageProgressiveFadeTime = 0.4;
     } else {
         [operation cancel];
     }
-    dispatch_semaphore_signal(_lock);
+    dispatch_semaphore_signal(_lock); // 排他控制结束，semaphore 计数值加 1
     return sentinel;
 }
 

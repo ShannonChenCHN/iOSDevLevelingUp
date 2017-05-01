@@ -99,14 +99,18 @@ static int _YYWebImageHighlightedSetterKey;
     if ([imageURL isKindOfClass:[NSString class]]) imageURL = [NSURL URLWithString:(id)imageURL];
     manager = manager ? manager : [YYWebImageManager sharedManager];
     
+    // 获取 _YYWebImageSetter
     _YYWebImageSetter *setter = objc_getAssociatedObject(self, &_YYWebImageSetterKey);
     if (!setter) {
         setter = [_YYWebImageSetter new];
         objc_setAssociatedObject(self, &_YYWebImageSetterKey, setter, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
+    
+    // 取消 imageView 当前的加载，返回状态标记
     int32_t sentinel = [setter cancelWithNewURL:imageURL];
     
     _yy_dispatch_sync_on_main_queue(^{
+        // 先移除原来的动画
         if ((options & YYWebImageOptionSetImageWithFadeAnimation) &&
             !(options & YYWebImageOptionAvoidSetImage)) {
             if (!self.highlighted) {
@@ -114,6 +118,8 @@ static int _YYWebImageHighlightedSetterKey;
             }
         }
         
+        // 图片 URL 为空，设置占位图，再 return
+        // MARK: 为什么没有回调？
         if (!imageURL) {
             if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
                 self.image = placeholder;
@@ -121,6 +127,8 @@ static int _YYWebImageHighlightedSetterKey;
             return;
         }
         
+        // 【快速】读取内存缓存，如果有缓存，就直接回调、return了
+        // MARK: 为什么 YYWebImage 读取的缓存策略跟 SDWebImage 不一样呢？
         // get the image from memory as quickly as possible
         UIImage *imageFromMemory = nil;
         if (manager.cache &&
@@ -136,12 +144,14 @@ static int _YYWebImageHighlightedSetterKey;
             return;
         }
         
+        // 下载前设置占位图
         if (!(options & YYWebImageOptionIgnorePlaceHolder)) {
             self.image = placeholder;
         }
         
         __weak typeof(self) _self = self;
-        dispatch_async([_YYWebImageSetter setterQueue], ^{
+        dispatch_async([_YYWebImageSetter setterQueue], ^{ // 创建队列 serial queue， 开启异步任务
+            // progress block 回调
             YYWebImageProgressBlock _progress = nil;
             if (progress) _progress = ^(NSInteger receivedSize, NSInteger expectedSize) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -149,14 +159,21 @@ static int _YYWebImageHighlightedSetterKey;
                 });
             };
             
-            __block int32_t newSentinel = 0;
-            __block __weak typeof(setter) weakSetter = nil;
+            // completion block 回调
+            __block int32_t newSentinel = 0; // 初始时为 0
+            __block __weak typeof(setter) weakSetter = nil;  // MARK: 同时加了 __block 和 __weak 时，block 内部实现是什么样的？
             YYWebImageCompletionBlock _completion = ^(UIImage *image, NSURL *url, YYWebImageFromType from, YYWebImageStage stage, NSError *error) {
-                __strong typeof(_self) self = _self;
+                __strong typeof(_self) self = _self; // MARK: weak-strong dance
+                
                 BOOL setImage = (stage == YYWebImageStageFinished || stage == YYWebImageStageProgress) && image && !(options & YYWebImageOptionAvoidSetImage);
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    BOOL sentinelChanged = weakSetter && weakSetter.sentinel != newSentinel;
+                    BOOL sentinelChanged = weakSetter && weakSetter.sentinel != newSentinel; // TODO: 为什么这里要比较 sentinel 和 newSentinel？是用来判断是否取消的？
+                    
+                    // 如果需要设置图片，self 没被销毁，sentinel 标记也没有改变（也就是任务没有被取消）的话，就设置图片
                     if (setImage && self && !sentinelChanged) {
+                        
+                        // 过渡动画
                         BOOL showFade = ((options & YYWebImageOptionSetImageWithFadeAnimation) && !self.highlighted);
                         if (showFade) {
                             CATransition *transition = [CATransition animation];
@@ -165,10 +182,14 @@ static int _YYWebImageHighlightedSetterKey;
                             transition.type = kCATransitionFade;
                             [self.layer addAnimation:transition forKey:_YYWebImageFadeAnimationKey];
                         }
+                        
+                        // 设置图片
                         self.image = image;
                     }
+                    
+                    // completion block 的回调
                     if (completion) {
-                        if (sentinelChanged) {
+                        if (sentinelChanged) { // 被取消了
                             completion(nil, url, YYWebImageFromNone, YYWebImageStageCancelled, nil);
                         } else {
                             completion(image, url, from, stage, error);
@@ -177,8 +198,9 @@ static int _YYWebImageHighlightedSetterKey;
                 });
             };
             
+            // 开启一个加载任务
             newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options manager:manager progress:_progress transform:transform completion:_completion];
-            weakSetter = setter;
+            weakSetter = setter; // TODO：这里为什么要将 setter 赋值给 weakSetter？？？
         });
     });
 }
