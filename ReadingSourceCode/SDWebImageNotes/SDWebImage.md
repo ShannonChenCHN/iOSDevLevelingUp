@@ -39,7 +39,6 @@
 
 
 ### 3. [SDWebImage 与其他框架的对比]
-// TODO:
 - [How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
 - [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)
 
@@ -150,11 +149,11 @@
 
 ## 二、实现原理
 ### 1. 架构图（UML 类图）
- ![Architecture](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageClassDiagram.png)
+ ![Architecture](./src/SDWebImageClassDiagram.png)
  
  
 ### 2. 流程图（方法调用顺序图）
- ![Process](https://raw.githubusercontent.com/rs/SDWebImage/master/Docs/SDWebImageSequenceDiagram.png)
+ ![Process](./src/SDWebImageSequenceDiagram.png)
 
 ### 3. 目录结构
  
