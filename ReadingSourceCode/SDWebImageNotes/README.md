@@ -39,7 +39,7 @@
 
 > 注：本文选读的代码是 3.7.3 版本的，所以动图加载还不支持 `FLAnimatedImage`。
 
-### 3. [SDWebImage 与其他框架的对比]
+### 3. SDWebImage 与其他框架的对比
 - [How is SDWebImage better than X?](https://github.com/rs/SDWebImage/wiki/How-is-SDWebImage-better-than-X%3F)
 - [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)
 
@@ -448,52 +448,57 @@ BOOL responseFromCached;
 ### 5. 图片解码——SDWebImageDecoder
 
 ## 四、知识点
-1.`NSOperation` 的 `start` 方法和 `cancel` 方法
+1. `NSOperation` 的 `start` 方法和 `cancel` 方法
 
-2.`TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
-这两个宏都是用于**编译时**进行 SDK 版本适配的宏，主要用于模拟器上的调试，而针对真机上的 iOS 版本适配就需要采用**运行时**的判断方式了，比如使用 respondsToSelector: 方法来判断当前运行环境是否支持该方法的调用。
-参考：http://stackoverflow.com/questions/3269344/what-is-difference-between-these-2-macros/3269562#3269562
+2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
+这两个宏都是用于**编译时**进行 SDK 版本适配的宏，主要用于模拟器上的调试，而针对真机上的 iOS 版本适配就需要采用**运行时**的判断方式了，比如使用 respondsToSelector: 方法来判断当前运行环境是否支持该方法的调用。       
+   
+   参考：http://stackoverflow.com/questions/3269344/what-is-difference-between-these-2-macros/3269562#3269562
 http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iphone-os-version-max-allowed
 
-3.`typeof` 和 `__typeof`，`__typeof__` 的区别
-http://stackoverflow.com/questions/14877415/difference-between-typeof-typeof-and-typeof-objective-c
+3. `typeof` 和 `__typeof`，`__typeof__` 的区别       
+   
+   参考：http://stackoverflow.com/questions/14877415/difference-between-typeof-typeof-and-typeof-objective-c
 
-4.使用 `-[UIApplication beginBackgroundTaskWithExpirationHandler:]` 方法在 app 后台执行任务
+4. 使用 `-[UIApplication beginBackgroundTaskWithExpirationHandler:]` 方法在 app 后台执行任务
 
-5.`NSFoundationVersionNumber` 的使用
-http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-versions
+5. `NSFoundationVersionNumber` 的使用         
+   
+   参考：http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-versions
 
-6.`-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？
+6. `-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？       
+  
+  参考：
+  - http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
+  - http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
+  - http://blog.ibireme.com/2015/05/18/runloop/
+  - https://github.com/rs/SDWebImage/issues/497
+  - https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
 
-参考：
-- http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
-- http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
-- http://blog.ibireme.com/2015/05/18/runloop/
-- https://github.com/rs/SDWebImage/issues/497
-- https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
+7. `SDWebImage` 文档中的两张 Architecture 图怎么看？什么是 UML 类图？
 
-7.SDWebImage 文档中的两张 Architecture 图怎么看？什么是 UML 类图？
+8. `SDWebImageDownloaderOperation` 中是什么时候开启异步线程的？
 
-8.SDWebImageDownloaderOperation 中是什么时候开启异步线程的？
+9. `NSURLConnection` 的几个代理方法分别在什么时候调用？
 
-9.NSURLConnection 的几个代理方法分别在什么时候调用？
+10. `SDWebImage` 的缓存路径？      
+    
+    从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出 `defaultDiskCachePath` 是 `/cache/fullNamespace/MD5_filename`
 
-10.SDWebImage 的缓存路径？
-
-从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出 `defaultDiskCachePath` 是 `/cache/fullNamespace/MD5_filename`
-
-11.文件的缓存有效期及最大缓存空间大小
-- 默认有效期：maxCacheAge = 60 * 60 * 24 * 7; // 1 week
-- 默认最大缓存空间：maxCacheSize = unlimited
+11. 文件的缓存有效期及最大缓存空间大小
+    
+    - 默认有效期：```maxCacheAge = 60 * 60 * 24 * 7; // 1 week```
+    - 默认最大缓存空间：```maxCacheSize = <#unlimited#>```
  
-12.`MKAnnotationView` 是用来干嘛的？
-`MKAnnotationView` 是属于 `MapKit` 框架的一个类，继承自 `UIView`，是用来展示地图上的 annotation 信息的，它有一个用来设置图片的属性 `image` 。See [API Reference: MKAnnotationView](https://developer.apple.com/reference/mapkit/mkannotationview)
+12. `MKAnnotationView` 是用来干嘛的？     
+    `MKAnnotationView` 是属于 `MapKit` 框架的一个类，继承自 `UIView`，是用来展示地图上的 annotation 信息的，它有一个用来设置图片的属性 `image` 。    
+    See [API Reference: MKAnnotationView](https://developer.apple.com/reference/mapkit/mkannotationview)
 
-13.图片下载完成后，为什么需要用 `SDWebImageDecoder` 进行解码？
+13. 图片下载完成后，为什么需要用 `SDWebImageDecoder` 进行解码？
 
-14.`SDWebImage` 中图片缓存的 key 是按照什么规则取的？
+14. `SDWebImage` 中图片缓存的 key 是按照什么规则取的？
 
-15.`SDImageCache` 清除磁盘缓存的过程？
+15. `SDImageCache` 清除磁盘缓存的过程？
  
 ## 五、收获与疑问
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
