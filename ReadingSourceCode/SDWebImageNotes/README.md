@@ -199,6 +199,8 @@
  
 下载 [Source code(3.7.3)](https://github.com/rs/SDWebImage/archive/3.7.3.zip)，运行 `pod install`，然后打开 `SDWebImage.xcworkspace`，先 run 起来感受一下。
 
+在了解细节之前我们先大概浏览一遍主流程，也就是最核心的逻辑。
+
 我们从 `MasterViewController` 中的 `[cell.imageView sd_setImageWithURL:url placeholderImage:placeholderImage];` 开始看起。
 
 经过层层调用，直到 `UIImageView+WebCache` 中最核心的方法 `sd_setImageWithURL: placeholderImage: options: progress: completed:`。该方法中，主要做了以下几件事：
@@ -221,85 +223,118 @@
 
 > 注：为了节省篇幅，这里使用伪代码的方式来解读，具体的阅读注解见 [ShannonChenCHN/SDWebImage-3.7.3](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes/SDWebImage-3.7.3)。
 
-### 1. 设置 UIImageView 的图片——UIImageView+WebCache
+从上面的核心逻辑分析可以看出，`SDWebImage` 最核心的功能也就是以下 4 件事：   
 
-### 2. 图片加载管理器——SDWebImageManager
+- 下载（`SDWebImageDownloader `）
+- 缓存（`SDImageCache`）
+- 将缓存和下载的功能结合起来（`SDWebImageManager`）
+- 封装成 UIImageView 等类的分类方法（`UIImageView+WebCache` 等）
 
-### 3. 图片缓存——SDImageCache
+### 1. 图片下载
+### 1.1 SDWebImageDownloader
 
-### 4. 图片下载
-### 4.1 SDWebImageDownloader
+`SDWebImageDownloader` 继承于 `NSObject`，主要承担了异步下载图片和优化图片加载的任务。
+
+**枚举定义**
+```
+// 下载选项
+typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) {
+	 SDWebImageDownloaderLowPriority = 1 << 0,
+    SDWebImageDownloaderProgressiveDownload = 1 << 1,
+    SDWebImageDownloaderUseNSURLCache = 1 << 2,
+    SDWebImageDownloaderIgnoreCachedResponse = 1 << 3,
+    SDWebImageDownloaderContinueInBackground = 1 << 4,
+    SDWebImageDownloaderHandleCookies = 1 << 5,
+    SDWebImageDownloaderAllowInvalidSSLCertificates = 1 << 6,
+    SDWebImageDownloaderHighPriority = 1 << 7,
+};
+
+// 下载任务执行顺序
+typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
+    SDWebImageDownloaderFIFOExecutionOrder, // 先进先出
+    SDWebImageDownloaderLIFOExecutionOrder  // 后进先出
+};
+```
 
 **公开属性：**
+```
+@property (assign, nonatomic) BOOL shouldDecompressImages;  // 下载完成后是否需要解压缩图片，默认为 YES
+@property (assign, nonatomic) NSInteger maxConcurrentDownloads;
+@property (readonly, nonatomic) NSUInteger currentDownloadCount;
+@property (assign, nonatomic) NSTimeInterval downloadTimeout;
+@property (assign, nonatomic) SDWebImageDownloaderExecutionOrder executionOrder;
+@property (strong, nonatomic) NSString *username;
+@property (strong, nonatomic) NSString *password;
+@property (nonatomic, copy) SDWebImageDownloaderHeadersFilterBlock headersFilter;
+```
 
 **内部属性：**
+```
+@property (strong, nonatomic) NSOperationQueue *downloadQueue; // 图片下载任务是放在这个 NSOperationQueue 任务队列中来管理的
+@property (weak, nonatomic) NSOperation *lastAddedOperation;
+@property (assign, nonatomic) Class operationClass;
+@property (strong, nonatomic) NSMutableDictionary *HTTPHeaders;
+@property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t barrierQueue;
+@property (strong, nonatomic) NSMutableDictionary *URLCallbacks; // 图片下载的回调 block 都是存储在这个属性中，该属性是一个字典，key 是图片的 URL，value 是一个数组，包含每个图片的多组回调信息。用 JSON 格式表示的话，就是下面这种格式。
+{
+	url1 : [
+			{
+			kProgressCallbackKey : progressCallback1,
+			kCompletedCallbackKey : completedCallback1
+			},
+			{
+			kProgressCallbackKey : progressCallback2,
+			kCompletedCallbackKey : completedCallback2
+			}
+			],
+	url2 : [
+			{
+			kProgressCallbackKey : progressCallback1,
+			kCompletedCallbackKey : completedCallback1
+			}
+			]
 
-**方法的调用：**
-- 调用 `+ [SDWebImageDownloader sharedDownloader]` 方法获取单例
-- 调用 `- [SDWebImageDownloader downloadImageWithURL: options: progress: completed:]` 方法开启下载
-     - 调用 `- [SDWebImageDownloader addProgressCallback: andCompletedBlock: forURL: createCallback: ]` 方法
-		- 调用 `- [SDWebImageDownloaderOperation initWithRequest: options: progress:]` 方法
+}
 
+```
 
+**方法的实现：**
 
+先看看 `+initialize` 方法，这个方法中主要是通过注册通知 让`SDNetworkActivityIndicator` 监听下载事件，来显示和隐藏状态栏上的 network activity indicator。为了让 `SDNetworkActivityIndicator` 文件可以不用导入项目中来（如果不要的话），这里使用了 runtime 的方式来实现动态创建类以及调用方法。
+
+```
++ (void)initialize {
+	if (NSClassFromString(@"SDNetworkActivityIndicator")) {
+		id activityIndicator = [NSClassFromString(@"SDNetworkActivityIndicator") performSelector:NSSelectorFromString(@"sharedActivityIndicator")];
+		
+		# 先移除通知观察者 SDNetworkActivityIndicator
+		# 再添加通知观察者 SDNetworkActivityIndicator
+	}
+}
+```
+
+`+sharedDownloader` 方法中调用了 `-init` 方法来创建一个单例，`-init`方法中做了一些初始化设置和默认值设置，包括设置最大并发数（6）、下载超时时长（15s）等。
 ```
 - (id)init {
 	#设置下载 operation 的默认执行顺序（先进先出还是先进后出）
 	#初始化 _downloadQueue（下载队列），_URLCallbacks（下载回调 block 的容器），_barrierQueue（GCD 队列）
-	#设置 _downloadQueue 的最大并发数
-	#设置 _HTTPHeaders 初始值 Accept : image/webp,image/*;q=0.8
+	#设置 _downloadQueue 的队列最大并发数默认值为 6
+	#设置 _HTTPHeaders 默认值 
 	#设置默认下载超时时长 15s 
+	...
 }
 
 ```
 
+这个类中最核心的方法就是 `- downloadImageWithURL: options: progress: completed:` 方法，这个方法中首先通过调用 `-addProgressCallback: andCompletedBlock: forURL: createCallback:` 方法来保存每个 url 对应的回调 block，`-addProgressCallback: ...` 方法先进行错误检查，判断 URL 是否为空，然后再将 URL 对应的 `progressBlock` 和 `completedBlock` 保存到 `URLCallbacks ` 属性中去。
 
-
-```
-
-- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url options:(SDWebImageDownloaderOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageDownloaderCompletedBlock)completedBlock {
-	 #1. 调用 - [SDWebImageDownloader addProgressCallback: andCompletedBlock: forURL: createCallback: ] 方法，直接把入参 url、progressBlock 和 completedBlock 传进该方法，并在回调 block 中
-		## createCallback 的回调处理：{
-		  1.1 计算超时时长 downloadTimeout（默认 15s）
-	   		  1.2 创建下载 request ，设置 request 的 cachePolicy、HTTPShouldHandleCookies、HTTPShouldUsePipelining，以及 allHTTPHeaderFields（这个属性交由外面处理，设计的比较巧妙）
-		  1.3 创建 SDWebImageDownloaderOperation（继承自 NSOperation）
-		      ### SDWebImageDownloaderOperation 的 progressBlock 回调处理 {
-		      		  （这个 block 有两个回调参数：接收到的数据大小和预计数据大小）
-		      	 	  这里用了 weak-strong dance
-		      	 	  首先使用 strongSelf 强引用 weakSelf，目的是为了保住 self 不被释放  
-		      	 	  然后检查 self 是否已经被释放（这里为什么先“保活”后“判空”呢？因为如果先判空的话，有可能判空后 self 就被释放了）
-		      	 	  取出 url 对应的回调 block 数组（这里取的时候有些讲究，考虑了多线程问题，而且取的是 copy 的内容）
-		      	 	  遍历数组，从每个元素（字典）中取出 progressBlock 进行回调 	  
-		      	   }
-		      ### SDWebImageDownloaderOperation 的 completedBlock 回调处理 {
-		      		   （这个 block 有四个回调参数：图片 UIImage，图片数据 NSData，错误 NSError，是否结束 isFinished）
-		      		   同样，这里也用了 weak-strong dance
-		      		   接着，取出 url 对应的回调 block 数组
-		      		   如果结束了（isFinished），就移除 url 对应的回调 block 数组（移除的时候也要考虑多线程问题）
-		      		   遍历数组，从每个元素（字典）中取出 completedBlock 进行回调 
-		      }
-		      ### SDWebImageDownloaderOperation 的 cancelBlock 回调处理 {
-		      		   同样，这里也用了 weak-strong dance
-		      		   然后移除 url 对应的所有回调 block
-		      }
-		  1.4 如果设置了 username 和 password，就给 operation 的下载请求设置一个 NSURLCredential  
-		  1.5 设置 operation 的队列优先级
-		  1.6 将 operation 加入到队列 downloadQueue 中，队列（NSOperationQueue）会自动管理 operation 的执行
-		  1.7 如果 operation 执行顺序是先进后出，就设置 operation 依赖关系（先加入的依赖于后加入的），并记录最后一个 operation（lastAddedOperation）
-		}
-
-	 #2. 返回 createCallback 中创建的 operation（SDWebImageDownloaderOperation）
-}
-
-
-
-```
+这里有个细节需要注意，因为可能同时下载多张图片，所以就可能出现多个线程同时访问 `URLCallbacks` 属性的情况。为了保证线程安全，所以这里使用了 `dispatch_barrier_sync` 来分步执行添加到 `barrierQueue` 中的任务，这样就能保证同一时间只有一个线程能对 `URLCallbacks` 进行操作。
 
 ``` 
 - (void)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock andCompletedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock forURL:(NSURL *)url createCallback:(SDWebImageNoParamsBlock)createCallback {
 	#1. 判断 url 是否为 nil，如果为 nil 则直接回调 completedBlock，返回失败的结果，然后 return，因为 url 会作为存储 callbacks 的 key
 	
-	#2. 处理同一个 URL 的多次下载请求（MARK: 这里为什么用了 dispatch_barrier_sync 函数)：
+	#2. 处理同一个 URL 的多次下载请求（MARK: 使用 dispatch_barrier_sync 函数来保证同一时间只有一个线程能对 URLCallbacks 进行操作)：
 	  ## 从属性 URLCallbacks(一个字典) 中取出对应 url 的 callBacksForURL(这是一个数组，因为可能一个 url 不止在一个地方下载)
 	  ## 如果没有取到，也就意味着这个 url 是第一次下载，那就初始化一个 callBacksForURL 放到属性 URLCallbacks 中
 	  ## 往数组 callBacksForURL 中添加 包装有 callbacks（progressBlock 和 completedBlock）的字典
@@ -312,8 +347,54 @@
 
 ```
 
+如果这个 URL 是第一次被下载，就要回调 `createCallback`，`createCallback` 主要做的就是创建并开启下载任务，下面是 `createCallback` 的具体实现逻辑：
 
-问题：
+
+```
+
+- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url options:(SDWebImageDownloaderOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageDownloaderCompletedBlock)completedBlock {
+	 #1. 调用 - [SDWebImageDownloader addProgressCallback: andCompletedBlock: forURL: createCallback: ] 方法，直接把入参 url、progressBlock 和 completedBlock 传进该方法，并在第一次下载该 URL 时回调 createCallback
+	 
+		## createCallback 的回调处理：{
+		  1.1 创建下载 request ，设置 request 的 cachePolicy、HTTPShouldHandleCookies、HTTPShouldUsePipelining，以及 allHTTPHeaderFields（这个属性交由外面处理，设计的比较巧妙）
+
+		  1.2 创建 SDWebImageDownloaderOperation（继承自 NSOperation）
+
+		      ### 1.2.1 SDWebImageDownloaderOperation 的 progressBlock 回调处理 {
+		      		  （这个 block 有两个回调参数：接收到的数据大小和预计数据大小）
+		      	 	  这里用了 weak-strong dance
+		      	 	  首先使用 strongSelf 强引用 weakSelf，目的是为了保住 self 不被释放  
+		      	 	  然后检查 self 是否已经被释放（这里为什么先“保活”后“判空”呢？因为如果先判空的话，有可能判空后 self 就被释放了）
+		      	 	  取出 url 对应的回调 block 数组（这里取的时候有些讲究，考虑了多线程问题，而且取的是 copy 的内容）
+		      	 	  遍历数组，从每个元素（字典）中取出 progressBlock 进行回调 	  
+		      	   }
+		      ### 1.2.2 SDWebImageDownloaderOperation 的 completedBlock 回调处理 {
+		      		   （这个 block 有四个回调参数：图片 UIImage，图片数据 NSData，错误 NSError，是否结束 isFinished）
+		      		   同样，这里也用了 weak-strong dance
+		      		   接着，取出 url 对应的回调 block 数组
+		      		   如果结束了（isFinished），就移除 url 对应的回调 block 数组（移除的时候也要考虑多线程问题）
+		      		   遍历数组，从每个元素（字典）中取出 completedBlock 进行回调 
+		      }
+		      ### SDWebImageDownloaderOperation 的 cancelBlock 回调处理 {
+		      		   同样，这里也用了 weak-strong dance
+		      		   然后移除 url 对应的所有回调 block
+		      }
+		  1.3 设置下载完成后是否需要解压缩
+		  1.4 如果设置了 username 和 password，就给 operation 的下载请求设置一个 NSURLCredential  
+		  1.5 设置 operation 的队列优先级
+		  1.6 将 operation 加入到队列 downloadQueue 中，队列（NSOperationQueue）会自动管理 operation 的执行
+		  1.7 如果 operation 执行顺序是先进后出，就设置 operation 依赖关系（先加入的依赖于后加入的），并记录最后一个 operation（lastAddedOperation）
+		}
+
+	 #2. 返回 createCallback 中创建的 operation（SDWebImageDownloaderOperation）
+}
+
+```
+
+`createCallback` 方法中调用了 `- [SDWebImageDownloaderOperation initWithRequest: options: progress:]` 方法来创建下载任务 `SDWebImageDownloaderOperation`。那么，这个 `SDWebImageDownloaderOperation ` 类究竟是干什么的呢？下一节再看。
+
+
+**知识点**：
 1. SDWebImageDownloaderOptions 枚举使用了位运算
    应用：通过“与”运算符，可以判断是否设置了某个枚举选项，因为每个枚举选择项中只有一位是1，其余位都是 0，所以只有参与运算的另一个二进制值在同样的位置上也为 1，与 运算的结果才不会为 0.
    ```
@@ -321,15 +402,15 @@
    & 0100 (= 1 << 2，也就是 SDWebImageDownloaderUseNSURLCache)
    = 0100 (> 0，也就意味着 option 参数中设置了 SDWebImageDownloaderUseNSURLCache)
    ```
-2. dispatch_barrier_sync 函数的使用
+2. `dispatch_barrier_sync` 函数的使用
 3. weak-strong dance 的使用
 4. HTTP header 的理解
-5. NSOperationQueue 的使用
-6. NSURLRequest 的 cachePolicy、HTTPShouldHandleCookies、HTTPShouldUsePipelining
-7. NSURLCredential 
+5. `NSOperationQueue` 的使用
+6. `NSURLRequest` 的 `cachePolicy`、`HTTPShouldHandleCookies`、`HTTPShouldUsePipelining`
+7. `NSURLCredential` 
 
 
-### 4.2 SDWebImageDownloaderOperation
+### 1.2 SDWebImageDownloaderOperation
 
 `SDWebImageDownloaderOperation` 继承 `NSOperation`，遵守 `SDWebImageOperation`、`NSURLConnectionDataDelegate` 协议。
 
@@ -444,8 +525,13 @@ BOOL responseFromCached;
 	# 下载完成后，结束后台任务
 }
 ```
+### 2. 图片缓存——SDImageCache
 
-### 5. 图片解码——SDWebImageDecoder
+### 3. 图片加载管理器——SDWebImageManager
+
+### 4. 设置 UIImageView 的图片——UIImageView+WebCache
+
+
 
 ## 四、知识点
 1. `NSOperation` 的 `start` 方法和 `cancel` 方法
