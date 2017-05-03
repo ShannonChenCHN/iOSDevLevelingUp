@@ -403,12 +403,15 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
    = 0100 (> 0，也就意味着 option 参数中设置了 SDWebImageDownloaderUseNSURLCache)
    ```
 2. `dispatch_barrier_sync` 函数的使用
-3. weak-strong dance 的使用
+3. weak-strong dance 
 4. HTTP header 的理解
 5. `NSOperationQueue` 的使用
 6. `NSURLRequest` 的 `cachePolicy`、`HTTPShouldHandleCookies`、`HTTPShouldUsePipelining`
 7. `NSURLCredential` 
-
+8. `createCallback` 里面为什么要用 wself？
+	```
+	NSTimeInterval timeoutInterval = wself.downloadTimeout;
+	```
 
 ### 1.2 SDWebImageDownloaderOperation
 

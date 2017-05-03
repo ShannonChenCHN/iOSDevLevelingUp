@@ -125,7 +125,9 @@ static NSString *const kCompletedCallbackKey = @"completed";
     // MARK: 这里的 callback 设计的很巧妙，实现逻辑分离，提高可读性
     [self addProgressCallback:progressBlock andCompletedBlock:completedBlock forURL:url createCallback:^{
         
-        // 2.创建下载请求
+        // TODO：createCallback 里面为什么要用 wself？
+        
+        // 2.创建下载请求 NSMutableURLRequest
         
         NSTimeInterval timeoutInterval = wself.downloadTimeout;
         if (timeoutInterval == 0.0) {
@@ -144,6 +146,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
             request.allHTTPHeaderFields = wself.HTTPHeaders;
         }
         // 3.创建并配置下载任务 SDWebImageDownloaderOperation
+        // 3.1 创建下载任务
         operation = [[wself.operationClass alloc] initWithRequest:request
                                                           options:options
                                                          progress:^(NSInteger receivedSize, NSInteger expectedSize) {
@@ -190,25 +193,25 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                                             
                                                             // _2.cancel 掉的没有回调？？
                                                         }];
-        // 4.设置下载完成后是否需要解压缩
+        // 3.2 设置下载完成后是否需要解压缩
         operation.shouldDecompressImages = wself.shouldDecompressImages;
         
-        // 5.设置 operation 的 credential
+        // 3.3 设置 operation 的 credential
         if (wself.username && wself.password) {
             operation.credential = [NSURLCredential credentialWithUser:wself.username password:wself.password persistence:NSURLCredentialPersistenceForSession];
         }
         
-        // 6.设置 operation 的优先级
+        // 4.设置 operation 的优先级
         if (options & SDWebImageDownloaderHighPriority) {
             operation.queuePriority = NSOperationQueuePriorityHigh;
         } else if (options & SDWebImageDownloaderLowPriority) {
             operation.queuePriority = NSOperationQueuePriorityLow;
         }
 
-        // 7.开启下载任务，因为 NSOperation 实例只有在手动调用 start 方法或者加入 NSOperationQueue 才会执行
+        // 5.开启下载任务，因为 NSOperation 实例只有在手动调用 start 方法或者加入 NSOperationQueue 才会执行
         [wself.downloadQueue addOperation:operation];
         
-        // 8.设置下载任务先后顺序
+        // 6.设置下载任务先后顺序
         if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
             // Emulate LIFO execution order by systematically adding new operations as last operation's dependency
             [wself.lastAddedOperation addDependency:operation]; // TODO: 上一个创建的 operation 要等到最新的 operation 执行完毕才开始执行
