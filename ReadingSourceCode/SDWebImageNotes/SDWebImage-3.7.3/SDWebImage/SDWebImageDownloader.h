@@ -152,6 +152,7 @@ typedef NSDictionary *(^SDWebImageDownloaderHeadersFilterBlock)(NSURL *url, NSDi
  */
 - (void)setOperationClass:(Class)operationClass;
 
+// TODO: 这里为什么返回一个遵循 <SDWebImageOperation> 协议的 id 类型的对象而不是一个 SDWebImageDwonloaderOperation 对象？
 /**
  * Creates a SDWebImageDownloader async downloader instance with a given URL
  *

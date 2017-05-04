@@ -113,6 +113,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
     return _downloadQueue.maxConcurrentOperationCount;
 }
 
+
 - (void)setOperationClass:(Class)operationClass {
     _operationClass = operationClass ?: [SDWebImageDownloaderOperation class];
 }
@@ -147,6 +148,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         }
         // 3.创建并配置下载任务 SDWebImageDownloaderOperation
         // 3.1 创建下载任务
+        // TODO: 这里为什么要定义一个 operationClass 呢
         operation = [[wself.operationClass alloc] initWithRequest:request
                                                           options:options
                                                          progress:^(NSInteger receivedSize, NSInteger expectedSize) {
@@ -222,7 +224,10 @@ static NSString *const kCompletedCallbackKey = @"completed";
     return operation;
 }
 
-- (void)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock andCompletedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock forURL:(NSURL *)url createCallback:(SDWebImageNoParamsBlock)createCallback {
+- (void)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock
+          andCompletedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock    // MARK: 实际上，方法名的 label 中一般不加 and
+                     forURL:(NSURL *)url
+             createCallback:(SDWebImageNoParamsBlock)createCallback {
     
     // 1.错误检查：URL 为空就直接返回
     // The URL will be used as the key to the callbacks dictionary so it cannot be nil. If it is nil immediately call the completed block with no image or data.

@@ -256,19 +256,20 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 };
 ```
 
-**公开属性：**
+**.h 文件中的属性：**
 ```
 @property (assign, nonatomic) BOOL shouldDecompressImages;  // 下载完成后是否需要解压缩图片，默认为 YES
 @property (assign, nonatomic) NSInteger maxConcurrentDownloads;
 @property (readonly, nonatomic) NSUInteger currentDownloadCount;
 @property (assign, nonatomic) NSTimeInterval downloadTimeout;
 @property (assign, nonatomic) SDWebImageDownloaderExecutionOrder executionOrder;
+
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *password;
 @property (nonatomic, copy) SDWebImageDownloaderHeadersFilterBlock headersFilter;
 ```
 
-**内部属性：**
+**.m 文件中的属性：**
 ```
 @property (strong, nonatomic) NSOperationQueue *downloadQueue; // 图片下载任务是放在这个 NSOperationQueue 任务队列中来管理的
 @property (weak, nonatomic) NSOperation *lastAddedOperation;
@@ -298,6 +299,56 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 
 ```
 
+**.h 文件中方法**
+
+```
++ (SDWebImageDownloader *)sharedDownloader;
+
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field;
+- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+
+- (void)setOperationClass:(Class)operationClass; // 创建 operation 用的类
+
+- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+                                         options:(SDWebImageDownloaderOptions)options
+                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
+                                       completed:(SDWebImageDownloaderCompletedBlock)completedBlock;
+                                       
+- (void)setSuspended:(BOOL)suspended;
+```
+
+**.m 文件中的方法**
+
+```
+// Lifecycle
++ (void)initialize;
++ (SDWebImageDownloader *)sharedDownloader;
+- init;
+- (void)dealloc;
+
+// Setter and getter
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field;
+- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+- (void)setMaxConcurrentDownloads:(NSInteger)maxConcurrentDownloads;
+- (NSUInteger)currentDownloadCount;
+- (NSInteger)maxConcurrentDownloads;
+- (void)setOperationClass:(Class)operationClass;
+
+// Download
+- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+                                         options:(SDWebImageDownloaderOptions)options
+                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
+                                       completed:(SDWebImageDownloaderCompletedBlock)completedBlock;
+- (void)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock
+          andCompletedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock
+                     forURL:(NSURL *)url
+             createCallback:(SDWebImageNoParamsBlock)createCallback;
+
+// Download queue            
+- (void)setSuspended:(BOOL)suspended;
+```
+
+
 **方法的实现：**
 
 先看看 `+initialize` 方法，这个方法中主要是通过注册通知 让`SDNetworkActivityIndicator` 监听下载事件，来显示和隐藏状态栏上的 network activity indicator。为了让 `SDNetworkActivityIndicator` 文件可以不用导入项目中来（如果不要的话），这里使用了 runtime 的方式来实现动态创建类以及调用方法。
@@ -326,7 +377,7 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 
 ```
 
-这个类中最核心的方法就是 `- downloadImageWithURL: options: progress: completed:` 方法，这个方法中首先通过调用 `-addProgressCallback: andCompletedBlock: forURL: createCallback:` 方法来保存每个 url 对应的回调 block，`-addProgressCallback: ...` 方法先进行错误检查，判断 URL 是否为空，然后再将 URL 对应的 `progressBlock` 和 `completedBlock` 保存到 `URLCallbacks ` 属性中去。
+除了以上两个方法之外，这个类中最核心的方法就是 `- downloadImageWithURL: options: progress: completed:` 方法，这个方法中首先通过调用 `-addProgressCallback: andCompletedBlock: forURL: createCallback:` 方法来保存每个 url 对应的回调 block，`-addProgressCallback: ...` 方法先进行错误检查，判断 URL 是否为空，然后再将 URL 对应的 `progressBlock` 和 `completedBlock` 保存到 `URLCallbacks ` 属性中去。
 
 这里有个细节需要注意，因为可能同时下载多张图片，所以就可能出现多个线程同时访问 `URLCallbacks` 属性的情况。为了保证线程安全，所以这里使用了 `dispatch_barrier_sync` 来分步执行添加到 `barrierQueue` 中的任务，这样就能保证同一时间只有一个线程能对 `URLCallbacks` 进行操作。
 
@@ -415,38 +466,50 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 
 ### 1.2 SDWebImageDownloaderOperation
 
+每张图片的下载都会发出一个异步的 HTTP 请求，这个请求就是由 `SDWebImageDownloaderOperation` 管理的。
+
 `SDWebImageDownloaderOperation` 继承 `NSOperation`，遵守 `SDWebImageOperation`、`NSURLConnectionDataDelegate` 协议。
 
-**公开属性：**
+`SDWebImageOperation` 协议只定义了一个方法 `-cancel`，用来取消 operation。
+
+**.h 文件中的属性：**
 
 ```
-@property (strong, nonatomic, readonly) NSURLRequest *request;
-@property (nonatomic, assign) BOOL shouldUseCredentialStorage;
+@property (strong, nonatomic, readonly) NSURLRequest *request; // 用来给 operation 中的 connection 使用的请求
+@property (assign, nonatomic) BOOL shouldDecompressImages; // 下载完成后是否需要解压缩
+@property (nonatomic, assign) BOOL shouldUseCredentialStorage; 
 @property (nonatomic, strong) NSURLCredential *credential;
 @property (assign, nonatomic, readonly) SDWebImageDownloaderOptions options;
+@property (assign, nonatomic) NSInteger expectedSize;
+@property (strong, nonatomic) NSURLResponse *response;
+
+其他继承自 NSOperation 的属性（略）
+
 ```
 
-**内部属性：**
+**.m 文件中的属性：**
 
 ```
 @property (copy, nonatomic) SDWebImageDownloaderProgressBlock progressBlock;    
 @property (copy, nonatomic) SDWebImageDownloaderCompletedBlock completedBlock;
 @property (copy, nonatomic) SDWebImageNoParamsBlock cancelBlock;
+
 @property (assign, nonatomic, getter = isExecuting) BOOL executing; // 覆盖了 NSOperation 的 executing
 @property (assign, nonatomic, getter = isFinished) BOOL finished;  // 覆盖了 NSOperation 的 finished
 @property (assign, nonatomic) NSInteger expectedSize;
 @property (strong, nonatomic) NSMutableData *imageData;
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, atomic) NSThread *thread;
+
 @property (assign, nonatomic) UIBackgroundTaskIdentifier backgroundTaskId; // Xcode 的 BaseSDK 设置为 iOS 4.0 时以上使用
-------------------
+
 // 成员变量
-size_t width, height;
-UIImageOrientation orientation;
+size_t width, height;  				// 图片宽高
+UIImageOrientation orientation;  	// 图片方向
 BOOL responseFromCached;
 ```
 
-**公开方法：**
+**.h 文件中的方法：**
 
 ```
 - (id)initWithRequest:(NSURLRequest *)request
@@ -454,36 +517,56 @@ BOOL responseFromCached;
              progress:(SDWebImageDownloaderProgressBlock)progressBlock
             completed:(SDWebImageDownloaderCompletedBlock)completedBlock
             cancelled:(SDWebImageNoParamsBlock)cancelBlock;    
-- (void)start; // 继承自 NSOperation
-- (void)cancel; // 继承自 NSOperation
+
+其他继承自 NSOperation 的方法（略）
+
 ```
          
-**非公开方法：**        
+**.m 文件中的方法：**        
     
 ```
+// 覆盖了父类的属性，需要重新实现属性合成方法
+@synthesize executing = _executing;
+@synthesize finished = _finished;
+
+// Initialization
+- (id)initWithRequest:(NSURLRequest *)request
+              options:(SDWebImageDownloaderOptions)options
+             progress:(SDWebImageDownloaderProgressBlock)progressBlock
+            completed:(SDWebImageDownloaderCompletedBlock)completedBlock
+            cancelled:(SDWebImageNoParamsBlock)cancelBlock;
+// Operation
+- (void)start;
+- (void)cancel;
 - (void)cancelInternalAndStop;
 - (void)cancelInternal;
 - (void)done;
 - (void)reset;
-- (void)setFinished:(BOOL)finished; // 重写 setter 方法
-- (void)setExecuting:(BOOL)executing; // 重写 setter 方法
-- (BOOL)isConcurrent; // 重写 getter 方法
------------
+
+// Setter and getter
+- (void)setFinished:(BOOL)finished; 
+- (void)setExecuting:(BOOL)executing; 
+- (BOOL)isConcurrent; 
+
+// NSURLConnectionDataDelegate 方法
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response; //  下载过程中的 response 回调
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data; // 下载过程中 data 回调
+- (void)connectionDidFinishLoading:(NSURLConnection *)aConnection; // 下载完成时回调
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error; // 下载失败时回调
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse; // 在 connection 存储 cached response 到缓存中之前调用
+- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection __unused *)connection; //  URL loader 是否应该使用 credential storage
+- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge; // connection 发送身份认证的请求之前被调用
+
+// Helper
 + (UIImageOrientation)orientationFromPropertyValue:(NSInteger)value;
 - (UIImage *)scaledImageForKey:(NSString *)key image:(UIImage *)image;
 - (BOOL)shouldContinueWhenAppEntersBackground;
--------------
-// NSURLConnectionDataDelegate 方法
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
-- (void)connectionDidFinishLoading:(NSURLConnection *)aConnection;
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse;
-- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection __unused *)connection;
-- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+
 ```        
 
 **方法实现：**
+
+首先来看看指定初始化方法 `-initWithRequest:options:progress:completed:cancelled:`，这个方法是保存一些传入的参数，设置一些属性的初始默认值。
 
 ```
 - (id)initWithRequest:(NSURLRequest *)request
@@ -496,16 +579,18 @@ BOOL responseFromCached;
 }
 ```
 
+当创建的 `SDWebImageDownloaderOperation` 对象被加入到 downloader 的 downloadQueue 中时，该对象的 `-start` 方法就会被自动调用。
+`-start` 方法中首先创建了用来下载图片数据的 `NSURLConnection`，然后开启 connection，同时发出开始图片下载的 `SDWebImageDownloadStartNotification` 通知，为了防止非主线程的请求被 kill 掉，这里开启 runloop 保活，直到请求返回。
 
 ```
 - (void)start {
-	# 给 `self` 加锁（MARK：为什么？） {
+	# 给 `self` 加锁 {
 		## 如果 `self` 被 cancell 掉的话，finished 属性变为 YES，reset 下载数据和回调 block，然后直接 return。
 
-		## 如果允许程序退到后台后继续下载，就开启一个后台任务，在后台任务过期的回调 block 中 {
+		## 如果允许程序退到后台后继续下载，就标记为允许后台执行，在后台任务过期的回调 block 中 {
 			首先来一个 weak-strong dance
 			调用 cancel 方法（这个方法里面又做了一些处理，反正就是 cancel 掉当前的 operation）
-			调用UIApplication 的 endBackgroundTask： 方法结束任务
+			调用 UIApplication 的 endBackgroundTask： 方法结束任务
 			记录结束后的 taskId
 			
 		}
@@ -525,9 +610,80 @@ BOOL responseFromCached;
 			### runloop 结束后继续往下执行（也就是 cancel 掉或者 NSURLConnection 请求完毕代理回调后调用了 CFRunLoopStop）
 		
 		## B.如果 connection 为 nil，回调 completedBlock，返回 connection 初始化失败的错误信息
-	# 下载完成后，结束后台任务
+	# 下载完成后，调用 endBackgroundTask: 标记后台任务结束
 }
 ```
+`NSURLConnection` 请求图片数据时，服务器返回的的结果是通过 `NSURLConnectionDataDelegate` 的代理方法回调的，其中最主要的是以下三个方法：
+
+```
+- connection:didReceiveResponse: //  下载过程中的 response 回调，调用一次
+- connection:didReceiveData:     // 下载过程中 data 回调，调用多次
+- connectionDidFinishLoading:    // 下载完成时回调，调用一次
+```
+
+前两个方法是在下载过程中回调的，第三个方法是在下载完成时回调的。第一个方法 `- connection:didReceiveResponse: ` 被调用后，接着会多次调用 `- connection:didReceiveData:` 方法，当图片数据全部下载完成时，`- connectionDidFinishLoading:` 方法就会被调用。
+
+```
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	#A. 返回 code 不是 304 Not Modified
+		1. 获取 expectedSize，回调 progressBlock
+		2. 初始化 imageData 属性
+		3. 发送 SDWebImageDownloadReceiveResponseNotification 通知
+	#B. 针对 304 Not Modified 做处理，直接 cancel operation，并返回缓存的 image
+		1. 取消连接
+		2. 发送 SDWebImageDownloadStopNotification 通知
+		3. 回调 completedBlock
+		4. 停止 runloop
+}
+```
+
+```
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	# 1.拼接图片数据
+	# 2.针对 `SDWebImageDownloaderProgressiveDownload` 做的处理
+		## 2.1 根据更新的 imageData 创建 CGImageSourceRef 对象
+		## 2.2 首次获取到数据时，读取图片属性：width, height, orientation
+		## 2.3 图片还没下载完，但不是第一次拿到数据，使用现有图片数据 CGImageSourceRef 创建 CGImageRef 对象
+		## 2.4 对图片进行缩放、解码，回调 completedBlock
+	# 3.回调 progressBlock
+}
+
+```
+
+```
+- (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
+	# 1. 下载结束，停止 runloop，发送 SDWebImageDownloadStopNotification 通知和 SDWebImageDownloadFinishNotification 通知
+	# 2. 回调 completionBlock
+		# 2.1 如果是返回的结果是 URL Cache，就回调图片数据为 nil 的 completionBlock
+		# 2.2 如果有图片数据
+			# 2.2.1 针对不同图片格式进行数据转换 data -> image
+			# 2.2.2 据图片名中是否带 @2x 和 @3x 来做 scale 处理
+			# 2.2.3 如果需要解码，就进行图片解码（如果不是 GIF 图）
+			# 2.2.4 判断图片尺寸是否为空，并回调 completionBlock
+		# 2.3 如果没有图片数据，回调带有错误信息的 completionBlock
+	# 3. 将 completionBlock 置为 nil
+	# 4. 重置
+}
+
+
+```
+
+**知识点**
+1.`NSOperation` 的 `start` 方法和 `cancel` 方法
+2.`-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？       
+  
+  参考：
+  - http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
+  - http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
+  - http://blog.ibireme.com/2015/05/18/runloop/
+  - https://github.com/rs/SDWebImage/issues/497
+  - https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
+
+3. `SDWebImageDownloaderOperation` 中是什么时候开启异步线程的？
+
+4. `NSURLConnection` 的几个代理方法分别在什么时候调用？
+5.  `NSURLCache`
+
 ### 2. 图片缓存——SDImageCache
 
 ### 3. 图片加载管理器——SDWebImageManager
@@ -537,7 +693,6 @@ BOOL responseFromCached;
 
 
 ## 四、知识点
-1. `NSOperation` 的 `start` 方法和 `cancel` 方法
 
 2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
 这两个宏都是用于**编译时**进行 SDK 版本适配的宏，主要用于模拟器上的调试，而针对真机上的 iOS 版本适配就需要采用**运行时**的判断方式了，比如使用 respondsToSelector: 方法来判断当前运行环境是否支持该方法的调用。       
@@ -549,26 +704,21 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
    
    参考：http://stackoverflow.com/questions/14877415/difference-between-typeof-typeof-and-typeof-objective-c
 
-4. 使用 `-[UIApplication beginBackgroundTaskWithExpirationHandler:]` 方法在 app 后台执行任务
+4. 使用 `-[UIApplication beginBackgroundTaskWithExpirationHandler:]` 方法使 app 退到后台时还能继续执行任务, 不再执行后台任务时，需要调用 `-[UIApplication endBackgroundTask:]` 方法标记后台任务结束。
+    参考：https://developer.apple.com/reference/uikit/uiapplication/1623031-beginbackgroundtaskwithexpiratio
+         [objective c - Proper use of beginBackgroundTaskWithExpirationHandler](http://stackoverflow.com/questions/10319643/objective-c-proper-use-of-beginbackgroundtaskwithexpirationhandler)
+         [iOS Tips and Tricks: Working in the Background](https://www.infragistics.com/community/blogs/stevez/archive/2013/01/24/ios-tips-and-tricks-working-in-the-background.aspx)
+         [Background Modes Tutorial: Getting Started](https://www.raywenderlich.com/143128/background-modes-tutorial-getting-started)
+
 
 5. `NSFoundationVersionNumber` 的使用         
    
    参考：http://stackoverflow.com/questions/19990900/nsfoundationversionnumber-and-ios-versions
 
-6. `-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？       
-  
-  参考：
-  - http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
-  - http://tom555cat.com/2016/08/01/SdWebImage之RunLoop/
-  - http://blog.ibireme.com/2015/05/18/runloop/
-  - https://github.com/rs/SDWebImage/issues/497
-  - https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html
 
 7. `SDWebImage` 文档中的两张 Architecture 图怎么看？什么是 UML 类图？
 
-8. `SDWebImageDownloaderOperation` 中是什么时候开启异步线程的？
 
-9. `NSURLConnection` 的几个代理方法分别在什么时候调用？
 
 10. `SDWebImage` 的缓存路径？      
     
@@ -594,7 +744,8 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 2. SDWebImage 在设计上有哪些巧妙之处？
 3. 假如我自己来实现一个图片下载工具，我该怎么写？
 4. SDWebImage 的进化史
-5. SDWebImage 的性能怎么看？
+5.SDWebImage 的性能怎么看？
+6. SDWebImage 是如何处理 gif 图的？
 
 
 ## 六、延伸阅读

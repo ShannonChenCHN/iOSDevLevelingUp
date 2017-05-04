@@ -23,11 +23,11 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
 @property (copy, nonatomic) SDWebImageDownloaderCompletedBlock completedBlock;
 @property (copy, nonatomic) SDWebImageNoParamsBlock cancelBlock;
 
-@property (assign, nonatomic, getter = isExecuting) BOOL executing;
+@property (assign, nonatomic, getter = isExecuting) BOOL executing;  // 覆盖了父类的属性
 @property (assign, nonatomic, getter = isFinished) BOOL finished;
 @property (strong, nonatomic) NSMutableData *imageData;
 @property (strong, nonatomic) NSURLConnection *connection;
-@property (strong, atomic) NSThread *thread;
+@property (strong, atomic) NSThread *thread;       // MARK: 为什么用的是 atomic
 
 #if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 @property (assign, nonatomic) UIBackgroundTaskIdentifier backgroundTaskId;
@@ -41,6 +41,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
     BOOL responseFromCached;
 }
 
+// MARK: 覆盖了父类的属性，需要重新实现属性合成方法
 @synthesize executing = _executing;
 @synthesize finished = _finished;
 
@@ -77,7 +78,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
             return;
         }
         
-        // 2.如果设置了后台执行模式，就开启后台执行
+        // 2.如果设置了后台继续执行模式，就开启后台继续执行
 #if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
         Class UIApplicationClass = NSClassFromString(@"UIApplication");
         BOOL hasApplication = UIApplicationClass && [UIApplicationClass respondsToSelector:@selector(sharedApplication)];
@@ -226,7 +227,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
 
 #pragma mark NSURLConnection (delegate)
 
-///  下载过程中下载过中 response 回调
+///  下载过程中 response 回调
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
     //'304 Not Modified' is an exceptional one
@@ -279,11 +280,11 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
         // Get the total bytes downloaded
         const NSInteger totalSize = self.imageData.length;
 
-        // 更新 CGImageSourceRef
+        // 2.1 根据更新的 imageData 创建 CGImageSourceRef 对象
         // Update the data source, we must pass ALL the data, not just the new bytes
         CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)self.imageData, NULL);
 
-        // 首次获取到数据时，读取图片属性：width, height, orientation
+        // 2.2 首次获取到数据时，读取图片属性：width, height, orientation
         // TODO: 为什么首次就可以拿到宽高？
         if (width + height == 0) {
             CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
@@ -306,7 +307,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
 
         }
 
-        // 图片还没下载完，但不是第一次拿到数据
+        // 2.3 图片还没下载完，但不是第一次拿到数据
         if (width + height > 0 && totalSize < self.expectedSize) {
             // 使用现有图片数据创建 image，从参数 index = 0 可以看出，如果有多张图片，就取第一张
             // Create the image
@@ -332,7 +333,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
                 }
             }
 #endif
-            // 对图片进行缩放、解码
+            // 2.4 对图片进行缩放、解码，回调 completedBlock
             if (partialImageRef) {
                 UIImage *image = [UIImage imageWithCGImage:partialImageRef scale:1 orientation:orientation];
                 NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
@@ -388,7 +389,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
     return SDScaledImageForKey(key, image);
 }
 
-/// 下载完成时回调
+// 下载完成时回调
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
     SDWebImageDownloaderCompletedBlock completionBlock = self.completedBlock;
     
@@ -423,7 +424,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
             NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
             image = [self scaledImageForKey:key image:image];
             
-            // 3.2.3 图片解码
+            // 3.2.3 图片解码（如果不是 GIF 图）
             // Do not force decoding animated GIFs
             if (!image.images) {
                 if (self.shouldDecompressImages) {
@@ -431,7 +432,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
                 }
             }
             
-            // 3.2.3 判断图片尺寸是否为空
+            // 3.2.4 判断图片尺寸是否为空
             if (CGSizeEqualToSize(image.size, CGSizeZero)) {
                 completionBlock(nil, nil, [NSError errorWithDomain:SDWebImageErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded image has 0 pixels"}], YES);
             }
@@ -452,6 +453,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
     [self done];
 }
 
+// 下载失败时回调
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     @synchronized(self) {
         CFRunLoopStop(CFRunLoopGetCurrent()); // 停止 runloop
@@ -469,6 +471,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
     [self done];
 }
 
+// 在 connection 存储 cached response 到缓存中之前调用
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
     responseFromCached = NO; // If this method is called, it means the response wasn't read from cache
     if (self.request.cachePolicy == NSURLRequestReloadIgnoringLocalCacheData) {
@@ -484,10 +487,12 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
     return self.options & SDWebImageDownloaderContinueInBackground;
 }
 
+//  URL loader 是否应该使用 credential storage
 - (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection __unused *)connection {
     return self.shouldUseCredentialStorage;
 }
 
+// connection 发送身份认证的请求之前被调用
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge{
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         if (!(self.options & SDWebImageDownloaderAllowInvalidSSLCertificates) &&
