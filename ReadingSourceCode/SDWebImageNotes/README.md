@@ -235,11 +235,15 @@
 
 `SDWebImageDownloader` 继承于 `NSObject`，主要承担了异步下载图片和优化图片加载的任务。
 
+**几个问题**
+- 如何实现异步下载，也就是多张图片同时下载？
+- 如何处理同一张图片（同一个 URL）多次下载的情况？
+
 **枚举定义**
 ```
 // 下载选项
 typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) {
-	 SDWebImageDownloaderLowPriority = 1 << 0,
+    SDWebImageDownloaderLowPriority = 1 << 0,
     SDWebImageDownloaderProgressiveDownload = 1 << 1,
     SDWebImageDownloaderUseNSURLCache = 1 << 2,
     SDWebImageDownloaderIgnoreCachedResponse = 1 << 3,
@@ -349,7 +353,7 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 ```
 
 
-**方法的实现：**
+**具体实现：**
 
 先看看 `+initialize` 方法，这个方法中主要是通过注册通知 让`SDNetworkActivityIndicator` 监听下载事件，来显示和隐藏状态栏上的 network activity indicator。为了让 `SDNetworkActivityIndicator` 文件可以不用导入项目中来（如果不要的话），这里使用了 runtime 的方式来实现动态创建类以及调用方法。
 
@@ -472,6 +476,11 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 
 `SDWebImageOperation` 协议只定义了一个方法 `-cancel`，用来取消 operation。
 
+**几个问题**
+- 如何实现下载的网络请求？
+- 如何管理整个图片下载的过程？
+- 图片下载完成后需要做哪些处理？
+
 **.h 文件中的属性：**
 
 ```
@@ -564,7 +573,7 @@ BOOL responseFromCached;
 
 ```        
 
-**方法实现：**
+**具体实现：**
 
 首先来看看指定初始化方法 `-initWithRequest:options:progress:completed:cancelled:`，这个方法是保存一些传入的参数，设置一些属性的初始默认值。
 
@@ -621,7 +630,7 @@ BOOL responseFromCached;
 - connectionDidFinishLoading:    // 下载完成时回调，调用一次
 ```
 
-前两个方法是在下载过程中回调的，第三个方法是在下载完成时回调的。第一个方法 `- connection:didReceiveResponse: ` 被调用后，接着会多次调用 `- connection:didReceiveData:` 方法，当图片数据全部下载完成时，`- connectionDidFinishLoading:` 方法就会被调用。
+前两个方法是在下载过程中回调的，第三个方法是在下载完成时回调的。第一个方法 `- connection:didReceiveResponse: ` 被调用后，接着会多次调用 `- connection:didReceiveData:` 方法来更新进度、拼接图片数据，当图片数据全部下载完成时，`- connectionDidFinishLoading:` 方法就会被调用。
 
 ```
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -668,9 +677,14 @@ BOOL responseFromCached;
 
 ```
 
+当图片的所有数据下载完成后，`SDWebImageDownloader` 传入的 `completionBlock` 被调用，至此，整个图片的下载过程就结束了。从上面的解读中我们可以看到，一张图片的数据下载是由一个 `NSConnection` 对象来完成的，这个对象的整个生命周期（从创建到下载结束）又是由 `SDWebImageDownloaderOperation` 来控制的，将 operation 加入到 operation queue 中就可以实现多张图片同时下载了。
+
+简单概括成一句话就是，`NSConnection` 负责网络请求，`NSOperation` 负责多线程。
+
 **知识点**
-1.`NSOperation` 的 `start` 方法和 `cancel` 方法
-2.`-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()`函数？       
+
+1. `NSOperation` 的 `-start` 方法、`-main` 方法和 `-cancel` 方法
+2. `-start` 方法中为什么要调用 `CFRunLoopRun()` 或者 `CFRunLoopRunInMode()` 函数？       
   
   参考：
   - http://stanoz-io.top/2016/05/17/NSRunLoop_Note/
@@ -682,14 +696,67 @@ BOOL responseFromCached;
 3. `SDWebImageDownloaderOperation` 中是什么时候开启异步线程的？
 
 4. `NSURLConnection` 的几个代理方法分别在什么时候调用？
-5.  `NSURLCache`
+
+5.  `NSURLCache` 是什么？
 
 ### 2. 图片缓存——SDImageCache
 
+**几个问题**
+- 为什么需要缓存？
+- 从读取速度和保存时间上来考虑，缓存该怎么存？key 怎么定？
+- 内存缓存怎么存？
+- 磁盘缓存怎么存？路径、文件名怎么定？
+- 使用时怎么读取缓存？
+- 什么时候需要移除缓存？怎么移除？
+
+**.h 文件中的属性：**
+
+**.m 文件中的属性：**
+
+**.h 文件中的方法：**
+
+**.m 文件中的方法：**
+
+**具体实现：**
+
+**知识点**
+
+1. `NSCache` 是什么？
+	参考：
+	[NSCache Class Refernce](https://developer.apple.com/reference/foundation/nscache)
+	*Effective Objective-C 2.0*（Item 50: Use `NSCache` Instead of `NSDictionary` for Caches）
+	[Foundation: NSCache](http://southpeak.github.io/2015/02/11/cocoa-foundation-nscache/)
+	[NSCache 源码（Swift）分析](https://github.com/nixzhu/dev-blog/blob/master/2015-12-09-nscache.md)
+	[YYCache 设计思路](http://blog.ibireme.com/2015/10/26/yycache/)
+
+
 ### 3. 图片加载管理器——SDWebImageManager
+
+**.h 文件中的属性：**
+
+**.m 文件中的属性：**
+
+**.h 文件中的方法：**
+
+**.m 文件中的方法：**
+
+**方法实现：**
+
+**知识点**
 
 ### 4. 设置 UIImageView 的图片——UIImageView+WebCache
 
+**.h 文件中的属性：**
+
+**.m 文件中的属性：**
+
+**.h 文件中的方法：**
+
+**.m 文件中的方法：**
+
+**方法实现：**
+
+**知识点**
 
 
 ## 四、知识点
@@ -722,7 +789,7 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 
 10. `SDWebImage` 的缓存路径？      
     
-    从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出 `defaultDiskCachePath` 是 `/cache/fullNamespace/MD5_filename`
+    从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出 `defaultDiskCachePath` 是 `Library/cache/default/com.hackemist.SDWebImageCache.default/MD5_filename`
 
 11. 文件的缓存有效期及最大缓存空间大小
     
@@ -751,9 +818,9 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 ## 六、延伸阅读
 - [iOS 源代码分析 --- SDWebImage](https://github.com/Draveness/Analyze/blob/master/contents/SDWebImage/iOS%20源代码分析%20---%20SDWebImage.md)（Draveness）
 - [SDWebImage实现分析](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)（南峰子老驴）
-- [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)（bpoplauschi）
+- [iOS image caching. Libraries benchmark (SDWebImage vs FastImageCache)](https://bpoplauschi.wordpress.com/2014/03/21/ios-image-caching-sdwebimage-vs-fastimage/)（SDWebImage 的主要维护者：bpoplauschi）
 - [使用SDWebImage和YYImage下载高分辨率图，导致内存暴增的解决办法](http://www.jianshu.com/p/1c9de8dea3ea)
-- [SDWebImage 图片下载缓存框架 常用方法及原理](http://www.jianshu.com/p/4191017c8b39)
 - [SDWebImage 源码阅读笔记](http://itangqi.me/2016/03/19/the-notes-of-learning-sdwebimage-one/)
+- [SDWebImage源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785704.html)
  
 
