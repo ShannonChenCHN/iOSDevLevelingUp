@@ -280,26 +280,7 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 @property (assign, nonatomic) Class operationClass;
 @property (strong, nonatomic) NSMutableDictionary *HTTPHeaders;
 @property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t barrierQueue;
-@property (strong, nonatomic) NSMutableDictionary *URLCallbacks; // 图片下载的回调 block 都是存储在这个属性中，该属性是一个字典，key 是图片的 URL，value 是一个数组，包含每个图片的多组回调信息。用 JSON 格式表示的话，就是下面这种格式。
-{
-	url1 : [
-			{
-			kProgressCallbackKey : progressCallback1,
-			kCompletedCallbackKey : completedCallback1
-			},
-			{
-			kProgressCallbackKey : progressCallback2,
-			kCompletedCallbackKey : completedCallback2
-			}
-			],
-	url2 : [
-			{
-			kProgressCallbackKey : progressCallback1,
-			kCompletedCallbackKey : completedCallback1
-			}
-			]
-
-}
+@property (strong, nonatomic) NSMutableDictionary *URLCallbacks; // 图片下载的回调 block 都是存储在这个属性中，该属性是一个字典，key 是图片的 URL，value 是一个数组，包含每个图片的多组回调信息。用 JSON 格式表示的话，就是下面这种形式：
 
 ```
 
@@ -382,6 +363,33 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 ```
 
 除了以上两个方法之外，这个类中最核心的方法就是 `- downloadImageWithURL: options: progress: completed:` 方法，这个方法中首先通过调用 `-addProgressCallback: andCompletedBlock: forURL: createCallback:` 方法来保存每个 url 对应的回调 block，`-addProgressCallback: ...` 方法先进行错误检查，判断 URL 是否为空，然后再将 URL 对应的 `progressBlock` 和 `completedBlock` 保存到 `URLCallbacks ` 属性中去。
+
+`URLCallbacks` 属性是一个 `NSMutableDictionary` 对象，key 是图片的 URL，value 是一个数组，包含每个图片的多组回调信息。用 JSON 格式表示的话，就是下面这种形式：
+
+```
+{
+    "callbacksForUrl1": [
+        {
+            "kProgressCallbackKey": "progressCallback1_1",
+            "kCompletedCallbackKey": "completedCallback1_1"
+        },
+        {
+            "kProgressCallbackKey": "progressCallback1_2",
+            "kCompletedCallbackKey": "completedCallback1_2"
+        }
+    ],
+    "callbacksForUrl2": [
+        {
+            "kProgressCallbackKey": "progressCallback2_1",
+            "kCompletedCallbackKey": "completedCallback2_1"
+        },
+        {
+            "kProgressCallbackKey": "progressCallback2_2",
+            "kCompletedCallbackKey": "completedCallback2_2"
+        }
+    ]
+}
+```
 
 这里有个细节需要注意，因为可能同时下载多张图片，所以就可能出现多个线程同时访问 `URLCallbacks` 属性的情况。为了保证线程安全，所以这里使用了 `dispatch_barrier_sync` 来分步执行添加到 `barrierQueue` 中的任务，这样就能保证同一时间只有一个线程能对 `URLCallbacks` 进行操作。
 
