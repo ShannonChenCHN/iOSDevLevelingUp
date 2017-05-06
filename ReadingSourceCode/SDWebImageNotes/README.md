@@ -761,6 +761,7 @@ NSFileManager *_fileManager;
 
 **.h 文件中的方法：**
 
+```
 + (SDImageCache *)sharedImageCache;
 - (id)initWithNamespace:(NSString *)ns;
 - (id)initWithNamespace:(NSString *)ns diskCacheDirectory:(NSString *)directory;
@@ -805,6 +806,7 @@ NSFileManager *_fileManager;
 
 - (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)path;
 - (NSString *)defaultCachePathForKey:(NSString *)key;
+```
 
 **.m 文件中的方法和函数：**
 
@@ -887,6 +889,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 `SDImageCache` 的磁盘缓存是通过异步操作 `NSFileManager` 存储缓存文件到沙盒来实现的。
 
 1. 初始化
+
 `-init` 方法中默认调用了 `-initWithNamespace:` 方法，`-initWithNamespace:` 方法又调用了 `-makeDiskCachePath:` 方法来初始化缓存目录路径， 同时还调用了 `-initWithNamespace:diskCacheDirectory:` 方法来实现初始化。下面是初始化方法调用栈：
 
 
@@ -901,6 +904,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 
 
 2. 写入缓存
+
 写入缓存的操作主要是由 `- storeImage:recalculateFromImage:imageData:forKey:toDisk:` 方法处理的，在存储缓存数据时，先计算图片像素大小，并存储到内存缓存中去，然后如果需要存到磁盘中，就开启异步线程将图片的二进制数据存储到沙盒中。如果是 iOS，
 
 ```
@@ -921,6 +925,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 ```
 
 3.读取缓存
+
 查询缓存的操作是
 
 ```
@@ -935,6 +940,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 **知识点**
 
 1. `NSCache` 是什么？
+
 	参考：
 	[NSCache Class Refernce](https://developer.apple.com/reference/foundation/nscache)
 	*Effective Objective-C 2.0*（Item 50: Use `NSCache` Instead of `NSDictionary` for Caches）
