@@ -12,7 +12,7 @@
 #import <CommonCrypto/CommonDigest.h>
 
 // See https://github.com/rs/SDWebImage/pull/1141 for discussion
-@interface AutoPurgeCache : NSCache
+@interface AutoPurgeCache : NSCache // TODO: Why do we need a custom `NSCache` subclass here?
 @end
 
 @implementation AutoPurgeCache
@@ -84,17 +84,18 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 }
 
 - (id)initWithNamespace:(NSString *)ns {
-    NSString *path = [self makeDiskCachePath:ns];
+    NSString *path = [self makeDiskCachePath:ns]; // Libray/Cache/<#namespace#>
     return [self initWithNamespace:ns diskCacheDirectory:path];
 }
 
 - (id)initWithNamespace:(NSString *)ns diskCacheDirectory:(NSString *)directory {
     if ((self = [super init])) {
-        NSString *fullNamespace = [@"com.hackemist.SDWebImageCache." stringByAppendingString:ns];
+        NSString *fullNamespace = [@"com.hackemist.SDWebImageCache." stringByAppendingString:ns];  // com.hackemist.SDWebImageCache.<#namespace#>
 
         // initialise PNG signature data
-        kPNGSignatureData = [NSData dataWithBytes:kPNGSignatureBytes length:8];
+        kPNGSignatureData = [NSData dataWithBytes:kPNGSignatureBytes length:8]; // TODO: PNG signature data 是什么？干什么用的？
 
+        // 创建 serial queue
         // Create IO serial queue
         _ioQueue = dispatch_queue_create("com.hackemist.SDWebImageCache", DISPATCH_QUEUE_SERIAL);
 
@@ -107,7 +108,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 
         // Init the disk cache
         if (directory != nil) {
-            _diskCachePath = [directory stringByAppendingPathComponent:fullNamespace];
+            _diskCachePath = [directory stringByAppendingPathComponent:fullNamespace]; // Libray/Cache/<#namespace#>/com.hackemist.SDWebImageCache.<#namespace#>
         } else {
             NSString *path = [self makeDiskCachePath:ns];
             _diskCachePath = path;
@@ -116,22 +117,25 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         // Set decompression to YES
         _shouldDecompressImages = YES;
 
-        dispatch_sync(_ioQueue, ^{
+        dispatch_sync(_ioQueue, ^{ // TODO: 为什么在 io 队列创建 File Manager？
             _fileManager = [NSFileManager new];
         });
 
 #if TARGET_OS_IPHONE
         // Subscribe to app events
+        // 收到内存警告时清除内存缓存
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(clearMemory)
                                                      name:UIApplicationDidReceiveMemoryWarningNotification
                                                    object:nil];
 
+        // 应用即将终止运行时，删除磁盘缓存中的过期文件，并执行超出最大体积的清理操作
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(cleanDisk)
                                                      name:UIApplicationWillTerminateNotification
                                                    object:nil];
 
+        // 应用退到后台时，继续执行后台任务，删除磁盘缓存中的过期文件，并执行超出最大体积的清理操作
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(backgroundCleanDisk)
                                                      name:UIApplicationDidEnterBackgroundNotification
@@ -147,6 +151,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     SDDispatchQueueRelease(_ioQueue);
 }
 
+// 添加只读路径，比如 bundle 中的文件路径，用来在 SDWebImage 下载、读取缓存之前预加载用的
 - (void)addReadOnlyCachePath:(NSString *)path {
     if (!self.customPaths) {
         self.customPaths = [NSMutableArray new];
@@ -158,16 +163,18 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 }
 
 - (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)path {
-    NSString *filename = [self cachedFileNameForKey:key];
-    return [path stringByAppendingPathComponent:filename];
+    NSString *filename = [self cachedFileNameForKey:key];   // 经过 MD5 处理的文件名
+    return [path stringByAppendingPathComponent:filename];  // path/<#MD5_filename#>
 }
 
 - (NSString *)defaultCachePathForKey:(NSString *)key {
+    // Libray/Cache/<#namespace#>/com.hackemist.SDWebImageCache.<#namespace#>/<#MD5_filename#>
     return [self cachePathForKey:key inPath:self.diskCachePath];
 }
 
 #pragma mark SDImageCache (private)
-// 为了防止名称重复，对其进行 md5 运算
+// TODO: 是用来干嘛的？除此之外，还有哪些类似的加密算法？
+// 为了文件名符合规则？为了不暴露图片信息？
 - (NSString *)cachedFileNameForKey:(NSString *)key {
     const char *str = [key UTF8String];
     if (str == NULL) {
@@ -185,27 +192,28 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
 
 // Init the disk cache
 -(NSString *)makeDiskCachePath:(NSString*)fullNamespace{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    return [paths[0] stringByAppendingPathComponent:fullNamespace];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES); // 获取沙盒缓存目录：Libray/Cache
+    return [paths[0] stringByAppendingPathComponent:fullNamespace];  // 拼接命名空间：Libray/Cache/<#fullNamespace#>
 }
 
+// TODO: 为什么需要 recalculate？
 - (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk {
     if (!image || !key) {
         return;
     }
 
-    // 1.内存缓存
+    // 1.添加内存缓存
     NSUInteger cost = SDCacheCostForImage(image);
-    [self.memCache setObject:image forKey:key cost:cost];
+    [self.memCache setObject:image forKey:key cost:cost]; // TODO: 为什么要计算 cost？
 
     if (toDisk) {
         // 2.开启异步线程执行存储任务
-        dispatch_async(self.ioQueue, ^{  // TODO: 为什么是 ioQueue？
+        dispatch_async(self.ioQueue, ^{  // TODO: 为什么是 serial queue？
             NSData *data = imageData;
 
-            // 2.1 如果需要重新转 data 或者传进来的 imageData 为空的话，就再转一次 data，因为存为文件的必须是二进制数据
+            // 2.1 如果需要 recalculate (重新转 data)或者传进来的 imageData 为空的话，就再转一次 data，因为存为文件的必须是二进制数据
             if (image && (recalculate || !data)) {
-                // iPhone 里面需要判断图片类型
+                // TODO: iPhone 里面需要判断图片类型？
 #if TARGET_OS_IPHONE
                 // We need to determine if the image is a PNG or a JPEG
                 // PNGs are easier to detect because they have a unique signature (http://www.w3.org/TR/PNG-Structure.html)
@@ -221,7 +229,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
                 BOOL imageIsPng = hasAlpha;
 
                 // But if we have an image data, we will look at the preffix
-                if ([imageData length] >= [kPNGSignatureData length]) {  // 根据二进制数据的前 8 位来判断是不是 PNG 格式的
+                if ([imageData length] >= [kPNGSignatureData length]) {  // 根据二进制数据 imageData 的前 8 位来判断是不是 PNG 格式的
                     imageIsPng = ImageDataHasPNGPreffix(imageData);
                 }
 
@@ -256,6 +264,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     [self storeImage:image recalculateFromImage:YES imageData:nil forKey:key toDisk:toDisk];
 }
 
+// 查询指定 key 的图片磁盘缓存是否存在
 - (BOOL)diskImageExistsWithKey:(NSString *)key {
     BOOL exists = NO;
     
@@ -266,6 +275,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     return exists;
 }
 
+// 异步查询指定 key 的图片磁盘缓存是否存在
 - (void)diskImageExistsWithKey:(NSString *)key completion:(SDWebImageCheckCacheCompletionBlock)completionBlock {
     dispatch_async(_ioQueue, ^{
         BOOL exists = [_fileManager fileExistsAtPath:[self defaultCachePathForKey:key]];
@@ -277,10 +287,12 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     });
 }
 
+// 从内存缓存中读取指定 key 对应的 image
 - (UIImage *)imageFromMemoryCacheForKey:(NSString *)key {
     return [self.memCache objectForKey:key];
 }
 
+// 先从内存缓存中读取指定 key 对应的 image，如果内存缓存中不存在，就读取磁盘缓存
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key {
     // First check the in-memory cache...
     UIImage *image = [self imageFromMemoryCacheForKey:key];
@@ -298,13 +310,16 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     return diskImage;
 }
 
+// 查找磁盘缓存中图片二进制数据
 - (NSData *)diskImageDataBySearchingAllPathsForKey:(NSString *)key {
+    // 读取磁盘缓存（沙盒）
     NSString *defaultPath = [self defaultCachePathForKey:key];
     NSData *data = [NSData dataWithContentsOfFile:defaultPath];
     if (data) {
         return data;
     }
 
+    // 如果沙盒中没有，就读取 bundle 中的数据
     NSArray *customPaths = [self.customPaths copy];
     for (NSString *path in customPaths) {
         NSString *filePath = [self cachePathForKey:key inPath:path];
@@ -317,13 +332,14 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     return nil;
 }
 
+// 读取磁盘中的图片二进制数据，并转成 UIImage
 - (UIImage *)diskImageForKey:(NSString *)key {
     NSData *data = [self diskImageDataBySearchingAllPathsForKey:key];
     if (data) {
         UIImage *image = [UIImage sd_imageWithData:data];
         image = [self scaledImageForKey:key image:image];
         if (self.shouldDecompressImages) {
-            image = [UIImage decodedImageWithImage:image];
+            image = [UIImage decodedImageWithImage:image];  // TODO: 为什么需要解压缩？
         }
         return image;
     }
@@ -332,10 +348,12 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     }
 }
 
+// 图片缩放适配
 - (UIImage *)scaledImageForKey:(NSString *)key image:(UIImage *)image {
     return SDScaledImageForKey(key, image);
 }
 
+// 先查询内存缓存，如果没有，然后再异步查找磁盘缓存
 - (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock {
     if (!doneBlock) {
         return nil;
@@ -381,18 +399,22 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     return operation;
 }
 
+// 移除指定图片的内存缓存和磁盘缓存
 - (void)removeImageForKey:(NSString *)key {
     [self removeImageForKey:key withCompletion:nil];
 }
 
+// 移除指定图片的内存缓存和磁盘缓存
 - (void)removeImageForKey:(NSString *)key withCompletion:(SDWebImageNoParamsBlock)completion {
     [self removeImageForKey:key fromDisk:YES withCompletion:completion];
 }
 
+// 移除指定图片的内存缓存，如果需要的话，同时移除该图片的磁盘缓存
 - (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk {
     [self removeImageForKey:key fromDisk:fromDisk withCompletion:nil];
 }
 
+// 移除指定图片的缓存
 - (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk withCompletion:(SDWebImageNoParamsBlock)completion {
     
     if (key == nil) {
@@ -433,10 +455,12 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     self.memCache.countLimit = maxCountLimit;
 }
 
+// 清除所有图片的内存缓存
 - (void)clearMemory {
     [self.memCache removeAllObjects];
 }
 
+// 异步清空所有图片的磁盘缓存
 - (void)clearDisk {
     [self clearDiskOnCompletion:nil];
 }
@@ -458,10 +482,12 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     });
 }
 
+// 异步清扫磁盘缓存（从磁盘缓存中清理过期的图片数据，如果总缓存体积超标，同时清理空间）
 - (void)cleanDisk {
     [self cleanDiskWithCompletionBlock:nil];
 }
 
+// 异步清扫磁盘缓存（从磁盘缓存中清理过期的图片数据，如果总缓存体积超标，同时清理空间）
 - (void)cleanDiskWithCompletionBlock:(SDWebImageNoParamsBlock)completionBlock {
     dispatch_async(self.ioQueue, ^{
         NSURL *diskCacheURL = [NSURL fileURLWithPath:self.diskCachePath isDirectory:YES];
@@ -522,7 +548,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
                                                                 return [obj1[NSURLContentModificationDateKey] compare:obj2[NSURLContentModificationDateKey]];
                                                             }];
 
-            // 删除文件直到 desiredCacheSize
+            // 删除文件直到 desiredCacheSize，也就是 maxCacheSize 的一半
             // Delete files until we fall below our desired cache size.
             for (NSURL *fileURL in sortedFiles) {
                 if ([_fileManager removeItemAtURL:fileURL error:nil]) {
@@ -544,6 +570,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     });
 }
 
+// 后台执行异步清扫磁盘缓存（从磁盘缓存中清理过期的图片数据，如果总缓存体积超标，同时清理空间）
 - (void)backgroundCleanDisk {
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
@@ -564,6 +591,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     }];
 }
 
+// 计算磁盘缓存总体积大小
 - (NSUInteger)getSize {
     __block NSUInteger size = 0;
     dispatch_sync(self.ioQueue, ^{
@@ -577,6 +605,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     return size;
 }
 
+// 计算磁盘缓存总文件数目
 - (NSUInteger)getDiskCount {
     __block NSUInteger count = 0;
     dispatch_sync(self.ioQueue, ^{
@@ -586,6 +615,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     return count;
 }
 
+// 异步计算磁盘缓存总体积大小和总文件数目
 - (void)calculateSizeWithCompletionBlock:(SDWebImageCalculateSizeBlock)completionBlock {
     NSURL *diskCacheURL = [NSURL fileURLWithPath:self.diskCachePath isDirectory:YES];
 

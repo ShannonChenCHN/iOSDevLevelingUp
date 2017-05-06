@@ -157,6 +157,7 @@
  ![Process](./src/SDWebImageSequenceDiagram.png)
 
 ### 3. 目录结构
+
 - Downloader
 	- `SDWebImageDownloader`
 	- `SDWebImageDownloaderOperation`
@@ -176,6 +177,9 @@
 	- `UIImage+GIF`
 	- `UIImage+MultiFormat`
 	- `UIImage+WebP`
+- Other
+    - `SDWebImageOperation`（协议）
+    - `SDWebImageCompat`（宏定义、常量、通用函数）
 
 类名|功能|
 --|--|
@@ -709,23 +713,224 @@ BOOL responseFromCached;
 
 ### 2. 图片缓存——SDImageCache
 
+首先我们想一想，为什么需要缓存？
+- 以空间换时间，提升用户体验：加载同一张图片，读取缓存是肯定比远程下载的速度要快得多的
+- 减少不必要的网络请求，提升性能，节省流量：一般来讲，同一张图片的 URL 是不会经常变化的，所以没有必要重复下载。另外，现在的手机存储空间都比较大，相对于流量来，缓存占的那点空间算不了什么
+
+`SDImageCache` 管理着一个内存缓存和磁盘缓存（可选），同时在写入磁盘缓存时采取异步执行，所以不会阻塞主线程，影响用户体验。
+
 **几个问题**
-- 为什么需要缓存？
 - 从读取速度和保存时间上来考虑，缓存该怎么存？key 怎么定？
 - 内存缓存怎么存？
 - 磁盘缓存怎么存？路径、文件名怎么定？
 - 使用时怎么读取缓存？
 - 什么时候需要移除缓存？怎么移除？
 
+**枚举**
+```
+typedef NS_ENUM(NSInteger, SDImageCacheType) {
+    SDImageCacheTypeNone,   // 没有读取到图片缓存，需要从网上下载
+    SDImageCacheTypeDisk,   // 磁盘中的缓存
+    SDImageCacheTypeMemory  // 内存中的缓存
+};
+```
+
 **.h 文件中的属性：**
 
+```
+@property (assign, nonatomic) BOOL shouldDecompressImages;  // 读取磁盘缓存后，是否需要对图片进行解压缩
+
+@property (assign, nonatomic) NSUInteger maxMemoryCost; // 其实就是 NSCache 的 totalCostLimit，内存缓存总消耗的最大限制，cost 是根据内存中的图片的像素大小来计算的
+@property (assign, nonatomic) NSUInteger maxMemoryCountLimit; // 其实就是 NSCache 的 countLimit，内存缓存的最大数目
+
+@property (assign, nonatomic) NSInteger maxCacheAge;    // 磁盘缓存的最大时长，也就是说缓存存多久后需要删掉
+@property (assign, nonatomic) NSUInteger maxCacheSize;  // 磁盘缓存文件总体积最大限制，以 bytes 来计算
+```
+
 **.m 文件中的属性：**
+```
+@property (strong, nonatomic) NSCache *memCache;
+@property (strong, nonatomic) NSString *diskCachePath;
+@property (strong, nonatomic) NSMutableArray *customPaths; // // 只读的路径，比如 bundle 中的文件路径，用来在 SDWebImage 下载、读取缓存之前预加载用的
+@property (SDDispatchQueueSetterSementics, nonatomic) dispatch_queue_t ioQueue;
+
+NSFileManager *_fileManager;
+
+```
+
 
 **.h 文件中的方法：**
 
-**.m 文件中的方法：**
++ (SDImageCache *)sharedImageCache;
+- (id)initWithNamespace:(NSString *)ns;
+- (id)initWithNamespace:(NSString *)ns diskCacheDirectory:(NSString *)directory;
+
+-(NSString *)makeDiskCachePath:(NSString*)fullNamespace;
+
+
+- (void)addReadOnlyCachePath:(NSString *)path;
+
+
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key toDisk:(BOOL)toDisk;
+- (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk;
+
+- (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock;
+
+- (UIImage *)imageFromMemoryCacheForKey:(NSString *)key;
+- (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
+
+
+- (void)removeImageForKey:(NSString *)key;
+- (void)removeImageForKey:(NSString *)key withCompletion:(SDWebImageNoParamsBlock)completion;
+- (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk;
+- (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk withCompletion:(SDWebImageNoParamsBlock)completion;
+
+- (void)clearMemory;
+
+- (void)clearDiskOnCompletion:(SDWebImageNoParamsBlock)completion;
+- (void)clearDisk;
+- (void)cleanDiskWithCompletionBlock:(SDWebImageNoParamsBlock)completionBlock;
+- (void)cleanDisk;
+
+
+- (NSUInteger)getSize;
+- (NSUInteger)getDiskCount;
+- (void)calculateSizeWithCompletionBlock:(SDWebImageCalculateSizeBlock)completionBlock;
+
+
+- (void)diskImageExistsWithKey:(NSString *)key completion:(SDWebImageCheckCacheCompletionBlock)completionBlock;
+- (BOOL)diskImageExistsWithKey:(NSString *)key;
+
+
+- (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)path;
+- (NSString *)defaultCachePathForKey:(NSString *)key;
+
+**.m 文件中的方法和函数：**
+
+1. 方法
+
+```
+// Lifecycle
++ (SDImageCache *)sharedImageCache;
+- (id)init;
+- (id)initWithNamespace:(NSString *)ns;
+- (id)initWithNamespace:(NSString *)ns diskCacheDirectory:(NSString *)directory;
+- (void)dealloc;
+
+// Cache Path
+- (void)addReadOnlyCachePath:(NSString *)path; // 添加只读路径，比如 bundle 中的文件路径，用来在 SDWebImage 下载、读取缓存之前预加载用的
+- (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)path;
+- (NSString *)defaultCachePathForKey:(NSString *)key;
+- (NSString *)cachedFileNameForKey:(NSString *)key
+-(NSString *)makeDiskCachePath:(NSString*)fullNamespace;
+
+// Store Image
+- (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk 
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key;
+- (void)storeImage:(UIImage *)image forKey:(NSString *)key toDisk:(BOOL)toDisk;
+
+
+// Check if image exists
+- (BOOL)diskImageExistsWithKey:(NSString *)key;
+- (void)diskImageExistsWithKey:(NSString *)key completion:(SDWebImageCheckCacheCompletionBlock)completionBlock;
+
+// Query the image cache
+- (UIImage *)imageFromMemoryCacheForKey:(NSString *)key;
+- (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
+- (NSData *)diskImageDataBySearchingAllPathsForKey:(NSString *)key;
+- (UIImage *)diskImageForKey:(NSString *)key;
+- (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock;
+- (UIImage *)scaledImageForKey:(NSString *)key image:(UIImage *)image;
+
+// Remove specified image
+- (void)removeImageForKey:(NSString *)key;
+- (void)removeImageForKey:(NSString *)key withCompletion:(SDWebImageNoParamsBlock)completion;
+- (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk;
+- (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk withCompletion:(SDWebImageNoParamsBlock)completion;
+
+// Setter and getter
+- (void)setMaxMemoryCost:(NSUInteger)maxMemoryCost;
+- (NSUInteger)maxMemoryCost;
+- (NSUInteger)maxMemoryCountLimit;
+- (void)setMaxMemoryCountLimit:(NSUInteger)maxCountLimit;
+
+// Clear and clean
+- (void)clearMemory;
+- (void)clearDisk;
+- (void)clearDiskOnCompletion:(SDWebImageNoParamsBlock)completion;
+- (void)cleanDisk;
+- (void)cleanDiskWithCompletionBlock:(SDWebImageNoParamsBlock)completionBlock;
+- (void)backgroundCleanDisk;
+
+// Cache Size
+- (NSUInteger)getSize;
+- (NSUInteger)getDiskCount;
+- (void)calculateSizeWithCompletionBlock:(SDWebImageCalculateSizeBlock)completionBlock;
+
+```
+
+2.函数
+```
+NSUInteger SDCacheCostForImage(UIImage *image);
+BOOL ImageDataHasPNGPreffix(NSData *data);
+
+```
 
 **具体实现：**
+
+`SDImageCache` 的内存缓存是通过一个继承 `NSCache` 的 `AutoPurgeCache` 类来实现的，`NSCache` 是一个类似于 `NSMutableDictionary` 存储 key-value 的容器，主要有以下几个特点：
+- 自动删除机制：当系统内存紧张时，`NSCache`会自动删除一些缓存对象
+- 线程安全：从不同线程中对同一个 `NSCache` 对象进行增删改查时，不需要加锁
+- 不同于 `NSMutableDictionary`，`NSCache`存储对象时不会进行 copy 操作
+
+`SDImageCache` 的磁盘缓存是通过异步操作 `NSFileManager` 存储缓存文件到沙盒来实现的。
+
+1. 初始化
+`-init` 方法中默认调用了 `-initWithNamespace:` 方法，`-initWithNamespace:` 方法又调用了 `-makeDiskCachePath:` 方法来初始化缓存目录路径， 同时还调用了 `-initWithNamespace:diskCacheDirectory:` 方法来实现初始化。下面是初始化方法调用栈：
+
+
+```
+-init
+    -initWithNamespace:
+        -makeDiskCachePath:
+        -initWithNamespace:diskCacheDirectory:
+```
+
+`-initWithNamespace:diskCacheDirectory:` 是一个 Designated Initializer，这个方法中主要是初始化实例变量、属性，设置属性默认值，并根据 namespace 设置完整的缓存目录路径，除此之外，还针对 iOS 添加了通知观察者，用于清空内存缓存和清扫磁盘缓存。
+
+
+2. 写入缓存
+写入缓存的操作主要是由 `- storeImage:recalculateFromImage:imageData:forKey:toDisk:` 方法处理的，在存储缓存数据时，先计算图片像素大小，并存储到内存缓存中去，然后如果需要存到磁盘中，就开启异步线程将图片的二进制数据存储到沙盒中。如果是 iOS，
+
+```
+- (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk {
+    # 1. 添加内存缓存
+        # 1.1 计算图片像素大小
+        # 1.2 将 image 存入 memCache 中
+
+    # 2. 如果需要存储到沙盒的话，就异步执行磁盘缓存操作
+        # 2.1 如果需要 recalculate (重新转 data)或者传进来的 imageData 为空的话，就再转一次 data，因为存为文件的必须是二进制数据
+            # 2.1.1 如果 imageData 为 nil，就根据 image 是否有 alpha 通道来判断图片是否是 PNG 格式的
+            # 2.1.2 如果 imageData 不为 nil，就根据 imageData 的前 8 位字节来判断是不是 PNG 格式的，因为 PNG 图片有一个唯一签名，前 8 位字节是（十进制）： 137 80 78 71 13 10 26 10
+            # 2.1.3 根据图片格式将 UIImage 转为对应的二进制数据 NSData
+
+        # 2.2 借助 NSFileManager 将图片二进制数据存储到沙盒
+
+}
+```
+
+3.读取缓存
+查询缓存的操作是
+
+```
+- (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock {
+
+}
+```
+
+4.清扫磁盘缓存
+
 
 **知识点**
 
@@ -796,8 +1001,9 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 
 
 10. `SDWebImage` 的缓存路径？      
-    
-    从 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法中可以看出 `defaultDiskCachePath` 是 `Library/cache/default/com.hackemist.SDWebImageCache.default/MD5_filename`
+    格式：Libray/Cache/<#namespace#>/com.hackemist.SDWebImageCache.<#namespace#>/<#MD5_filename#>
+    如果是默认的 namespace，那么路径就是 `Library/cache/default/com.hackemist.SDWebImageCache.default/<#MD5_filename#>`，详见 `-storeImage:recalculateFromImage:imageData:forKey:toDisk` 方法和 `-defaultDiskCachePath` 方法
+     
 
 11. 文件的缓存有效期及最大缓存空间大小
     
@@ -813,13 +1019,19 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 14. `SDWebImage` 中图片缓存的 key 是按照什么规则取的？
 
 15. `SDImageCache` 清除磁盘缓存的过程？
+
+16. md5 是什么算法？是用来干什么的？除此之外，还有哪些类似的加密算法？
  
 ## 五、收获与疑问
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
 2. SDWebImage 在设计上有哪些巧妙之处？
 3. 假如我自己来实现一个图片下载工具，我该怎么写？
 4. SDWebImage 的进化史
-5.SDWebImage 的性能怎么看？
+    - [1.0](https://github.com/rs/SDWebImage/tree/1.0)
+    - [2.0](https://github.com/rs/SDWebImage/tree/2.0)
+    - [3.0](https://github.com/rs/SDWebImage/tree/3.0)
+    - [4.0.0](https://github.com/rs/SDWebImage/tree/4.0.0)
+5. SDWebImage 的性能怎么看？
 6. SDWebImage 是如何处理 gif 图的？
 
 
