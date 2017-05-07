@@ -137,7 +137,7 @@
         isFailedUrl = [self.failedURLs containsObject:url];
     }
 
-    // 4.下载失败后再次下载时，如果不是 SDWebImageRetryFailed，就直接回调，并且 return 掉
+    // 4.如果这个 url 曾经下载失败过，并且没有设置 SDWebImageRetryFailed，就直回调 completedBlock，并且直接返回
     if (!url || (!(options & SDWebImageRetryFailed) && isFailedUrl)) {
         dispatch_main_sync_safe(^{
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:nil];
@@ -152,7 +152,7 @@
     }
     
     // 6.读取缓存
-    NSString *key = [self cacheKeyForURL:url]; // 缓存用的 key
+    NSString *key = [self cacheKeyForURL:url]; // 计算缓存用的 key
 
     operation.cacheOperation = [self.imageCache queryDiskCacheForKey:key done:^(UIImage *image, SDImageCacheType cacheType) {
         
@@ -206,9 +206,9 @@
                         // See #699 for more details
                         // if we would call the completedBlock, there could be a race condition between this block and another completedBlock for the same object, so if this one is called second, we will overwrite the new data
                     }
-                    else if (error) { // __1.2下载失败
+                    else if (error) { // __1.2 下载失败
                         
-                        // __1.2.1 被取消了，回调 completedBlock.
+                        // __1.2.1 没有被取消的话，回调 completedBlock
                         // TODO:
                         dispatch_main_sync_safe(^{
                             if (!weakOperation.isCancelled) {
@@ -217,7 +217,7 @@
                         });
                         
                         // __1.2.2 将 URL 加入下载失败的黑名单
-                        // TODO: 什么样的失败才能加入 failedURLs？
+                        // MARK: 什么样的失败才需要加入 failedURLs？
                         BOOL shouldBeFailedURLAlliOSVersion = (error.code != NSURLErrorNotConnectedToInternet && error.code != NSURLErrorCancelled && error.code != NSURLErrorTimedOut);
                         BOOL shouldBeFailedURLiOS7 = (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1 && error.code != NSURLErrorInternationalRoamingOff && error.code != NSURLErrorCallIsActive && error.code != NSURLErrorDataNotAllowed);
                         if (shouldBeFailedURLAlliOSVersion || shouldBeFailedURLiOS7) {

@@ -971,15 +971,156 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 
 ### 3. 图片加载管理器——SDWebImageManager
 
+真正加载图片时，我们需要将下载和缓存两个功能结合起来，这样才算是一个完整的图片加载器，`SDWebImageManager` 就是专门干这个的。
+
+**几个问题**
+- 读取磁盘缓存操作和下载操作都是异步的，如何管理这两个操作（operation）？
+- 对于下载失败过的 URL，如何处理重试？
+
+**枚举**
+
+```
+typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
+    SDWebImageRetryFailed = 1 << 0,
+    SDWebImageLowPriority = 1 << 1,
+    SDWebImageCacheMemoryOnly = 1 << 2,
+    SDWebImageProgressiveDownload = 1 << 3,
+    SDWebImageRefreshCached = 1 << 4,
+    SDWebImageContinueInBackground = 1 << 5,
+    SDWebImageHandleCookies = 1 << 6,
+    SDWebImageAllowInvalidSSLCertificates = 1 << 7,
+    SDWebImageHighPriority = 1 << 8,
+    SDWebImageDelayPlaceholder = 1 << 9,
+    SDWebImageTransformAnimatedImage = 1 << 10,
+    SDWebImageAvoidAutoSetImage = 1 << 11
+};
+```
+
 **.h 文件中的属性：**
+
+```
+@property (weak, nonatomic) id <SDWebImageManagerDelegate> delegate;
+@property (strong, nonatomic, readonly) SDImageCache *imageCache;              // 缓存器
+@property (strong, nonatomic, readonly) SDWebImageDownloader *imageDownloader; // 下载器
+@property (nonatomic, copy) SDWebImageCacheKeyFilterBlock cacheKeyFilter;      // 用来自定义缓存 key 的 block
+```
 
 **.m 文件中的属性：**
 
+```
+@property (strong, nonatomic, readwrite) SDImageCache *imageCache;
+@property (strong, nonatomic, readwrite) SDWebImageDownloader *imageDownloader;
+@property (strong, nonatomic) NSMutableSet *failedURLs;             // 下载失败过的 URL 
+@property (strong, nonatomic) NSMutableArray *runningOperations;    // 正在执行中的任务
+```
+
 **.h 文件中的方法：**
+
+```
++ (SDWebImageManager *)sharedManager;
+
+- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+                                        options:(SDWebImageOptions)options
+                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
+                                        completed:(SDWebImageCompletionWithFinishedBlock)completedBlock;
+
+
+- (void)saveImageToCache:(UIImage *)image forURL:(NSURL *)url;
+
+// Operation
+- (void)cancelAll;
+- (BOOL)isRunning;
+
+// Check if image exists
+- (BOOL)cachedImageExistsForURL:(NSURL *)url;
+- (BOOL)diskImageExistsForURL:(NSURL *)url;
+- (void)cachedImageExistsForURL:(NSURL *)url completion:(SDWebImageCheckCacheCompletionBlock)completionBlock;
+- (void)diskImageExistsForURL:(NSURL *)url completion:(SDWebImageCheckCacheCompletionBlock)completionBlock;
+
+- (NSString *)cacheKeyForURL:(NSURL *)url;
+```
 
 **.m 文件中的方法：**
 
-**方法实现：**
+```
+// LifeCycle
++ (id)sharedManager;
+- (id)init;
+- (SDImageCache *)createCache;
+
+// Cache key
+- (NSString *)cacheKeyForURL:(NSURL *)url;
+ 
+// Check if image exists
+- (BOOL)cachedImageExistsForURL:(NSURL *)url;
+- (BOOL)diskImageExistsForURL:(NSURL *)url;
+- (void)cachedImageExistsForURL:(NSURL *)url completion:(SDWebImageCheckCacheCompletionBlock)completionBlock;
+- (void)diskImageExistsForURL:(NSURL *)url completion:(SDWebImageCheckCacheCompletionBlock)completionBlock;
+
+// Load image
+- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+                                        options:(SDWebImageOptions)options
+                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
+                                        completed:(SDWebImageCompletionWithFinishedBlock)completedBlock;
+
+// Save image
+- (void)saveImageToCache:(UIImage *)image forURL:(NSURL *)url;
+
+// Operation
+- (void)cancelAll;
+- (BOOL)isRunning;
+
+```
+
+**具体实现：**
+
+`SDWebImageManager` 的核心任务是由 `-downloadImageWithURL:options:progress:completed:` 方法来实现的，这个方法中先会从 `SDImageCache` 中读取缓存，如果有缓存，就直接返回缓存，如果没有就通过 `SDWebImageDownloader` 去下载，下载成功后再保存到缓存中去，然后再回调 `completedBlock`。其中 `progressBlock` 的回调是直接交给了 `SDWebImageDownloader` 的 `progressBlock` 来处理的。
+
+```
+- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+                                         options:(SDWebImageOptions)options
+                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
+                                       completed:(SDWebImageCompletionWithFinishedBlock)completedBlock {
+    # 1. 对 completedBlock 和 url 进行检查
+
+    # 2. 创建 SDWebImageCombinedOperation 对象
+
+    # 3. 判断是否是曾经下载失败过的 url
+
+    # 4. 如果这个 url 曾经下载失败过，并且没有设置 SDWebImageRetryFailed，就直回调 completedBlock，并且直接返回
+
+    # 5. 添加 operation 到 runningOperations 中
+    
+    # 6. 计算缓存用的 key，读取缓存
+
+    # 7. 处理缓存查询结果回调
+
+        # 7.1 判断 operation 是否已经被取消了，如果已经取消了就直接移除 operation
+        # 7.2 进一步处理
+            # 7.2.A 如果缓存中没有图片或者图片每次都需要更新
+                # 7.2.A.1 如果有缓存图片，先回调 completedBlock，回传缓存的图片
+                # 7.2.A.2 开始下载图片，获得 subOperation
+                    # 7.2.A.2.1.A 操作被取消，什么都不干
+                    # 7.2.A.2.1.B 下载失败
+                        # 7.2.A.2.B.1 没有被取消的话，回调 completedBlock
+                        # 7.2.A.2.B.2 如果需要，则将 URL 加入下载失败的黑名单
+                    # 7.2.A.2.1.C 下载成功
+                        # 7.2.A.2.1.C.1 将 URL 从下载失败的黑名单中移除
+                        # 7.2.A.2.1.C.2 缓存图片
+                        # 7.2.A.2.1.C.3 回调 completedBlock
+                    # 7.2.A.2.2 将 operation 从 runningOperations 中移除
+                # 7.2.1.3 设置 SDWebImageCombinedOperation 的 cancelBlock——cancel 掉 subOperation，并移除 operation
+                
+            # 7.2.B 如果有缓存图片且不需要每次更新
+                # 7.2.B.1 回调 completedBlock
+                # 7.2.B.2 流程结束，从 runningOperations 中移除 operation
+            # 7.2.C 如果没有缓存图片而且不允许下载
+                # 7.2.B.1 回调 completedBlock
+                # 7.2.B.2 流程结束，从 runningOperations 中移除 operation
+}
+```
+
+`SDWebImageCombinedOperation` 来管理读取缓存操作和下载操作，
 
 **知识点**
 
@@ -993,7 +1134,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 
 **.m 文件中的方法：**
 
-**方法实现：**
+**具体实现：**
 
 **知识点**
 
