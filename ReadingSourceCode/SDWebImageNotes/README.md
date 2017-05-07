@@ -14,6 +14,12 @@
    - [目录结构](#3-目录结构)
    - [核心逻辑](#4-核心逻辑)
 - [实现细节](#三实现细节)
+    - [1. 图片下载](#1-图片下载)
+        - [1.1 SDWebImageDownloader](#11-sdwebimagedownloader)
+        - [1.2 SDWebImageDownloader](#12-sdwebimagedownloaderoperation)
+    - [2.图片缓存——SDImageCache](#2-图片缓存sdimagecache)
+    - [3.图片加载管理器——SDWebImageManager](#3-图片加载管理器sdwebimagemanager)
+    - [4. 设置 UIImageView 的图片——UIImageView+WebCache](#4-设置-uiimageview-的图片uiimageviewwebcache)
 - [知识点](#四知识点)
 - [收获与疑问](#五收获与疑问)
 - [延伸阅读](#六延伸阅读)
@@ -1200,9 +1206,10 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
 值得注意的是，为了防止多个异步加载任务同时存在时，可能出现互相冲突和干扰，每个 `UIImageView` 的图片加载任务都会保存成一个 Associated Object，方便需要时取消任务。这个 Associated Object 的操作是在 `UIView+WebCacheOperation` 中实现的，因为除了 `UIImageView` 用到图片加载功能之外，还有 `UIButton` 等其他类也用到了加载远程图片的功能，所以需要进行同样的处理，这样设计实现了代码的复用。
 
 **知识点**
+1. UI 操作为什么必须在主线程执行？
+2. `-setNeedsLayout` 方法
 
-
-## 四、知识点
+## 四、知识点概览
 
 2. `TARGET_OS_IPHONE` 宏和 `__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0` 宏的使用
 这两个宏都是用于**编译时**进行 SDK 版本适配的宏，主要用于模拟器上的调试，而针对真机上的 iOS 版本适配就需要采用**运行时**的判断方式了，比如使用 respondsToSelector: 方法来判断当前运行环境是否支持该方法的调用。       
