@@ -231,7 +231,7 @@
 
 - 下载（`SDWebImageDownloader `）
 - 缓存（`SDImageCache`）
-- 将缓存和下载的功能结合起来（`SDWebImageManager`）
+- 将缓存和下载的功能组合起来（`SDWebImageManager`）
 - 封装成 UIImageView 等类的分类方法（`UIImageView+WebCache` 等）
 
 ### 1. 图片下载
@@ -932,7 +932,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 
 `SDWebImage` 在给 `UIImageView` 加载图片时首先需要查询缓存，查询缓存的操作主要是 `-queryDiskCacheForKey:done:` 方法来实现的，该方法首先会调用 `-imageFromMemoryCacheForKey` 方法来查询内存缓存，也就是从 `memCache` 中去找，如果找到了对应的图片（一个 `UIImage` 对象），就直接回调 `doneBlock`，并直接返回。 如果内存缓存中没有找到对应的图片，就开启异步队列，调用 `-diskImageForKey` 读取磁盘缓存，读取成功之后，再保存到内存缓存，最后再回到主队列，回调 `doneBlock`。
 
-其中读取磁盘缓存并不是一步就完成了的，读取磁盘缓存时，会先从沙盒中去找，如果沙盒中没有，再从 `customPaths` （也就是 bundle）中去找，找到之后，再对数据进行转换，后面的图片处理步骤跟图片下载成功后的图片处理步骤一样————先将 data 转成 image，再进行根据文件名中的 @2x、@3x 进行缩放处理，如果需要解压缩，最后再解压缩一下。
+其中读取磁盘缓存并不是一步就完成了的，读取磁盘缓存时，会先从沙盒中去找，如果沙盒中没有，再从 `customPaths` （也就是 bundle）中去找，找到之后，再对数据进行转换，后面的图片处理步骤跟图片下载成功后的图片处理步骤一样——先将 data 转成 image，再进行根据文件名中的 @2x、@3x 进行缩放处理，如果需要解压缩，最后再解压缩一下。
 
 ```
 - (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock {
@@ -947,7 +947,10 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 
 4.清扫磁盘缓存
 
-每新加载一张图片，就会新增一份缓存，时间一长，磁盘上的缓存只会越来越多，所以我们需要定期清除部分缓存。值得注意的是，清扫磁盘缓存（clean）和清空磁盘缓存（clear）是两个不同的概念，清空是删除整个缓存目录，清扫只是删除部分缓存文件。清扫磁盘缓存有两个指标：一是缓存有效期，二是缓存体积最大限制。`SDImageCache`中的缓存有效期是通过 `maxCacheAge` 属性来设置的，默认值是 1 周，缓存体积最大限制是通过 `maxCacheSize` 来设置的，默认值为 0。
+每新加载一张图片，就会新增一份缓存，时间一长，磁盘上的缓存只会越来越多，所以我们需要定期清除部分缓存。值得注意的是，清扫磁盘缓存（clean）和清空磁盘缓存（clear）是两个不同的概念，清空是删除整个缓存目录，清扫只是删除部分缓存文件。
+
+清扫磁盘缓存有两个指标：一是缓存有效期，二是缓存体积最大限制。`SDImageCache`中的缓存有效期是通过 `maxCacheAge` 属性来设置的，默认值是 1 周，缓存体积最大限制是通过 `maxCacheSize` 来设置的，默认值为 0。
+
 `SDImageCache` 在初始化时添加了通知观察者，所以在应用即将终止时和退到后台时，都会调用 `-cleanDiskWithCompletionBlock:` 方法来异步清扫缓存，清扫磁盘缓存的逻辑是，先遍历所有缓存文件，并根据文件的修改时间来删除过期的文件，同时记录剩下的文件的属性和总体积大小，如果设置了 `maxCacheAge` 属性的话，接下来就把剩下的文件按修改时间从小到大排序（最早的排最前面），最后再遍历这个文件数组，一个一个删，直到总体积小于 desiredCacheSize 为止，也就是 maxCacheSize 的一半。
 
 
