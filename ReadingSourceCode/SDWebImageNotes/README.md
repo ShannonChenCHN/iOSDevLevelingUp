@@ -1120,21 +1120,84 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
 }
 ```
 
-`SDWebImageCombinedOperation` 来管理读取缓存操作和下载操作，
+`SDWebImageManager` 在读取缓存和下载之前会创建一个 `SDWebImageCombinedOperation` 对象，这个对象是用来管理缓存读取操作和下载操作的，SDWebImageCombinedOperation` 对象有 3 个属性：
+- `cancelled`：用来取消当前加载任务的 
+- `cancelBlock`：用来移除当前加载任务和取消下载任务的 
+- `cacheOperation`：用来取消读取缓存操作
 
 **知识点**
 
 ### 4. 设置 UIImageView 的图片——UIImageView+WebCache
 
-**.h 文件中的属性：**
+我们平时最常用的图片加载，是通过调用 `UIImageView+WebCache` 的 `-sd_setImageWithURL:...` 系列方法来加载的，`UIImageView+WebCache` 实际上是将 `SDWebImageManager` 封装了一层，内部针对 `UIImageView` 做了一些处理，使用起来更方便、更直接、更简单。
 
-**.m 文件中的属性：**
+`UIImageView+WebCache` 的主要任务是以下几个：
+- 占位图设置
+- 自动管理图片加载任务
+- 图片成功获取后，自动设置图片显示 
+
+
+**几个问题**
+- 如何处理 `UIImageView` 连续多次加载图片的情况，比如在 `UITableView` 的 `...cellForRow...` 方法中加载 cell 上的图片？
+- 如何处理 placeholder image 的显示逻辑？
 
 **.h 文件中的方法：**
 
+```
+- (NSURL *)sd_imageURL;
+
+// Load image for UIImageView
+- (void)sd_setImageWithURL:(NSURL *)url;
+- (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder;
+- (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options;
+- (void)sd_setImageWithURL:(NSURL *)url completed:(SDWebImageCompletionBlock)completedBlock;
+- (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completed:(SDWebImageCompletionBlock)completedBlock;
+- (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options completed:(SDWebImageCompletionBlock)completedBlock;
+- (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock;
+
+- (void)sd_setImageWithPreviousCachedImageWithURL:(NSURL *)url andPlaceholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock;
+
+// Animation Image
+- (void)sd_setAnimationImagesWithURLs:(NSArray *)arrayOfURLs;
+
+// Cancel
+- (void)sd_cancelCurrentImageLoad;
+- (void)sd_cancelCurrentAnimationImagesLoad;
+
+```
+
+
 **.m 文件中的方法：**
+```
+同 .h 文件中的方法
+```
 
 **具体实现：**
+
+`UIImageView+WebCache` 的核心逻辑都在 `- sd_setImageWithURL:placeholderImage:options:progress:completed:` 方法中，为了防止多个异步加载任务同时存在时，可能出现互相冲突和干扰，该方法中首先通过调用 `-sd_cancelCurrentImageLoad` 方法取消这个 `UIImageView` 当前的下载任务，然后设置了占位图，如果 url 不为 nil，接着就调用 `SDWebImageManager` 的 `-downloadImage...` 方法开始加载图片，并将这个加载任务 operation 保存起来，用于后面的 cancel 操作。图片获取成功后，再重新设置 imageView 的 image，并回调 completedBlock。
+
+
+```
+- (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
+    # 1. 取消当前正在进行的加载任务
+    # 2. 通过 Associated Object 将 url 作为成员变量存起来
+
+    # 3. 设置占位图
+
+    # 4. 根据 url 是否为 nil 做处理
+        A. 如果 url 不为 nil
+            A.1 调用 SDWebImageManager 的 -downloadImage... 方法开始加载图片，并获得一个 operation
+                A.1.1 设置 image
+                    A.1.1.A 图片下载成功，设置 image
+                    A.1.1.B 图片下载失败，设置 placeholder
+                    A.1.1.C 如果不需要自动设置 image，直接 return
+                A.1.2 回调 completedBlock
+            A.2 借助 UIView+WebCacheOperation 将获得的 operation 保存到成员变量中去
+        B. URL 为空时，直接回调 completedBlock，返回错误信息
+}
+```
+
+值得注意的是，为了防止多个异步加载任务同时存在时，可能出现互相冲突和干扰，每个 `UIImageView` 的图片加载任务都会保存成一个 Associated Object，方便需要时取消任务。这个 Associated Object 的操作是在 `UIView+WebCacheOperation` 中实现的，因为除了 `UIImageView` 用到图片加载功能之外，还有 `UIButton` 等其他类也用到了加载远程图片的功能，所以需要进行同样的处理，这样设计实现了代码的复用。
 
 **知识点**
 
