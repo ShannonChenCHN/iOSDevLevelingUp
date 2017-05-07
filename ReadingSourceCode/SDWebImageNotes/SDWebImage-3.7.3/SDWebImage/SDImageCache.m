@@ -493,7 +493,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         NSURL *diskCacheURL = [NSURL fileURLWithPath:self.diskCachePath isDirectory:YES];
         NSArray *resourceKeys = @[NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLTotalFileAllocatedSizeKey]; // TODO: ???
 
-        // 通过枚举器提前快速获取缓存文件的属性
+        // 1. 创建文件枚举器
         // This enumerator prefetches useful properties for our cache files.
         NSDirectoryEnumerator *fileEnumerator = [_fileManager enumeratorAtURL:diskCacheURL
                                                    includingPropertiesForKeys:resourceKeys
@@ -520,17 +520,17 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
             // Remove files that are older than the expiration date;
             NSDate *modificationDate = resourceValues[NSURLContentModificationDateKey]; // 文件修改时间
             if ([[modificationDate laterDate:expirationDate] isEqualToDate:expirationDate]) { // 因为过期需要删除的文件
-                [urlsToDelete addObject:fileURL];  // 因为过期需要删除的文件
+                [urlsToDelete addObject:fileURL];  // 1.1 因为过期需要删除的文件
                 continue;
             }
 
             // Store a reference to this file and account for its total size.
             NSNumber *totalAllocatedSize = resourceValues[NSURLTotalFileAllocatedSizeKey];
-            currentCacheSize += [totalAllocatedSize unsignedIntegerValue]; // 计算过期文件之外的总文件大小
-            [cacheFiles setObject:resourceValues forKey:fileURL];  // 记录过期文件之外的文件到 cacheFiles 中，留到后面用
+            currentCacheSize += [totalAllocatedSize unsignedIntegerValue]; // 1.2 计算过期文件之外的总文件大小
+            [cacheFiles setObject:resourceValues forKey:fileURL];  // 1.3 记录过期文件之外的文件到 cacheFiles 中，留到后面用
         }
         
-        // 删除过期文件
+        // 2. 删除过期文件
         for (NSURL *fileURL in urlsToDelete) {
             [_fileManager removeItemAtURL:fileURL error:nil];
         }
@@ -541,14 +541,14 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
             // Target half of our maximum cache size for this cleanup pass.
             const NSUInteger desiredCacheSize = self.maxCacheSize / 2; // 以 maxCacheSize 的一半为清理目标
 
-            // 按最近修改时间排序
+            // 3.1 将剩下的文件按最近修改时间排序（最早的排最前面）
             // Sort the remaining cache files by their last modification time (oldest first).
             NSArray *sortedFiles = [cacheFiles keysSortedByValueWithOptions:NSSortConcurrent
                                                             usingComparator:^NSComparisonResult(id obj1, id obj2) {
                                                                 return [obj1[NSURLContentModificationDateKey] compare:obj2[NSURLContentModificationDateKey]];
                                                             }];
 
-            // 删除文件直到 desiredCacheSize，也就是 maxCacheSize 的一半
+            // 3.2 删除文件直到总体积小于 desiredCacheSize 为止，也就是 maxCacheSize 的一半
             // Delete files until we fall below our desired cache size.
             for (NSURL *fileURL in sortedFiles) {
                 if ([_fileManager removeItemAtURL:fileURL error:nil]) {

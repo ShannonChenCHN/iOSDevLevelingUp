@@ -884,7 +884,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 `SDImageCache` 的内存缓存是通过一个继承 `NSCache` 的 `AutoPurgeCache` 类来实现的，`NSCache` 是一个类似于 `NSMutableDictionary` 存储 key-value 的容器，主要有以下几个特点：
 - 自动删除机制：当系统内存紧张时，`NSCache`会自动删除一些缓存对象
 - 线程安全：从不同线程中对同一个 `NSCache` 对象进行增删改查时，不需要加锁
-- 不同于 `NSMutableDictionary`，`NSCache`存储对象时不会进行 copy 操作
+- 不同于 `NSMutableDictionary`，`NSCache`存储对象时不会对 key 进行 copy 操作
 
 `SDImageCache` 的磁盘缓存是通过异步操作 `NSFileManager` 存储缓存文件到沙盒来实现的。
 
@@ -900,12 +900,16 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
         -initWithNamespace:diskCacheDirectory:
 ```
 
-`-initWithNamespace:diskCacheDirectory:` 是一个 Designated Initializer，这个方法中主要是初始化实例变量、属性，设置属性默认值，并根据 namespace 设置完整的缓存目录路径，除此之外，还针对 iOS 添加了通知观察者，用于清空内存缓存和清扫磁盘缓存。
+`-initWithNamespace:diskCacheDirectory:` 是一个 Designated Initializer，这个方法中主要是初始化实例变量、属性，设置属性默认值，并根据 namespace 设置完整的缓存目录路径，除此之外，还针对 iOS 添加了通知观察者，用于内存紧张时清空内存缓存，以及程序终止运行时和程序退到后台时清扫磁盘缓存。
 
 
 2. 写入缓存
 
-写入缓存的操作主要是由 `- storeImage:recalculateFromImage:imageData:forKey:toDisk:` 方法处理的，在存储缓存数据时，先计算图片像素大小，并存储到内存缓存中去，然后如果需要存到磁盘中，就开启异步线程将图片的二进制数据存储到沙盒中。如果是 iOS，
+写入缓存的操作主要是由 `- storeImage:recalculateFromImage:imageData:forKey:toDisk:` 方法处理的，在存储缓存数据时，先计算图片像素大小，并存储到内存缓存中去，然后如果需要存到磁盘（沙盒）中，就开启异步线程将图片的二进制数据存储到磁盘（沙盒）中。
+
+如果需要在存储之前将传进来的 `image` 转成 `NSData`，而不是直接使用传入的 `imageData`，那么就要针对 iOS 系统下，按不同的图片格式来转成对应的 `NSData` 对象。那么图片格式是怎么判断的呢？这里是根据是否有 alpha 通道以及图片数据的[前 8 位字节](http://www.w3.org/TR/PNG-Structure.html)来判断是不是 PNG 图片，不是 PNG 的话就按照 JPG 来处理。
+
+将图片数据存储到磁盘（沙盒）时，需要提供一个包含文件名的路径，这个文件名是一个对 `key` 进行 MD5 处理后生成的字符串。
 
 ```
 - (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk {
@@ -919,22 +923,32 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
             # 2.1.2 如果 imageData 不为 nil，就根据 imageData 的前 8 位字节来判断是不是 PNG 格式的，因为 PNG 图片有一个唯一签名，前 8 位字节是（十进制）： 137 80 78 71 13 10 26 10
             # 2.1.3 根据图片格式将 UIImage 转为对应的二进制数据 NSData
 
-        # 2.2 借助 NSFileManager 将图片二进制数据存储到沙盒
+        # 2.2 借助 NSFileManager 将图片二进制数据存储到沙盒，存储的文件名是对 key 进行 MD5 处理后生成的字符串
 
 }
 ```
 
 3.读取缓存
 
-查询缓存的操作是
+`SDWebImage` 在给 `UIImageView` 加载图片时首先需要查询缓存，查询缓存的操作主要是 `-queryDiskCacheForKey:done:` 方法来实现的，该方法首先会调用 `-imageFromMemoryCacheForKey` 方法来查询内存缓存，也就是从 `memCache` 中去找，如果找到了对应的图片（一个 `UIImage` 对象），就直接回调 `doneBlock`，并直接返回。 如果内存缓存中没有找到对应的图片，就开启异步队列，调用 `-diskImageForKey` 读取磁盘缓存，读取成功之后，再保存到内存缓存，最后再回到主队列，回调 `doneBlock`。
+
+其中读取磁盘缓存并不是一步就完成了的，读取磁盘缓存时，会先从沙盒中去找，如果沙盒中没有，再从 `customPaths` （也就是 bundle）中去找，找到之后，再对数据进行转换，后面的图片处理步骤跟图片下载成功后的图片处理步骤一样————先将 data 转成 image，再进行根据文件名中的 @2x、@3x 进行缩放处理，如果需要解压缩，最后再解压缩一下。
 
 ```
 - (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock {
-
+    # 1.先检查内存缓存，如果找到了就回调 doneBlock，并直接返回
+    
+    # 2.开启异步队列，读取硬盘缓存
+        # 2.1 读取磁盘缓存
+        # 2.2 如果有磁盘缓存，就保存到内存缓存
+        # 2.3 回到主队列，回调 doneBlock
 }
 ```
 
 4.清扫磁盘缓存
+
+每新加载一张图片，就会新增一份缓存，时间一长，磁盘上的缓存只会越来越多，所以我们需要定期清除部分缓存。值得注意的是，清扫磁盘缓存（clean）和清空磁盘缓存（clear）是两个不同的概念，清空是删除整个缓存目录，清扫只是删除部分缓存文件。清扫磁盘缓存有两个指标：一是缓存有效期，二是缓存体积最大限制。`SDImageCache`中的缓存有效期是通过 `maxCacheAge` 属性来设置的，默认值是 1 周，缓存体积最大限制是通过 `maxCacheSize` 来设置的，默认值为 0。
+`SDImageCache` 在初始化时添加了通知观察者，所以在应用即将终止时和退到后台时，都会调用 `-cleanDiskWithCompletionBlock:` 方法来异步清扫缓存，清扫磁盘缓存的逻辑是，先遍历所有缓存文件，并根据文件的修改时间来删除过期的文件，同时记录剩下的文件的属性和总体积大小，如果设置了 `maxCacheAge` 属性的话，接下来就把剩下的文件按修改时间从小到大排序（最早的排最前面），最后再遍历这个文件数组，一个一个删，直到总体积小于 desiredCacheSize 为止，也就是 maxCacheSize 的一半。
 
 
 **知识点**
@@ -948,6 +962,9 @@ BOOL ImageDataHasPNGPreffix(NSData *data);
 	[NSCache 源码（Swift）分析](https://github.com/nixzhu/dev-blog/blob/master/2015-12-09-nscache.md)
 	[YYCache 设计思路](http://blog.ibireme.com/2015/10/26/yycache/)
 
+2. 文件操作和 `NSDirectoryEnumerator` 
+
+3. 如何判断一个图片的格式是 PNG 还是 JPG？
 
 ### 3. 图片加载管理器——SDWebImageManager
 
@@ -1027,6 +1044,9 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 15. `SDImageCache` 清除磁盘缓存的过程？
 
 16. md5 是什么算法？是用来干什么的？除此之外，还有哪些类似的加密算法？
+
+
+17. `SDImageCache` 读取磁盘缓存是不是就是指从沙盒中查找并读取文件？
  
 ## 五、收获与疑问
 1. UIImageView 是如何通过 SDWebImage 加载图片的？
