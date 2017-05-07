@@ -715,7 +715,9 @@ BOOL responseFromCached;
 
 4. `NSURLConnection` 的几个代理方法分别在什么时候调用？
 
-5.  `NSURLCache` 是什么？
+5. `NSURLCache` 是什么？
+6. 下载完成后，为什么需要对图片进行解压缩操作？
+7. WebP 图片的解码
 
 ### 2. 图片缓存——SDImageCache
 
