@@ -24,6 +24,7 @@
 @import AFNetworking;
 
 #import "GlobalTimelineViewController.h"
+#import "ExampleTableViewController.h"
 
 @implementation AppDelegate
 
@@ -34,13 +35,23 @@
     
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     
-    UITableViewController *viewController = [[GlobalTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    self.navigationController.navigationBar.tintColor = [UIColor darkGrayColor];
+    UITableViewController *afViewController = [[GlobalTimelineViewController alloc] initWithStyle:UITableViewStylePlain];
+    UINavigationController *afNavigationController = [[UINavigationController alloc] initWithRootViewController:afViewController];
+    afNavigationController.navigationBar.tintColor = [UIColor darkGrayColor];
+    afNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemTopRated tag:0];
+    
+    ExampleTableViewController *exampleController = [[ExampleTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    UINavigationController *exampleNavigationController = [[UINavigationController alloc] initWithRootViewController:exampleController];
+    exampleNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemFeatured tag:1];
+    exampleNavigationController.navigationBar.tintColor = [UIColor darkGrayColor];
+    
+    
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    tabBarController.viewControllers = @[afNavigationController, exampleNavigationController];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
-    self.window.rootViewController = self.navigationController;
+    self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
     
     return YES;

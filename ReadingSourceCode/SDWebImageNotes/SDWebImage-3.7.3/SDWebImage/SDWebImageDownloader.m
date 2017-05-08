@@ -207,7 +207,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         if (options & SDWebImageDownloaderHighPriority) {
             operation.queuePriority = NSOperationQueuePriorityHigh;
         } else if (options & SDWebImageDownloaderLowPriority) {
-            operation.queuePriority = NSOperationQueuePriorityLow;
+            operation.queuePriority = NSOperationQueuePriorityLow;  // TODO: 这个跟 UI 交互有关系吗？ See SDWebImageLowPriority
         }
 
         // 5.开启下载任务，因为 NSOperation 实例只有在手动调用 start 方法或者加入 NSOperationQueue 才会执行
