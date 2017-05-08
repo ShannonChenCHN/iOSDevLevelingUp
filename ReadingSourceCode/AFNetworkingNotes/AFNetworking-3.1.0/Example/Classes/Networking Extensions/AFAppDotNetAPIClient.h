@@ -23,6 +23,10 @@
 #import <Foundation/Foundation.h>
 @import AFNetworking;
 
+
+/**
+ 继承于 AFHTTPSessionManager 的 API Client
+ */
 @interface AFAppDotNetAPIClient : AFHTTPSessionManager
 
 + (instancetype)sharedClient;

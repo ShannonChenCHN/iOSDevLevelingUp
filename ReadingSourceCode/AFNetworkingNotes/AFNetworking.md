@@ -53,7 +53,6 @@
 1.AFNetworking 的作用是什么？不用 AFNetworking 直接用系统的不也可以吗？
 2.AFNetworking 框架的设计思路和原理是什么？
 3.AFNetworking 和 MKNetworkKit 以及 ASINetwork 有什么不同?
-4.[Draveness](https://github.com/Draveness/iOS-Source-Code-Analyze/blob/master/contents/AFNetworking/AFNetworking%20概述（一）.md) 和[南峰子老驴](http://southpeak.github.io/2015/02/07/sourcecode-sdwebimage/)是怎么读源码的？文章是怎么写的？
    
 知识点：  
  1. HTTP 请求中的 content-type   
@@ -71,5 +70,8 @@
 6.[Mozilla-HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
 7.[objc.io - IP, TCP, and HTTP](https://www.objc.io/issues/10-syncing-data/ip-tcp-http/)
 
+延伸阅读
+- [AFNetworking 源码解读系列](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（Draveness） 
+- [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
 
 

@@ -27,6 +27,7 @@
 
 @implementation Post
 
+// 手动实现 JSON dictionary 转 model
 - (instancetype)initWithAttributes:(NSDictionary *)attributes {
     self = [super init];
     if (!self) {
@@ -44,6 +45,8 @@
 #pragma mark -
 
 + (NSURLSessionDataTask *)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block {
+    // https://api.app.net/stream/0/posts/stream/global
+    
     return [[AFAppDotNetAPIClient sharedClient] GET:@"stream/0/posts/stream/global" parameters:nil progress:nil success:^(NSURLSessionDataTask * __unused task, id JSON) {
         NSArray *postsFromResponse = [JSON valueForKeyPath:@"data"];
         NSMutableArray *mutablePosts = [NSMutableArray arrayWithCapacity:[postsFromResponse count]];
@@ -66,6 +69,7 @@
 
 @implementation Post (NSCoding)
 
+// 手动实现 encode 和 decode
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:(NSInteger)self.postID forKey:@"AF.postID"];
     [aCoder encodeObject:self.text forKey:@"AF.text"];

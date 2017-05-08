@@ -37,6 +37,7 @@
 - (void)reload:(__unused id)sender {
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
+    // 在 Model 中请求数据
     NSURLSessionTask *task = [Post globalTimelinePostsWithBlock:^(NSArray *posts, NSError *error) {
         if (!error) {
             self.posts = posts;
@@ -91,6 +92,7 @@
 - (CGFloat)tableView:(__unused UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // 在 cell 中计算高度
     return [PostTableViewCell heightForCellWithPost:self.posts[(NSUInteger)indexPath.row]];
 }
 

@@ -31,6 +31,8 @@ static NSString * const AFAppDotNetAPIBaseURLString = @"https://api.app.net/";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[AFAppDotNetAPIClient alloc] initWithBaseURL:[NSURL URLWithString:AFAppDotNetAPIBaseURLString]];
+        
+        // TODO: HTTPS 请求
         _sharedClient.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
     });
     

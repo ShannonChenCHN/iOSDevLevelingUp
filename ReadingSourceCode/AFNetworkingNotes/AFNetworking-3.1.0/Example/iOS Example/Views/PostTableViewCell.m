@@ -51,11 +51,14 @@
 
     self.textLabel.text = _post.user.username;
     self.detailTextLabel.text = _post.text;
+    
+    // 使用 UIKit+AFNetworking 加载图片
     [self.imageView setImageWithURL:_post.user.avatarImageURL placeholderImage:[UIImage imageNamed:@"profile-image-placeholder"]];
     
     [self setNeedsLayout];
 }
 
+// 在 cell 中计算高度
 + (CGFloat)heightForCellWithPost:(Post *)post {
     return (CGFloat)fmaxf(70.0f, (float)[self detailTextHeight:post.text] + 45.0f);
 }
