@@ -35,20 +35,24 @@
     }
     
     self.postID = (NSUInteger)[[attributes valueForKeyPath:@"id"] integerValue];
-    self.text = [attributes valueForKeyPath:@"text"];
+    self.text = [attributes valueForKeyPath:@"title"];
     
-    self.user = [[User alloc] initWithAttributes:[attributes valueForKeyPath:@"user"]];
-    
+    NSArray *images = [attributes valueForKeyPath:@"images"];
+    if (images.count > 0) {
+        NSDictionary *userInfo = @{@"avatar_image" : @{@"url" : images.firstObject}};
+        self.user = [[User alloc] initWithAttributes:userInfo];
+    }
+
     return self;
 }
 
 #pragma mark -
 
 + (NSURLSessionDataTask *)globalTimelinePostsWithBlock:(void (^)(NSArray *posts, NSError *error))block {
-    // https://api.app.net/stream/0/posts/stream/global
+    // 知乎日报新闻列表接口：https://news-at.zhihu.com/api/4/news/latest
     
-    return [[AFAppDotNetAPIClient sharedClient] GET:@"stream/0/posts/stream/global" parameters:nil progress:nil success:^(NSURLSessionDataTask * __unused task, id JSON) {
-        NSArray *postsFromResponse = [JSON valueForKeyPath:@"data"];
+    return [[AFAppDotNetAPIClient sharedClient] GET:@"api/4/news/latest" parameters:nil progress:nil success:^(NSURLSessionDataTask * __unused task, id JSON) {
+        NSArray *postsFromResponse = [JSON valueForKeyPath:@"stories"];
         NSMutableArray *mutablePosts = [NSMutableArray arrayWithCapacity:[postsFromResponse count]];
         for (NSDictionary *attributes in postsFromResponse) {
             Post *post = [[Post alloc] initWithAttributes:attributes];
