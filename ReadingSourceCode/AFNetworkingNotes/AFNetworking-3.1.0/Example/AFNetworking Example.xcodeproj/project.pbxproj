@@ -41,6 +41,7 @@
 		29E6F1F41BB9E37200A4466C /* Today Extension Example.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 29E6F1E61BB9E37200A4466C /* Today Extension Example.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		29E6F1F91BB9E56200A4466C /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19A1BB9DD7300A4466C /* Post.m */; };
 		29E6F1FA1BB9E56500A4466C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E6F19C1BB9DD7300A4466C /* User.m */; };
+		5829D6251EC075F50032B6D9 /* ExampleTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5829D6241EC075F50032B6D9 /* ExampleTableViewController.m */; };
 		C2BFE0251C11870800BB258D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BFE0241C11870800BB258D /* AppDelegate.m */; };
 		C2BFE0281C11872D00BB258D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BFE0271C11872D00BB258D /* AppDelegate.m */; };
 /* End PBXBuildFile section */
@@ -153,6 +154,8 @@
 		29E6F2231BB9E76A00A4466C /* ExtensionDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExtensionDelegate.m; sourceTree = "<group>"; };
 		29E6F2251BB9E76A00A4466C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29E6F2271BB9E76B00A4466C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5829D6231EC075F50032B6D9 /* ExampleTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleTableViewController.h; sourceTree = "<group>"; };
+		5829D6241EC075F50032B6D9 /* ExampleTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleTableViewController.m; sourceTree = "<group>"; };
 		C2BFE0231C11870800BB258D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C2BFE0241C11870800BB258D /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C2BFE0261C11872D00BB258D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -231,6 +234,8 @@
 			children = (
 				291BFE081BB9EB3400FFB029 /* GlobalTimelineViewController.h */,
 				291BFE091BB9EB3400FFB029 /* GlobalTimelineViewController.m */,
+				5829D6231EC075F50032B6D9 /* ExampleTableViewController.h */,
+				5829D6241EC075F50032B6D9 /* ExampleTableViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -633,6 +638,7 @@
 			files = (
 				29E6F1A41BB9DD7300A4466C /* Post.m in Sources */,
 				291BFE0D1BB9EB3400FFB029 /* GlobalTimelineViewController.m in Sources */,
+				5829D6251EC075F50032B6D9 /* ExampleTableViewController.m in Sources */,
 				291BFE0E1BB9EB3400FFB029 /* PostTableViewCell.m in Sources */,
 				29E6F1A51BB9DD7300A4466C /* User.m in Sources */,
 				29E6F17A1BB9DCB500A4466C /* main.m in Sources */,
