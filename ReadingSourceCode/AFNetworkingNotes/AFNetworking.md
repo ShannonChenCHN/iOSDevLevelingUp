@@ -69,9 +69,13 @@
 5.[Wikipedia-HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
 6.[Mozilla-HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
 7.[objc.io - IP, TCP, and HTTP](https://www.objc.io/issues/10-syncing-data/ip-tcp-http/)
+8.[从 NSURLConnection 到 NSURLSession](https://objccn.io/issue-5-4/)
+9.[百分号编码](https://zh.wikipedia.org/wiki/百分号编码)
+10.[NSURLCache](http://nshipster.cn/nsurlcache/)
 
 延伸阅读
 - [AFNetworking 源码解读系列](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（Draveness） 
 - [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
-
+- [AFNetworking2.0源码解析系列](http://blog.cnbang.net/tech/2320/)（bang's blog）
+- [NSHipster: AFNetworking 2.0](http://nshipster.cn/afnetworking-2/)
 
