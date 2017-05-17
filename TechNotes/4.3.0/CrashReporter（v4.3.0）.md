@@ -77,12 +77,13 @@ Bugly 相比 BugHD 和 友盟 的优点在于以下几个方面：
 - [AvoidCrash](https://github.com/chenfanfang/AvoidCrash)
 - 常见崩溃原因：
 	- 数组越界
+	- 处理字符串时索引越界
 	- 内存溢出
 	- 内存管理（访问已经释放掉的对象）
 	- CPU 暴增
-	- 未知选择器
+	- 未知选择器（unrecognized selector）
 	- API 不兼容
-	- 处理字符串时索引越界
+	- 除以 0 导致后续访问一个 Nan 的值
 	- 传空值，比如往 NSDictionary 或者 NSArray 中插入 nil
 	- 解析服务端返回的 JSON 数据后，出现 NSNull，间接引起的崩溃
 	- block 回调时没有判空
