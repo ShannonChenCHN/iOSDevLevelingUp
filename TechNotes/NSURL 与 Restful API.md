@@ -56,6 +56,7 @@
       
 #### 2.APIs
 2.1 Creating an NSURL Object
+
    - Basic
       - `- initWithScheme:host:path:`(iOS 2.0–9.0)
       - `+ URLWithString:`
@@ -80,6 +81,7 @@
       - `+ fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
       - `- getFileSystemRepresentation:maxLength:`
       - `- initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
+      
 2.2 Identifying and Comparing Objects
 2.3 Querying an NSURL
 2.4 Loading the Resource of an NSURL Object
