@@ -58,13 +58,13 @@
 2.1 Creating an NSURL Object
 
 - Basic
-   - `- initWithScheme:host:path:`(iOS 2.0–9.0)
-   - `+ URLWithString:`
+  - `- initWithScheme:host:path:`(iOS 2.0–9.0)
+  - `+ URLWithString:`
       > This method expects URLString to contain only characters that are allowed in a properly formed URL. All other characters must be properly percent escaped. Any percent-escaped characters are interpreted using UTF-8 encoding.
       > To create NSURL objects for file system paths, use fileURLWithPath:isDirectory: instead.
-   - `- initWithString:`
-   - `+ URLWithString:relativeToURL:`
-   - `- initWithString:relativeToURL:`
+  - `- initWithString:`
+  - `+ URLWithString:relativeToURL:`
+  - `- initWithString:relativeToURL:`
    
 - File URL
    - `+ fileURLWithPath:isDirectory:`
