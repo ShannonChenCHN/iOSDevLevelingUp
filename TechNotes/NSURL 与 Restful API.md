@@ -91,9 +91,7 @@
 - `- isFileReferenceURL`
 - `isFileURL`
 
-2.4 Loading the Resource of an NSURL Object(for Mac OS)
-
-2.5 Accessing the Parts of the URL
+2.4 Accessing the Parts of the URL
 - `absoluteString`
 - `absoluteURL`
 - `baseURL`(If the receiver is an absolute URL, this property contains nil.)
@@ -115,15 +113,28 @@
 - `standardizedURL`(A copy of the URL with any instances of ".." or "." removed from its path. )
 - `user`
 
-2.6 Modifying and Converting a File URL
-2.7 Working with Bookmark Data
-2.8 Getting and Setting File System Resource Properties
-2.9 Working with Promised Items
-2.10 Working with pasteboards
-2.11 Constants
-2.12 Initializers
-2.13 Instance Properties
-2.14 Type Methods
+2.5 Modifying and Converting a File URL
+- `filePathURL`
+- `- fileReferenceURL`
+- `- URLByAppendingPathComponent:`
+- `- URLByAppendingPathComponent:isDirectory:`
+- `- URLByAppendingPathExtension:`
+- `URLByDeletingLastPathComponent`
+- `URLByResolvingSymlinksInPath`
+- `URLByStandardizingPath`
+
+2.6  Getting and Setting File System Resource Properties
+- `- getResourceValue:forKey:error:`
+- `- resourceValuesForKeys:error:`(The type of the returned resource value varies by resource property; for details, see the documentation for the key you want to access.)
+- `- setResourceValue:forKey:error:`
+- `- setResourceValues:error:`
+- `- removeAllCachedResourceValues`
+- `- removeCachedResourceValueForKey:`
+- `- setTemporaryResourceValue:forKey:`
+
+
+
+
 
 #### 3.Relationships
 - Inherits From: `NSObject`
