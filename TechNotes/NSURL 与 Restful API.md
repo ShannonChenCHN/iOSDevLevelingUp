@@ -84,9 +84,37 @@
   - `- initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
       
 2.2 Identifying and Comparing Objects
+- `isEqual:`(Two NSURLs are considered equal if and only if they return identical values for both baseURL and relativeString.)
+
 2.3 Querying an NSURL
-2.4 Loading the Resource of an NSURL Object
+- `- checkResourceIsReachableAndReturnError:`
+- `- isFileReferenceURL`
+- `isFileURL`
+
+2.4 Loading the Resource of an NSURL Object(for Mac OS)
+
 2.5 Accessing the Parts of the URL
+- `absoluteString`
+- `absoluteURL`
+- `baseURL`(If the receiver is an absolute URL, this property contains nil.)
+- `fileSystemRepresentation`
+- `fragment`
+- `host`
+- `lastPathComponent`
+- `parameterString`
+- `password`
+- `path`
+- `pathComponents`
+- `pathExtension`
+- `port`
+- `query`
+- `relativePath`( If the receiver is an absolute URL, this property contains the same value as path. If the receiver does not conform to RFC 1808, it contains nil.)
+- `relativeString`
+- `resourceSpecifier`
+- `scheme`
+- `standardizedURL`(A copy of the URL with any instances of ".." or "." removed from its path. )
+- `user`
+
 2.6 Modifying and Converting a File URL
 2.7 Working with Bookmark Data
 2.8 Getting and Setting File System Resource Properties
