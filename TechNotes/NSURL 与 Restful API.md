@@ -58,7 +58,6 @@
 2.1 Creating an NSURL Object
 
 - Basic
-
    - `- initWithScheme:host:path:`(iOS 2.0–9.0)
    - `+ URLWithString:`
       > This method expects URLString to contain only characters that are allowed in a properly formed URL. All other characters must be properly percent escaped. Any percent-escaped characters are interpreted using UTF-8 encoding.
@@ -68,7 +67,6 @@
    - `- initWithString:relativeToURL:`
    
 - File URL
-
    - `+ fileURLWithPath:isDirectory:`
    - `- initFileURLWithPath:isDirectory:`
    - `+ fileURLWithPath:`
@@ -78,13 +76,11 @@
    - `+ fileURLWithPathComponents:`
    
 - Resolve bookmark data
-
    - `+ URLByResolvingAliasFileAtURL:options:error:`
    - `+ URLByResolvingBookmarkData:options:relativeToURL:bookmarkDataIsStale:error:`
    - `- initByResolvingBookmarkData:options:relativeToURL:bookmarkDataIsStale:error:`
    
 - C string path
-
    - `+ fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
    - `- getFileSystemRepresentation:maxLength:`
    - `- initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
