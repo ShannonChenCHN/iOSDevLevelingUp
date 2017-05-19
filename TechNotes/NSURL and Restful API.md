@@ -4,6 +4,7 @@
 - NSURL Class Reference
 - NSHipster: NSURL/NSURLComponents
 - FAQ
+- Further Reading
 
 ### [NSURL Class Reference](https://developer.apple.com/reference/foundation/nsurl)
 #### 1.Overview
@@ -155,3 +156,5 @@ If you want to retrieve the original characters in an url,
 NSString *str = [model.album_name stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 ```
 
+### Further Reading
+- [URL- Wikipedia](https://en.wikipedia.org/wiki/URL)
