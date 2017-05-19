@@ -133,12 +133,12 @@
 - `- setTemporaryResourceValue:forKey:`
 
 
-
-
-
 #### 3.Relationships
 - Inherits From: `NSObject`
 - Conforms To:
-   - NSCopying
-   - NSSecureCoding
-   - NSURLHandleClient
+  - NSCopying
+  - NSSecureCoding
+  - NSURLHandleClient
+  
+  
+### [NSHipster: NSURL/NSURLComponents](http://nshipster.com/nsurl/)
