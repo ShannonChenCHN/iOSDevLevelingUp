@@ -60,8 +60,10 @@
 - Basic
   - `- initWithScheme:host:path:`(iOS 2.0–9.0)
   - `+ URLWithString:`
+  
   > This method expects URLString to contain only characters that are allowed in a properly formed URL. All other characters must be properly percent escaped. Any percent-escaped characters are interpreted using UTF-8 encoding.
   > To create NSURL objects for file system paths, use fileURLWithPath:isDirectory: instead.
+  
   - `- initWithString:`
   - `+ URLWithString:relativeToURL:`
   - `- initWithString:relativeToURL:`
@@ -81,9 +83,9 @@
   - `- initByResolvingBookmarkData:options:relativeToURL:bookmarkDataIsStale:error:`
    
 - C string path
-   - `+ fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
-   - `- getFileSystemRepresentation:maxLength:`
-   - `- initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
+  - `+ fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
+  - `- getFileSystemRepresentation:maxLength:`
+  - `- initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:`
       
 2.2 Identifying and Comparing Objects
 2.3 Querying an NSURL
