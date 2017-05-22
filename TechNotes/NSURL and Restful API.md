@@ -1,9 +1,10 @@
-# NSURL 与 Restul API
+# NSURL and Restul API
 
 ## Contents
 - NSURL Class Reference
 - NSHipster: NSURL/NSURLComponents
 - FAQ
+- Further Reading
 
 ### [NSURL Class Reference](https://developer.apple.com/reference/foundation/nsurl)
 #### 1.Overview
@@ -142,3 +143,18 @@
   
   
 ### [NSHipster: NSURL/NSURLComponents](http://nshipster.com/nsurl/)
+
+
+### FAQ
+Q: How to deal with some special characters in an URL, like chinese?
+A: Using percent-encoding.
+```
+NSString * encodingString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+```
+If you want to retrieve the original characters in an url, 
+```
+NSString *str = [model.album_name stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+```
+
+### Further Reading
+- [URL- Wikipedia](https://en.wikipedia.org/wiki/URL)
