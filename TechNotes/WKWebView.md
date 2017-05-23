@@ -1,7 +1,15 @@
 # WKWebView
 
+[ExampleProject](https://github.com/ShannonChenCHN/Playground/tree/master/WebViewDemo)
 
-### [Complete Guide to Implementing WKWebView](http://samwize.com/2016/06/08/complete-guide-to-implementing-wkwebview/)
+## 目录
+- Complete Guide to Implementing WKWebView
+- WKWebView API Reference
+- NSHipster: WKWebView
+- 相关讨论
+- 延伸阅读
+
+### 1.[Complete Guide to Implementing WKWebView](http://samwize.com/2016/06/08/complete-guide-to-implementing-wkwebview/)
 
 - 不能直接在 IB 中直接添加 WKWebView
 - 加载网页的两种方式
@@ -45,20 +53,19 @@
   - Universal links are `http://...` URL that will open an app. They are similar to custom URI scheme to open app, but using regular http addresses. 
 
 
-### WKWebView API Reference（Objective-C）
+### 2.WKWebView API Reference（Objective-C）
 
-简介：
-初始化：
-加载网页：
-代理方法：
-
+#### 2.1 简介：
+#### 2.2 初始化：
+#### 2.3 加载网页：
+#### 2.4 代理方法：
 - WKNavigationDelegate
 - WKUIDelegate
 - WKScriptMessageHandler
 
-### [NSHipster: WKWebView](http://nshipster.cn/wkwebkit/)
+### 3.[NSHipster: WKWebView](http://nshipster.cn/wkwebkit/)
 
-#### 简介
+#### 3.1 简介
 - iOS 与 web 之间的关系
 - Web 一直是 iOS 系统上的二级公民
 - UIWebView 笨重难用，还有内存泄漏，和 Nirtro JavaScript 引擎谈笑风生的 Safari 不知道要比它高到哪里去了。
@@ -74,7 +81,7 @@
   - UIWebView 和 UIWebViewDelegate 在 WKWebKit 中被重构成 14 个类和 3 个协议
 
 
-#### WKWebKit Framework
+#### 3.2 WKWebKit Framework
 **Classes**
 - `WKWebView`: Displays embeded interactive web content
 - `WKBackForwardList`: The web view's back-forward list.
@@ -99,21 +106,21 @@ policy for main frame and subframe navigations.
 - `WKUIDelegate`: Provides methods for presenting native UI on behalf of a webpage.
 - `WKScriptMessageHandler`: Provides a method for receiving messages from JavaScript running in a webpage.
 
-#### API Diff Between UIWebView & WKWebView
+#### 3.3 API Diff Between UIWebView & WKWebView
 
 
-#### JavaScript ↔︎ Swift Communication
+#### 3.4 JavaScript ↔︎ Swift Communication
 
-1. Injecting Behavior with User Scripts
-- WKUserScript allows JavaScript behavior to be injected at the start or end of document load.
-- This powerful feature allows for web content to be manipulated in a safe and consistent way across page requests.
-- Example 
-  - changing the background color of a web page.
-  - removing advertisements
-  - hiding comments
+- Injecting Behavior with User Scripts
+  - WKUserScript allows JavaScript behavior to be injected at the start or end of document load.
+  - This powerful feature allows for web content to be manipulated in a safe and consistent way across page requests.
+  - Example 
+    - changing the background color of a web page.
+    - removing advertisements
+    - hiding comments
 
-2. Message Handlers
-- information from a web page can be passed back to the app by invoking:
+- Message Handlers
+ - information from a web page can be passed back to the app by invoking:
 
 ```
 window.webkit.messageHandlers.{NAME}.postMessage({MESSAGE})
@@ -122,11 +129,19 @@ window.webkit.messageHandlers.{NAME}.postMessage({MESSAGE})
 - The name of the handler is configured in `addScriptMessageHandler()`, which registers a handler conforming to the WKScriptMessageHandler protocol.
 - The same approach can be used to scrape information from the page for display or analysis within the app. See [example](http://nshipster.com/wkwebkit/).
 
-性能提升：
-为什么我们要替换 UIWebView：
-WKWebView 存在的缺陷：
+### 4.讨论：
 
-firefox 的实现
+- 为什么我们要替换 UIWebView
+  - WKWebView 解决了 UIWebView 的哪些痛点
+  - WKWebView 相比 UIWebView 在性能上的提升
+- WKWebView 目前存在的一些缺陷
 
+
+### 5.延伸阅读：
+
+- [WebKit Objective-C Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/DisplayWebContent/DisplayWebContent.html#//apple_ref/doc/uid/10000164-SW1)
+- [Using JavaScript with WKWebView in iOS 8](http://www.joshuakehn.com/2014/10/29/using-javascript-with-wkwebview-in-ios-8.html)
+- [mozilla-mobile/firefox-ios](https://github.com/mozilla-mobile/firefox-ios) 
+- [WebKit-Wikipedia](https://zh.wikipedia.org/wiki/WebKit)
 
 
