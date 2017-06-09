@@ -31,19 +31,22 @@
 - [TimOliver/TOWebViewController](https://github.com/TimOliver/TOWebViewController): A view controller class for iOS that allows users to view web pages directly within an app.
   - [devedbox/AXWebViewController](https://github.com/devedbox/AXWebViewController): 基于UIWebView（iOS 8.0 以上使用 WKWebView 实现）封装的网页浏览控制器。
   - [Roxasora/RxWebViewController](https://github.com/Roxasora/RxWebViewController)：实现类似微信的 webView 导航效果，包括进度条，左滑返回上个网页或者直接关闭，就像 UINavigationController。
-  - [coffellas-cto/GDWebViewController](https://github.com/coffellas-cto/GDWebViewController): WKWebview browser view controller in Swift.
+  - [coffellas-cto/GDWebViewController](https://github.com/coffellas-cto/GDWebViewController)(Swift): WKWebview browser view controller in Swift.
   - [dzenbot/DZNWebViewController](https://github.com/dzenbot/DZNWebViewController): An iPhone/iPad web browser built on top of WebKit with navigation controls and contextual features, useful for in-app web browsing. Designed to be subclassed and extended.
   - [mtigas/OnionBrowser](https://github.com/mtigas/OnionBrowser): An open-source, privacy-enhancing web browser for iOS, utilizing the Tor anonymity network.
   - [mozilla-mobile/firefox-ios](https://github.com/mozilla-mobile/firefox-ios): Firefox for iOS.
   - [haifengkao/YWebView](https://github.com/haifengkao/YWebView): WKWebview with persistent cookies support.
   - [li6185377/IMYWebView](https://github.com/li6185377/IMYWebView): UIWebView seamless switching to WKWebView.
+  - [douban/rexxar-ios](https://github.com/douban/rexxar-ios): Mobile Hybrid Framework Rexxar iOS Container.
+  - [XWebView/XWebView](https://github.com/XWebView/XWebView)(Swift): An extensible WebView for iOS (based on WKWebView).
+  - [jessesquires/JSQWebViewController](https://github.com/jessesquires/JSQWebViewController)(Swift): A lightweight Swift WebKit view controller for iOS.
 
 - 相关控件
   - [ninjinkun/NJKWebViewProgress](https://github.com/ninjinkun/NJKWebViewProgress): UIWebView progress interface
 
 - JS<->Native 
   - [marcuswestin/WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge): An iOS/OSX bridge for sending messages between Obj-C and JavaScript in UIWebViews/WebViews 
-
+  - [casatwy/CTJSBridge](https://github.com/casatwy/CTJSBridge): a javascript bridge for iOS app to interact with h5 web view.
 - 调试工具
   - [Naituw/WBWebViewConsole](https://github.com/Naituw/WBWebViewConsole)：一个 APP 内调试工具，同时支持 WKWebView 和 UIWebView。
   - [marcuswestin/WebViewProxy](https://github.com/marcuswestin/WebViewProxy): A standalone iOS & OSX class for intercepting and proxying HTTP requests (e.g. from a Web View)
