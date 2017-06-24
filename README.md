@@ -1,10 +1,9 @@
 # iOSLevelingUp
 
--------------
 A journey of leveling up iOS dev knowledge and skill.
 
 
-## Contents
+## 大纲
 
 - [基础]()
   - [语言]()
@@ -55,3 +54,10 @@ A journey of leveling up iOS dev knowledge and skill.
   - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
   - [人工智能和机器学习]()
   - [AR]()
+
+## [相关资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
+## [技术笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/TechNotes)
+## [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
+## [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
+## [阅读笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingArticles)
+## [周报](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSDevWeekly)
