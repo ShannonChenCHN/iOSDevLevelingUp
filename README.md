@@ -1,346 +1,58 @@
 # iOSLevelingUp
 
 -------------
-A checklist for leveling up iOS dev knowledge and skills.
+A journey of leveling up iOS dev knowledge and skill.
+
 
 ## Contents
-- [Topic](#topic)
-- [Open Source](#open-source)
-- [Books](#books)
-- [Guides and Sample Code](#guides-and-sample-code)
-- [API Reference](#api-reference)
-- [WWDC](#wwdc)
-- [Sample Code](#sample-code)
-- [Blogs](#blogs)
 
-### Topic
-- Objective-C Language *****
-    - block
-    - runtime
-- Memory Management *****
-- Networking *****
-- Multithreading *****
-- Database ****
-- UI *****
-    - Drawing
-    - Animation
-- [ ] Architecture *****
-- Performance
-- Framework
-    - Usage
-    - Implementation(GNUstep, Apple open source)
-- ReactiveCocoa
-- Swift ****
-- JavaScript
-- TDD, Unit Test
-- CI
-- Documentation(English)
+- [基础]()
+  - [语言]()
+    - [Objective-C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/39)
+       - 对象模型
+    - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
+  - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
+  - [内存](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
+  - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
+  - [存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
+  - [渲染]()
+    - [Drawing](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/48)
+    - [文字/图像](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/44)
+    - [动画](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/31)
     
-### Open Source
-- Networking
-    - [ ] AFNetworking *****
-    - [ ] YTKNetwork *****
-    - [ ] RTNetwork *****
-    - Alamofire
-    - XMNetworking
-- Image Download 
-    - [ ] SDWebImage *****
-    - [ ] YYWebImage
-    - Kingfisher
-- Model
-    - [ ] MJExtension *****
-    - [ ] Mantle ****
-    - [ ] YYModel
-    - JSONModel
-    - SwiftyJSON
-- Refresh
-    - MJRefresh
-- Database/Cache
-    - FMDB
-    - MigicalRecord
-    - TMCache
-    - FlyImage
-    - YYCache
-    - FastImageCache
-- UI
-    - MBProgressHUD
-    - SVProgressHUD
-- WebView/JavaScript
-    - WebViewJavaScriptBridge
-    - JSPatch
-- Other
-    - ReactiveCocoa
-    - Aspects
-    - IGListKit
-    - GNUstep
-        
-### Books
-- [x] Pro Multithreading and Memory Management for iOS and OS X *****
-- [x] Effective Objective-C 2.0 *****
-- [x] [Zen and the Art of the Objective-C Craftsmanship](https://github.com/objc-zen/objc-zen-book) ****
-- [x] The Swift Programming Language *****
-- Swifter
-- Advanced Swift
-- Objc.io
-- [NSHipster]Obscure Topics In Cocoa & Objective-C
-- iOS Core Animation Advanced Techniques
-- iOS Drawing
-- CFHipsterRef: Low-level Programming on iOS & OS X
-- iOS 7 Pushing the limits
-- The C Programming Language *****
-- Computer Science Illuminated *****
-- Mac OS X and iOS Internals 
-- OS X and iOS Kernel Programming
-- Professional iOS Network Programming：Connecting the Enterprise to the iPhone and iPad
-- [ ] iOS and OS X Network Programming Cookbook
-- Mastering TCP/IP
-
-### [Guides and Sample Code](https://developer.apple.com/library/content/navigation/)
-- [General](https://developer.apple.com/library/content/navigation/#section=Topics&topic=General)
-    - [ ] [Cocoa Core Competencies](https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/Accessibility.html)
-    - [ ] [Cocoa Application Competencies for iOS](https://developer.apple.com/library/content/documentation/General/Conceptual/Devpedia-CocoaApp/Animation.html)
-    - [ ] [A Short Practical Guide to Blocks](https://developer.apple.com/library/content/featuredarticles/Short_Practical_Guide_Blocks/index.html#//apple_ref/doc/uid/TP40009758)
-    - [ ] [App Programming Guide for iOS](https://developer.apple.com/library/content/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Introduction/Introduction.html)
-    - [ ] [iOS Technology Overview](https://developer.apple.com/library/content/documentation/Miscellaneous/Conceptual/iPhoneOSTechOverview/Introduction/Introduction.html)
-    - [App Extension Programming Guide](https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/index.html#//apple_ref/doc/uid/TP40014214)
-    - [App Search Programming Guide](https://developer.apple.com/library/content/documentation/General/Conceptual/AppSearch/index.html#//apple_ref/doc/uid/TP40016308)
-    - [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
-    - [ ] [Coding Guidelines for Cocoa](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html#//apple_ref/doc/uid/10000146i)
-    - [ ] [Concepts in Objective-C Programming](https://developer.apple.com/library/content/documentation/General/Conceptual/CocoaEncyclopedia/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010810)
-    - [Information Property List Key Reference](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009247)
-    - [ ] [LLDB Debugging Guide](https://developer.apple.com/library/content/documentation/General/Conceptual/lldb-guide/chapters/Introduction.html#//apple_ref/doc/uid/TP40016717)
-    - [iOS 10.3 Release Notes](https://developer.apple.com/library/content/releasenotes/General/RN-iOSSDK-10.3/index.html#//apple_ref/doc/uid/TP40017612)
-    - [iOS 10.0 API Diffs](https://developer.apple.com/library/content/releasenotes/General/iOS10APIDiffs/index.html)
-- [Languages & Utilities](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Languages%20%26amp%3B%20Utilities)
-    - Objective-C
-        - [ ] [Programming with Objective-C](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html)
-        - [ ] [Blocks Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Blocks/Articles/00_Introduction.html#//apple_ref/doc/uid/TP40007502-CH1-SW1)
-        - [ ] [Transitioning to ARC Release Notes](https://developer.apple.com/library/content/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html)
-        - [ ] [Objective-C Automatic Reference Counting (ARC)](http://clang.llvm.org/docs/AutomaticReferenceCounting.html)
-        - [ ] [Adopting Modern Objective-C](https://developer.apple.com/library/content/releasenotes/ObjectiveC/ModernizationObjC/AdoptingModernObjective-C/AdoptingModernObjective-C.html#//apple_ref/doc/uid/TP40014150)
-        - [ ] [Object-Oriented Programming with Objective-C](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/OOP_ObjC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40005149)
-        - [ ] [Objective-C Release Notes](https://developer.apple.com/library/content/releasenotes/Cocoa/RN-ObjectiveC/index.html#//apple_ref/doc/uid/TP40004309)
-        - [ ] [Objective-C Runtime Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048)
-    - Distribution Tools
-        - [Using Application Loader](http://help.apple.com/itc/apploader/) 
-        - [iTunes Connect Developer Guide](https://developer.apple.com/library/content/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Chapters/About.html#//apple_ref/doc/uid/TP40011225)
-        - [Version Numbers and Build Numbers](https://developer.apple.com/library/content/technotes/tn2420/_index.html#//apple_ref/doc/uid/DTS40016603)
-        - [Understanding and Analyzing Application Crash Reports](https://developer.apple.com/library/content/technotes/tn2151/_index.html#//apple_ref/doc/uid/DTS40008184)
-- [Swift](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Swift) 
-    - [Swift.org](https://swift.org)
-    - [x] [Start Developing iOS Apps (Swift)](https://developer.apple.com/library/content/referencelibrary/GettingStarted/DevelopiOSAppsSwift/index.html#//apple_ref/doc/uid/TP40015214)
-    - [x] [The Swift Programming Language (Swift 3.1)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097)
-    - [ ] [Using Swift with Cocoa and Objective-C (Swift 3.1)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/BuildingCocoaApps/index.html#//apple_ref/doc/uid/TP40014216)
-- [Xcode](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Xcode)
-    - IDEs
-        - [App Distribution Guide](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppDistributionGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012582)
-        - [App Distribution Quick Start](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppStoreDistributionTutorial/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013839)
-        - [ ] [Debugging with Xcode](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/debugging_with_xcode/chapters/about_debugging_w_xcode.html)
-        - [ ] [Xcode Help](http://help.apple.com/xcode/mac/8.3/)
-        - [ ] [Xcode Keyboard Shortcuts and Gestures](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/xcode_help-command_shortcuts/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010560)
-        - [Quick Look for Custom Types in the Xcode Debugger](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/CustomClassDisplay_in_QuickLook/Introduction/Introduction.html#//apple_ref/doc/uid/TP40014001)
-        - [Framework Programming Guide](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPFrameworks/Frameworks.html#//apple_ref/doc/uid/10000183i)
-        - [Testing with Xcode](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132)
-        - [ ] [Simulator User Guide](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/iOS_Simulator_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012848)
-        - [What’s New in Xcode](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/WhatsNewXcode/Chapters/Introduction.html#//apple_ref/doc/uid/TP40004626)
-        - [Xcode Release Notes](https://developer.apple.com/library/content/releasenotes/DeveloperTools/RN-Xcode/Chapters/Introduction.html)
-        - [Xcode Server and Continuous Integration Guide](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/xcode_guide-continuous_integration/index.html#//apple_ref/doc/uid/TP40013292)
-    - Performance Analysis Tools
-        - [ ] [Instruments User Guide](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/index.html#//apple_ref/doc/uid/TP40004652-CH3-SW1)
-        - [ ] [Instruments Help](http://help.apple.com/instruments/mac/8.3/)
-    - Compiler Tools
-        - [ ] [LLDB Quick Start Guide](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/gdb_to_lldb_transition_guide/document/Introduction.html#//apple_ref/doc/uid/TP40012917)
-        - [ ] [LLVM Compiler Overview](https://developer.apple.com/library/content/documentation/CompilerTools/Conceptual/LLVMCompilerOverview/index.html#//apple_ref/doc/uid/TP40010019)
-    - Other
-        - [Asset Catalog Format Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/index.html#//apple_ref/doc/uid/TP40015170)
-        - [Markup Formatting Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_markup_formatting_ref/index.html#//apple_ref/doc/uid/TP40016497)
-- [Networking, Internet, & Web](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Networking%2C%20Internet%2C%20%26amp%3B%20Web)
-    - [ ] [Networking Overview](https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/Introduction/Introduction.html)
-    - [ ] [Networking Concepts](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/NetworkingConcepts/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012487)
-    - [ ] [Networking Programming Topics](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Introduction/Introduction.html)
-    - [ ] [URL Session Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html#//apple_ref/doc/uid/10000165i)
-    - [ ] [About HTTP Live Streaming](https://developer.apple.com/library/content/referencelibrary/GettingStarted/AboutHTTPLiveStreaming/about/about.html#//apple_ref/doc/uid/TP40013978)
-    - [ ] [HTTP Live Streaming Overview](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008332)
-    - [ ] [Stream Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Streams/Streams.html#//apple_ref/doc/uid/10000188i)
-    - [ ] [Getting Started with Networking, Internet, and Web](https://developer.apple.com/library/content/referencelibrary/GettingStarted/GS_NetworkingInternetWeb/_index.html#//apple_ref/doc/uid/TP40008807)
-    - [ ] [Local and Remote Notification Programming Guide](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/index.html#//apple_ref/doc/uid/TP40008194)
-
-- [Data Management](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Data%20Management)
-    - File Management
-        - [ ] [Apple File System Guide](https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/APFS_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40016999)
-        - [ ] [File System Programming Guide](https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010672)
-        - [ ] [Archives and Serializations Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Archiving/Archiving.html#//apple_ref/doc/uid/10000047i)
-        - [ ] [Bundle Programming Guide](https://developer.apple.com/library/content/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html#//apple_ref/doc/uid/10000123i)
-        - [ ] [Core Data Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreData/index.html#//apple_ref/doc/uid/TP40001075)
-    - Strings, Text, & Fonts
-        - [ ] [Text Programming Guide for iOS](https://developer.apple.com/library/content/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009542)
-        - [ ] [String Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Strings/introStrings.html#//apple_ref/doc/uid/10000035i)
-        - [ ] [Attributed String Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/AttributedStrings/AttributedStrings.html#//apple_ref/doc/uid/10000036i)
-        - [ ] [Core Text Programming Guide](https://developer.apple.com/library/content/documentation/StringsTextFonts/Conceptual/CoreText_Programming/Introduction/Introduction.html#//apple_ref/doc/uid/TP40005533)
-        - [ ] [Data Formatting Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/DataFormatting/DataFormatting.html#//apple_ref/doc/uid/10000029i)
-        - [ ] [Ruler and Paragraph Style Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Rulers/Rulers.html#//apple_ref/doc/uid/10000089i)
-        - [ ] [Sort Descriptor Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/SortDescriptors/SortDescriptors.html#//apple_ref/doc/uid/10000174i)
-    - Data Types & Collections
-        - [ ] [Binary Data Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/BinaryData/BinaryData.html#//apple_ref/doc/uid/10000037i)
-        - [ ] [Collections Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Collections.html#//apple_ref/doc/uid/10000034i)
-        - [ ] [Predicate Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Predicates/AdditionalChapters/Introduction.html#//apple_ref/doc/uid/TP40001789)
-        - [ ] [Property List Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/PropertyLists/Introduction/Introduction.html#//apple_ref/doc/uid/10000048i)
-    - Dates, Times, & Numbers
-        - [ ] [Date and Time Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/DatesAndTimes/DatesAndTimes.html#//apple_ref/doc/uid/10000039i)
-        - [ ] [Number and Value Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/NumbersandValues/NumbersandValues.html#//apple_ref/doc/uid/10000038i)
-    - Event Handling
-        - [ ] [Error Handling Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ErrorHandlingCocoa/ErrorHandling/ErrorHandling.html#//apple_ref/doc/uid/TP40001806)
-        - [ ] [Event Handling Guide for UIKit Apps](https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/index.html#//apple_ref/doc/uid/TP40009541)
-        - [ ] [Exception Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Exceptions/Exceptions.html#//apple_ref/doc/uid/10000012i)
-        - [ ] [Key-Value Coding Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/index.html#//apple_ref/doc/uid/10000107i)
-        - [ ] [Key-Value Observing Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html#//apple_ref/doc/uid/10000177i)
-        - [ ] [Notification Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Notifications/Introduction/introNotifications.html#//apple_ref/doc/uid/10000043i)        
-        - [ ] [Timer Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Timers/Timers.html#//apple_ref/doc/uid/10000061i)
-    - Preference Settings
-        - [ ] [Preferences and Settings Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/UserDefaults/Introduction/Introduction.html#//apple_ref/doc/uid/10000059i)
-    - Other
-        - [ ] [Value Transformer Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ValueTransformers/ValueTransformers.html#//apple_ref/doc/uid/10000175i)
-
-- [User Experience](https://developer.apple.com/library/content/navigation/#section=Topics&topic=User%20Experience)
-    - Windows & Views
-        - [ ] [View Programming Guide for iOS](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009503)
-        - [ ] [View Controller Programming Guide for iOS](https://developer.apple.com/library/content/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457)
-        - [ ] [Collection View Programming Guide for iOS](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012334)
-        - [ ] [Table View Programming Guide for iOS](https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/TableView_iPhone/AboutTableViewsiPhone/AboutTableViewsiPhone.html#//apple_ref/doc/uid/TP40007451)
-        - [ ] [Scroll View Programming Guide for iOS](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/UIScrollView_pg/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008179)
-        - [ ] [Multiple Display Programming Guide for iOS](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/WindowAndScreenGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012555)
-        - [ ] [UIScrollView And Autolayout](https://developer.apple.com/library/content/technotes/tn2154/_index.html#//apple_ref/doc/uid/DTS40013309)
-    - Other 
-        - [ ] [UIKit User Interface Catalog](https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/UIKitUICatalog/index.html#//apple_ref/doc/uid/TP40012857)
-        - [ ] [View Controller Catalog for iOS](https://developer.apple.com/library/content/documentation/WindowsViews/Conceptual/ViewControllerCatalog/Introduction.html#//apple_ref/doc/uid/TP40011313)
-        - [ ] [Auto Layout Guide](https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/AutolayoutPG/index.html#//apple_ref/doc/uid/TP40010853)
-        - [ ] [Internationalization and Localization Guide](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPInternational/Introduction/Introduction.html#//apple_ref/doc/uid/10000171i)
-        - [iOS Human Interface Guidelines](https://developer.apple.com/ios/human-interface-guidelines)
-
-- Performance
-    - [ ] [Advanced Memory Management Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011-SW1)
-    - [ ] [Concurrency Programming Guide](https://developer.apple.com/library/content/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html)
-    - [ ] [Cellular Best Practices Guide](https://developer.apple.com/library/content/documentation/Performance/Conceptual/CellularBestPractices/Introduction/Introduction.html#//apple_ref/doc/uid/TP40013998)
-    - [ ] [Energy Efficiency Guide for iOS Apps](https://developer.apple.com/library/content/documentation/Performance/Conceptual/EnergyGuide-iOS/index.html#//apple_ref/doc/uid/TP40015243)
-    - [ ] [Memory Management Programming Guide for Core Foundation](https://developer.apple.com/library/content/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/CFMemoryMgmt.html#//apple_ref/doc/uid/10000127i)
-    - [ ] [Memory Usage Performance Guidelines](https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/ManagingMemory.html#//apple_ref/doc/uid/10000160i)
-    - [ ] [Performance Overview](https://developer.apple.com/library/content/documentation/Performance/Conceptual/PerformanceOverview/Introduction/Introduction.html#//apple_ref/doc/uid/TP40001410)
-    - [ ] [Threading Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/Introduction/Introduction.html) 
-
-- [Graphics & Animation](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Graphics%20%26amp%3B%20Animation)
-    - Animation
-        - [ ] [Animation Overview](https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/Animation_Overview/AnimationBasics/AnimationBasics.html#//apple_ref/doc/uid/TP40004952-CH7-SW3)
-        - [ ] [Animation Types and Timing Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Animation_Types_Timing/Introduction/Introduction.html#//apple_ref/doc/uid/TP40006166)
-        - [ ] [Core Animation Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004514)
-        - [ ] [Quartz 2D Programming Guide](https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Introduction/Introduction.html#//apple_ref/doc/uid/TP30001066)
-    - 2D Drawing
-        - [ ] [Core Image Programming Guide](https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_intro/ci_intro.html#//apple_ref/doc/uid/TP30001185)
-        - [ ] [Drawing and Printing Guide for iOS](https://developer.apple.com/library/content/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/GraphicsDrawingOverview/GraphicsDrawingOverview.html#//apple_ref/doc/uid/TP40010156-CH14-SW1)
-        - [Image I/O Programming Guide](https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_intro/ikpg_intro.html#//apple_ref/doc/uid/TP40005462)
-    - 3D Drawing
-        - [OpenGL ES Programming Guide](https://developer.apple.com/library/content/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008793)
-    - Other
-        - [ ] [Getting Started with Graphics & Animation](https://developer.apple.com/library/content/referencelibrary/GettingStarted/GS_GraphicsImaging/_index.html#//apple_ref/doc/uid/TP30001000)
-        - [Color Programming Topics](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/DrawColor/DrawColor.html#//apple_ref/doc/uid/10000082i)
-
-- [Audio, Video, & Visual Effects](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Audio%2C%20Video%2C%20%26amp%3B%20Visual%20Effects)
-    - Audio
-        - [Audio Session Programming Guide](https://developer.apple.com/library/content/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40007875)
-        - [Core Audio Overview](https://developer.apple.com/library/content/documentation/MusicAudio/Conceptual/CoreAudioOverview/Introduction/Introduction.html#//apple_ref/doc/uid/TP40003577)
-    - Video
-        - [Core Video Programming Guide](https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/CoreVideo/CVProg_Intro/CVProg_Intro.html#//apple_ref/doc/uid/TP40001536)
-    - Other
-        - [Media Playback Programming Guide](https://developer.apple.com/library/content/documentation/AudioVideo/Conceptual/MediaPlaybackGuide/Contents/Resources/en.lproj/Introduction/Introduction.html#//apple_ref/doc/uid/TP40016757)
-        - [Camera Programming Topics for iOS](https://developer.apple.com/library/content/documentation/AudioVideo/Conceptual/CameraAndPhotoLib_TopicsForIOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010400)
-        - [Photo Capture Programming Guide](https://developer.apple.com/library/content/documentation/AudioVideo/Conceptual/PhotoCaptureGuide/index.html#//apple_ref/doc/uid/TP40017511)
-
-- [Security](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Security)
-    - [App Sandbox Design Guide](https://developer.apple.com/library/content/documentation/Security/Conceptual/AppSandboxDesignGuide/AboutAppSandbox/AboutAppSandbox.html#//apple_ref/doc/uid/TP40011183)
-    - [Keychain Services Programming Guide](https://developer.apple.com/library/content/documentation/Security/Conceptual/keychainServConcepts/01introduction/introduction.html#//apple_ref/doc/uid/TP30000897)
-    - [Security Overview](https://developer.apple.com/library/content/documentation/Security/Conceptual/Security_Overview/Introduction/Introduction.html#//apple_ref/doc/uid/TP30000976)        
-        
-### [API Reference](https://developer.apple.com/reference/)
-- App Frameworks
-    - [Objective-C](https://developer.apple.com/reference/objectivec?language=objc)
-    - [Foundation](https://developer.apple.com/reference/foundation)
-    - [UIKit](https://developer.apple.com/reference/uikit?language=objc)
-    - [Swift Standard Library](https://developer.apple.com/reference/swift)
-- Graphics and Games
-    - Core Graphics
-    - QuartzCore
-    - Core Image
-    - OpenGL ES
-- App Services
-    - AddressBook
-    - Contacts
-    - Core Text
-    - Core Data
-    - Core Foundation
-    - Core Location
-    - MapKit
-    - Core Spotlight
-    - StoreKit
-    - Messages
-- Media and Web
-    - AssetsLibrary
-    - AVFoundation
-    - MediaPlayer
-    - Core Audio
-    - Web​Kit
-    - JavaScriptCore
-- Developer Tools
-    - XCTest
-- System
-    - CFNetwork
-    - [Dispatch](https://developer.apple.com/reference/dispatch?language=objc)
-    - ExceptionHandling
-
-### [WWDC](https://developer.apple.com/videos/)
-
-### Sample Code
-- General
-    - [AdaptiveElements: Implementing Your Own Adaptive Design with UIKit](https://developer.apple.com/library/content/samplecode/AdaptiveElements/Introduction/Intro.html#//apple_ref/doc/uid/TP40017300)
-    - [Application Icons and Launch Images for iOS](https://developer.apple.com/library/content/samplecode/Icons/Introduction/Intro.html#//apple_ref/doc/uid/DTS40010442)
-- User Experience
-    - [Custom View Controller Presentations and Transitions](https://developer.apple.com/library/content/samplecode/CustomTransitions/Introduction/Intro.html#//apple_ref/doc/uid/TP40015158)
-    - [CircleLayout](https://developer.apple.com/library/content/samplecode/CircleLayout/Introduction/Intro.html#//apple_ref/doc/uid/DTS40012315)
-    - [AstroLayout: Building Adaptive UI with Auto Layout](https://developer.apple.com/library/content/samplecode/AstroLayout/Introduction/Intro.html#//apple_ref/doc/uid/TP40016193)
-    - [PhotoMap: Loading and displaying geotagged photos as MapKit annotations](https://developer.apple.com/library/content/samplecode/PhotoMap/Introduction/Intro.html#//apple_ref/doc/uid/DTS40011109)
-    - [PhotoScroller](https://developer.apple.com/library/content/samplecode/PhotoScroller/Introduction/Intro.html#//apple_ref/doc/uid/DTS40010080)
-    - [SpeedSketch: Leveraging touch input for a drawing application](https://developer.apple.com/library/content/samplecode/SpeedSketch/Introduction/Intro.html#//apple_ref/doc/uid/TP40017333)
-    - [State Restoration](https://developer.apple.com/library/content/samplecode/StateRestore/Introduction/Intro.html#//apple_ref/doc/uid/DTS40013190)
-    - [StreetScroller](https://developer.apple.com/library/content/samplecode/StreetScroller/Introduction/Intro.html#//apple_ref/doc/uid/DTS40011102)
-    - [Table Search with UISearchController](https://developer.apple.com/library/content/samplecode/TableSearch_UISearchController/Introduction/Intro.html#//apple_ref/doc/uid/TP40014683)
-    - [TouchCanvas: Using UITouch efficiently and effectively](https://developer.apple.com/library/content/samplecode/TouchCanvas/Introduction/Intro.html#//apple_ref/doc/uid/TP40016561)
-    - [UIKit Catalog (iOS): Creating and Customizing UIKit Controls](https://developer.apple.com/library/content/samplecode/UICatalog/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007710)
-- Networking, Internet, & Web
-    - [HLS Catalog: Using AVFoundation to play and persist HTTP Live Streams](https://developer.apple.com/library/content/samplecode/HLSCatalog/Introduction/Intro.html#//apple_ref/doc/uid/TP40017320)
-    - [Reachability](https://developer.apple.com/library/content/samplecode/Reachability/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007324)
-
-### Blogs
-- [ibireme's blog](http://blog.ibireme.com)
-- [喵神王巍的博客](https://onevcat.com)
-- [唐巧的博客](http://blog.devtang.com)
-- [bang's blog](http://blog.cnbang.net)
-- [Casa Taloyum's blog](https://casatwy.com)
-- [MrPeak杂货铺](http://mrpeak.cn)
-- [Limboy's blog]( http://limboy.me)
-- [孙源的博客](http://blog.sunnyxx.com)
-- [雷纯峰的博客](http://blog.leichunfeng.com)
-- [天猫无线技术团队博客-苹果核](http://pingguohe.net)
-- [美团点评技术团队博客](http://tech.meituan.com)
-- [微信读书技术团队的博客](http://wereadteam.github.io)
-- [iOS Dev Weekly](http://iosdevweekly.com)
-- [iOS Goodies](http://ios-goodies.com)
-- [Swift Developments Newsletter](https://andybargh.com/swiftdevelopments/)
-- [objc.io](https://www.objc.io)
-- [NSHipster](http://nshipster.com)
-- [iOS Developer Tips](http://iosdevelopertips.com)
-- [Ole Begemann's blog](https://oleb.net/blog/)
-- [Mike Ash's blog](https://mikeash.com/pyblog/)
-- [Matt Gallagher's blog](http://www.cocoawithlove.com)
-- [PSPDFKit blog](https://pspdfkit.com/blog/)
-- [The Big Nerd Ranch Blog](https://www.bignerdranch.com/blog/)
-- [Yalantis blog](https://yalantis.com/blog/)
-- [Ray Wenderlich](https://www.raywenderlich.com)
-
+  - [线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
+  - [计算机基础]()
+    - [算法]()
+    - [数据结构]()
+- [需求](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/41)
+  - 普通需求
+  - 特殊需求
+    - [图片](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/33)
+    - [直播](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/36)
+    - [视频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/13)
+    - [音频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/35)
+    - [文本绘制和排版](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/30)
+    - [IM]()
+    - 其他
+  - 运营需求
+    - 配置系统
+    - 事件流
+    - 统计系统
+    - 动态化
+      - [Web view 和 JavaScript](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/32)
+- [质量]()
+  - [Code Quality](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/27)
+  - [性能调优和监控体系](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/26)
+  - [安全、逆向](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/28)
+  - [TDD 和单元测试、UI 自动化测试](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/24)
+- [效率]()
+  - [重构与架构、设计模式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/12)
+    - [编程范式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/22)
+  - [工程化](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/40)
+  - [持续集成](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/29)
+  - [版本控制](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/43)
+  - [调试、IDE、工具](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/10)
+- [延伸]()
+  - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
+  - [人工智能和机器学习]()
+  - [AR]()
