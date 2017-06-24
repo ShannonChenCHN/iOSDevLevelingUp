@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>author</key>
+	<string></string>
+	<key>comments</key>
+	<string></string>
+	<key>isUsingConstrainedLayout</key>
+	<true/>
+	<key>keywords</key>
+	<string></string>
+	<key>mindMap</key>
+	<dict>
+		<key>associations</key>
+		<array/>
+		<key>color</key>
+		<string>{0.956, 0.966, 0.956, 1.000}</string>
+		<key>mainNodes</key>
+		<array>
+			<dict>
+				<key>contentAlignment</key>
+				<integer>1</integer>
+				<key>fillColor</key>
+				<string>{1.000, 1.000, 1.000, 1.000}</string>
+				<key>isDecreasingBranchThickness</key>
+				<true/>
+				<key>isDrawingFill</key>
+				<true/>
+				<key>isLeftAligned</key>
+				<false/>
+				<key>location</key>
+				<string>{0, 0}</string>
+				<key>nodeID</key>
+				<string>D64F4BD5-5CAD-4CC6-9A71-B229510B7171</string>
+				<key>strokeColor</key>
+				<string>{0.965, 0.965, 0.965, 1.000}</string>
+				<key>strokeStyle</key>
+				<integer>0</integer>
+				<key>strokeWidth</key>
+				<real>2</real>
+				<key>subnodes</key>
+				<array>
+					<dict>
+						<key>contentAlignment</key>
+						<integer>1</integer>
+						<key>fillColor</key>
+						<string>{1.000, 1.000, 1.000, 1.000}</string>
+						<key>isDecreasingBranchThickness</key>
+						<true/>
+						<key>isDrawingFill</key>
+						<false/>
+						<key>isLeftAligned</key>
+						<false/>
+						<key>location</key>
+						<string>{342, 25.5}</string>
+						<key>nodeID</key>
+						<string>5DCCF9E0-5145-4CBF-A6E7-FD008288C24A</string>
+						<key>strokeColor</key>
+						<string>{0.689, 0.215, 0.952, 1.000}</string>
+						<key>strokeStyle</key>
+						<integer>0</integer>
+						<key>strokeWidth</key>
+						<real>6</real>
+						<key>subnodes</key>
+						<array>
+							<dict>
+								<key>contentAlignment</key>
+								<integer>1</integer>
+								<key>fillColor</key>
+								<string>{1.000, 1.000, 1.000, 1.000}</string>
+								<key>isDecreasingBranchThickness</key>
+								<true/>
+								<key>isDrawingFill</key>
+								<false/>
+								<key>isLeftAligned</key>
+								<false/>
+								<key>location</key>
+								<string>{595, 25.5}</string>
+								<key>nodeID</key>
+								<string>174EF991-1F97-42BE-81C1-7821E2CECB9F</string>
+								<key>strokeColor</key>
+								<string>{0.689, 0.215, 0.952, 1.000}</string>
+								<key>strokeStyle</key>
+								<integer>0</integer>
+								<key>strokeWidth</key>
+								<real>5</real>
+								<key>subnodes</key>
+								<array>
+									<dict>
+										<key>contentAlignment</key>
+										<integer>1</integer>
+										<key>fillColor</key>
+										<string>{1.000, 1.000, 1.000, 1.000}</string>
+										<key>isDecreasingBranchThickness</key>
+										<true/>
+										<key>isDrawingFill</key>
+										<false/>
+										<key>isLeftAligned</key>
+										<false/>
+										<key>location</key>
+										<string>{834, 0.5}</string>
+										<key>nodeID</key>
+										<string>C8B796DB-9E9A-48D9-B400-E3A22DF3122D</string>
+										<key>strokeColor</key>
+										<string>{0.689, 0.215, 0.952, 1.000}</string>
+										<key>strokeStyle</key>
+										<integer>0</integer>
+										<key>strokeWidth</key>
+										<real>4</real>
+										<key>subnodes</key>
+										<array>
+											<dict>
+												<key>contentAlignment</key>
+												<integer>1</integer>
+												<key>fillColor</key>
+												<string>{1.000, 1.000, 1.000, 1.000}</string>
+												<key>isDecreasingBranchThickness</key>
+												<true/>
+												<key>isDrawingFill</key>
+												<false/>
+												<key>isLeftAligned</key>
+												<false/>
+												<key>location</key>
+												<string>{1196, 25.5}</string>
+												<key>nodeID</key>
+												<string>2E39212F-53F8-4F59-9326-F7C378024F9B</string>
+												<key>strokeColor</key>
+												<string>{0.689, 0.215, 0.952, 1.000}</string>
+												<key>strokeStyle</key>
+												<integer>0</integer>
+												<key>strokeWidth</key>
+												<real>3</real>
+												<key>subnodes</key>
+												<array>
+													<dict>
+														<key>contentAlignment</key>
+														<integer>1</integer>
+														<key>fillColor</key>
+														<string>{1.000, 1.000, 1.000, 1.000}</string>
+														<key>isDecreasingBranchThickness</key>
+														<true/>
+														<key>isDrawingFill</key>
+														<false/>
+														<key>isLeftAligned</key>
+														<false/>
+														<key>location</key>
+														<string>{1517, -12}</string>
+														<key>nodeID</key>
+														<string>ECCE527F-D7EE-410D-9C43-C6EEAB0F3DC7</string>
+														<key>strokeColor</key>
+														<string>{0.689, 0.215, 0.952, 1.000}</string>
+														<key>strokeStyle</key>
+														<integer>0</integer>
+														<key>strokeWidth</key>
+														<real>2</real>
+														<key>subnodes</key>
+														<array>
+															<dict>
+																<key>contentAlignment</key>
+																<integer>1</integer>
+																<key>fillColor</key>
+																<string>{1.000, 1.000, 1.000, 1.000}</string>
+																<key>isDecreasingBranchThickness</key>
+																<true/>
+																<key>isDrawingFill</key>
+																<false/>
+																<key>isLeftAligned</key>
+																<false/>
+																<key>location</key>
+																<string>{1864, -24.5}</string>
+																<key>nodeID</key>
+																<string>D9E1896B-9849-4B23-9EBF-5B9424964B73</string>
+																<key>strokeColor</key>
+																<string>{0.689, 0.215, 0.952, 1.000}</string>
+																<key>strokeStyle</key>
+																<integer>0</integer>
+																<key>strokeWidth</key>
+																<real>1</real>
+																<key>subnodes</key>
+																<array>
+																	<dict>
+																		<key>contentAlignment</key>
+																		<integer>1</integer>
+																		<key>fillColor</key>
+																		<string>{1.000, 1.000, 1.000, 1.000}</string>
+																		<key>isDecreasingBranchThickness</key>
+																		<true/>
+																		<key>isDrawingFill</key>
+																		<false/>
+																		<key>isLeftAligned</key>
+																		<false/>
+																		<key>location</key>
+																		<string>{2225, 13}</string>
+																		<key>nodeID</key>
+																		<string>689C60F3-8F7A-4A0A-B507-BE02822660E7</string>
+																		<key>strokeColor</key>
+																		<string>{0.689, 0.215, 0.952, 1.000}</string>
+																		<key>strokeStyle</key>
+																		<integer>0</integer>
+																		<key>strokeWidth</key>
+																		<real>1</real>
+																		<key>subnodes</key>
+																		<array>
+																			<dict>
+																				<key>contentAlignment</key>
+																				<integer>1</integer>
+																				<key>fillColor</key>
+																				<string>{1.000, 1.000, 1.000, 1.000}</string>
+																				<key>isDecreasingBranchThickness</key>
+																				<true/>
+																				<key>isDrawingFill</key>
+																				<false/>
+																				<key>isLeftAligned</key>
+																				<false/>
+																				<key>location</key>
+																				<string>{2581, -12}</string>
+																				<key>nodeID</key>
+																				<string>2F5EB5C5-B7A5-43FF-91DB-F1EF0384C0A7</string>
+																				<key>strokeColor</key>
+																				<string>{0.689, 0.215, 0.952, 1.000}</string>
+																				<key>strokeStyle</key>
+																				<integer>0</integer>
+																				<key>strokeWidth</key>
+																				<real>1</real>
+																				<key>subnodes</key>
+																				<array>
+																					<dict>
+																						<key>contentAlignment</key>
+																						<integer>1</integer>
+																						<key>fillColor</key>
+																						<string>{1.000, 1.000, 1.000, 1.000}</string>
+																						<key>isDecreasingBranchThickness</key>
+																						<true/>
+																						<key>isDrawingFill</key>
+																						<false/>
+																						<key>isLeftAligned</key>
+																						<false/>
+																						<key>location</key>
+																						<string>{2942, -12}</string>
+																						<key>nodeID</key>
+																						<string>F904C5DD-2557-4911-A71F-A1E88679BE5E</string>
+																						<key>strokeColor</key>
+																						<string>{0.689, 0.215, 0.952, 1.000}</string>
+																						<key>strokeStyle</key>
+																						<integer>0</integer>
+																						<key>strokeWidth</key>
+																						<real>1</real>
+																						<key>subnodes</key>
+																						<array>
+																							<dict>
+																								<key>contentAlignment</key>
+																								<integer>1</integer>
+																								<key>fillColor</key>
+																								<string>{1.000, 1.000, 1.000, 1.000}</string>
+																								<key>isDecreasingBranchThickness</key>
+																								<true/>
+																								<key>isDrawingFill</key>
+																								<false/>
+																								<key>isLeftAligned</key>
+																								<false/>
+																								<key>location</key>
+																								<string>{3303, -74.5}</string>
+																								<key>nodeID</key>
+																								<string>DAC1FE76-9A5E-49F8-A54C-8BE9AD07AB56</string>
+																								<key>strokeColor</key>
+																								<string>{0.689, 0.215, 0.952, 1.000}</string>
+																								<key>strokeStyle</key>
+																								<integer>0</integer>
+																								<key>strokeWidth</key>
+																								<real>1</real>
+																								<key>subnodes</key>
+																								<array/>
+																								<key>title</key>
+																								<dict>
+																									<key>constrainedWidth</key>
+																									<integer>300</integer>
+																									<key>htmlText</key>
+																									<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;Q：问题的关键就在于，如何才算是真正的登陆成功，也就是说什么时候才能发登陆成功的通知？&lt;/p&gt;&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;A；1.内存中和本地磁盘的用户数据更新了；2.webView 相关的 cookie 信息更新了；3.第三方服务也登录了（比如融云IM）&lt;/p&gt;&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;原则上，只有等以上3步都完成了，才算是正真登录成功了&lt;/p&gt;</string>
+																									<key>shrinkToFitContent</key>
+																									<integer>1</integer>
+																									<key>text</key>
+																									<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 Q\'a3\'ba\'ce\'ca\'cc\'e2\'b5\'c4\'b9\'d8\'bc\'fc\'be\'cd\'d4\'da\'d3\'da\'a3\'ac\'c8\'e7\'ba\'ce\'b2\'c5\'cb\'e3\'ca\'c7\'d5\'e6\'d5\'fd\'b5\'c4\'b5\'c7\'c2\'bd\'b3\'c9\'b9\'a6\'a3\'ac\'d2\'b2\'be\'cd\'ca\'c7\'cb\'b5\'ca\'b2\'c3\'b4\'ca\'b1\'ba\'f2\'b2\'c5\'c4\'dc\'b7\'a2\'b5\'c7\'c2\'bd\'b3\'c9\'b9\'a6\'b5\'c4\'cd\'a8\'d6\'aa\'a3\'bf\
+A\'a3\'bb1.\'c4\'da\'b4\'e6\'d6\'d0\'ba\'cd\'b1\'be\'b5\'d8\'b4\'c5\'c5\'cc\'b5\'c4\'d3\'c3\'bb\'a7\'ca\'fd\'be\'dd\'b8\'fc\'d0\'c2\'c1\'cb\'a3\'bb2.webView \'cf\'e0\'b9\'d8\'b5\'c4 cookie \'d0\'c5\'cf\'a2\'b8\'fc\'d0\'c2\'c1\'cb\'a3\'bb3.\'b5\'da\'c8\'fd\'b7\'bd\'b7\'fe\'ce\'f1\'d2\'b2\'b5\'c7\'c2\'bc\'c1\'cb\'a3\'a8\'b1\'c8\'c8\'e7\'c8\'da\'d4\'c6IM\'a3\'a9\
+\'d4\'ad\'d4\'f2\'c9\'cf\'a3\'ac\'d6\'bb\'d3\'d0\'b5\'c8\'d2\'d4\'c9\'cf3\'b2\'bd\'b6\'bc\'cd\'ea\'b3\'c9\'c1\'cb\'a3\'ac\'b2\'c5\'cb\'e3\'ca\'c7\'d5\'fd\'d5\'e6\'b5\'c7\'c2\'bc\'b3\'c9\'b9\'a6\'c1\'cb}</string>
+																								</dict>
+																							</dict>
+																						</array>
+																						<key>title</key>
+																						<dict>
+																							<key>constrainedWidth</key>
+																							<integer>300</integer>
+																							<key>htmlText</key>
+																							<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;查看登录成功后发送通知和更新 cookieStorage 的时机是否有问题。&lt;/p&gt;&lt;p style='text-align: left; '&gt;&lt;span style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;结果发现问题就出在这里先发通知，然后再 更新 &lt;/span&gt;&lt;span style='color: rgba(90, 90, 90, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;cookieStorage 的&lt;/span&gt;&lt;span style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;。&lt;/span&gt;&lt;/p&gt;</string>
+																							<key>shrinkToFitContent</key>
+																							<integer>1</integer>
+																							<key>text</key>
+																							<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b2\'e9\'bf\'b4\'b5\'c7\'c2\'bc\'b3\'c9\'b9\'a6\'ba\'f3\'b7\'a2\'cb\'cd\'cd\'a8\'d6\'aa\'ba\'cd\'b8\'fc\'d0\'c2 cookieStorage \'b5\'c4\'ca\'b1\'bb\'fa\'ca\'c7\'b7\'f1\'d3\'d0\'ce\'ca\'cc\'e2\'a1\'a3\
+\'bd\'e1\'b9\'fb\'b7\'a2\'cf\'d6\'ce\'ca\'cc\'e2\'be\'cd\'b3\'f6\'d4\'da\'d5\'e2\'c0\'ef\'cf\'c8\'b7\'a2\'cd\'a8\'d6\'aa\'a3\'ac\'c8\'bb\'ba\'f3\'d4\'d9 \'b8\'fc\'d0\'c2 \cf3 cookieStorage \'b5\'c4\cf2 \'a1\'a3}</string>
+																						</dict>
+																					</dict>
+																				</array>
+																				<key>title</key>
+																				<dict>
+																					<key>constrainedWidth</key>
+																					<integer>300</integer>
+																					<key>htmlText</key>
+																					<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;插入 cookie 时，要写入的 cookie 值是符合预期的吗？结果显示不是符合预期的，说明在收到登录成功通知时，拿到的 cookie 不是正确的&lt;/p&gt;</string>
+																					<key>shrinkToFitContent</key>
+																					<integer>1</integer>
+																					<key>text</key>
+																					<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b2\'e5\'c8\'eb cookie \'ca\'b1\'a3\'ac\'d2\'aa\'d0\'b4\'c8\'eb\'b5\'c4 cookie \'d6\'b5\'ca\'c7\'b7\'fb\'ba\'cf\'d4\'a4\'c6\'da\'b5\'c4\'c2\'f0\'a3\'bf\'bd\'e1\'b9\'fb\'cf\'d4\'ca\'be\'b2\'bb\'ca\'c7\'b7\'fb\'ba\'cf\'d4\'a4\'c6\'da\'b5\'c4\'a3\'ac\'cb\'b5\'c3\'f7\'d4\'da\'ca\'d5\'b5\'bd\'b5\'c7\'c2\'bc\'b3\'c9\'b9\'a6\'cd\'a8\'d6\'aa\'ca\'b1\'a3\'ac\'c4\'c3\'b5\'bd\'b5\'c4 cookie \'b2\'bb\'ca\'c7\'d5\'fd\'c8\'b7\'b5\'c4}</string>
+																				</dict>
+																			</dict>
+																		</array>
+																		<key>title</key>
+																		<dict>
+																			<key>constrainedWidth</key>
+																			<integer>300</integer>
+																			<key>htmlText</key>
+																			<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;我明明在收到 loginSuccess 的通知后，手动插入 cookie 的呀。&lt;/p&gt;</string>
+																			<key>shrinkToFitContent</key>
+																			<integer>1</integer>
+																			<key>text</key>
+																			<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'ce\'d2\'c3\'f7\'c3\'f7\'d4\'da\'ca\'d5\'b5\'bd loginSuccess \'b5\'c4\'cd\'a8\'d6\'aa\'ba\'f3\'a3\'ac\'ca\'d6\'b6\'af\'b2\'e5\'c8\'eb cookie \'b5\'c4\'d1\'bd\'a1\'a3}</string>
+																		</dict>
+																	</dict>
+																</array>
+																<key>title</key>
+																<dict>
+																	<key>constrainedWidth</key>
+																	<integer>300</integer>
+																	<key>htmlText</key>
+																	<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;打开 Safari 的远程调试工具，查看当前 webView 中的 cookie 是否有 “UI”，结果发现并没有，说明原生页面中登录后，cookie 没有及时同步到 WKWebView 中去&lt;/p&gt;</string>
+																	<key>shrinkToFitContent</key>
+																	<integer>1</integer>
+																	<key>text</key>
+																	<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b4\'f2\'bf\'aa Safari \'b5\'c4\'d4\'b6\'b3\'cc\'b5\'f7\'ca\'d4\'b9\'a4\'be\'df\'a3\'ac\'b2\'e9\'bf\'b4\'b5\'b1\'c7\'b0 webView \'d6\'d0\'b5\'c4 cookie \'ca\'c7\'b7\'f1\'d3\'d0 \'a1\'b0UI\'a1\'b1\'a3\'ac\'bd\'e1\'b9\'fb\'b7\'a2\'cf\'d6\'b2\'a2\'c3\'bb\'d3\'d0\'a3\'ac\'cb\'b5\'c3\'f7\'d4\'ad\'c9\'fa\'d2\'b3\'c3\'e6\'d6\'d0\'b5\'c7\'c2\'bc\'ba\'f3\'a3\'accookie \'c3\'bb\'d3\'d0\'bc\'b0\'ca\'b1\'cd\'ac\'b2\'bd\'b5\'bd WKWebView \'d6\'d0\'c8\'a5}</string>
+																</dict>
+															</dict>
+														</array>
+														<key>title</key>
+														<dict>
+															<key>constrainedWidth</key>
+															<integer>300</integer>
+															<key>htmlText</key>
+															<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;Q：h5 是如何获取用户登录信息的呢？&lt;/p&gt;&lt;p style='text-align: left; '&gt;&lt;span style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;A：&lt;/span&gt;&lt;span style='color: rgba(90, 90, 90, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;h5 是通过读取 &lt;/span&gt;&lt;span style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;cookie 中的 “UI” 的值，来获取用户信息的&lt;/span&gt;&lt;/p&gt;</string>
+															<key>shrinkToFitContent</key>
+															<integer>1</integer>
+															<key>text</key>
+															<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 Q\'a3\'bah5 \'ca\'c7\'c8\'e7\'ba\'ce\'bb\'f1\'c8\'a1\'d3\'c3\'bb\'a7\'b5\'c7\'c2\'bc\'d0\'c5\'cf\'a2\'b5\'c4\'c4\'d8\'a3\'bf\
+A\'a3\'ba\cf3 h5 \'ca\'c7\'cd\'a8\'b9\'fd\'b6\'c1\'c8\'a1 \cf2 cookie \'d6\'d0\'b5\'c4 \'a1\'b0UI\'a1\'b1 \'b5\'c4\'d6\'b5\'a3\'ac\'c0\'b4\'bb\'f1\'c8\'a1\'d3\'c3\'bb\'a7\'d0\'c5\'cf\'a2\'b5\'c4}</string>
+														</dict>
+													</dict>
+												</array>
+												<key>title</key>
+												<dict>
+													<key>constrainedWidth</key>
+													<integer>300</integer>
+													<key>htmlText</key>
+													<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;说明 h5 中并不知道用户登录了&lt;/p&gt;</string>
+													<key>shrinkToFitContent</key>
+													<integer>1</integer>
+													<key>text</key>
+													<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'cb\'b5\'c3\'f7 h5 \'d6\'d0\'b2\'a2\'b2\'bb\'d6\'aa\'b5\'c0\'d3\'c3\'bb\'a7\'b5\'c7\'c2\'bc\'c1\'cb}</string>
+												</dict>
+											</dict>
+										</array>
+										<key>title</key>
+										<dict>
+											<key>constrainedWidth</key>
+											<integer>300</integer>
+											<key>htmlText</key>
+											<string>&lt;p style='text-align: left; '&gt;&lt;span style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;shouldStartLoadWithRequest: 中查看拦截的 URL，结果为 &lt;/span&gt;&lt;a style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; ' href='yhouse://login'&gt;yhouse://login&lt;/a&gt;&lt;/p&gt;</string>
+											<key>shrinkToFitContent</key>
+											<integer>1</integer>
+											<key>text</key>
+											<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 shouldStartLoadWithRequest: \'d6\'d0\'b2\'e9\'bf\'b4\'c0\'b9\'bd\'d8\'b5\'c4 URL\'a3\'ac\'bd\'e1\'b9\'fb\'ce\'aa {\field{\*\fldinst{HYPERLINK "yhouse://login"}}{\fldrslt \cf2 yhouse://login}}}</string>
+										</dict>
+									</dict>
+								</array>
+								<key>title</key>
+								<dict>
+									<key>constrainedWidth</key>
+									<integer>300</integer>
+									<key>htmlText</key>
+									<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;打开 APP，进行登录&lt;/p&gt;</string>
+									<key>shrinkToFitContent</key>
+									<integer>1</integer>
+									<key>text</key>
+									<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35700\c35700\c35700;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b4\'f2\'bf\'aa APP\'a3\'ac\'bd\'f8\'d0\'d0\'b5\'c7\'c2\'bc}</string>
+								</dict>
+							</dict>
+						</array>
+						<key>title</key>
+						<dict>
+							<key>constrainedWidth</key>
+							<integer>300</integer>
+							<key>htmlText</key>
+							<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;查看是否是原生的问题&lt;/p&gt;</string>
+							<key>shrinkToFitContent</key>
+							<integer>1</integer>
+							<key>text</key>
+							<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35700\c35700\c35700;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b2\'e9\'bf\'b4\'ca\'c7\'b7\'f1\'ca\'c7\'d4\'ad\'c9\'fa\'b5\'c4\'ce\'ca\'cc\'e2}</string>
+						</dict>
+					</dict>
+				</array>
+				<key>title</key>
+				<dict>
+					<key>constrainedWidth</key>
+					<integer>300</integer>
+					<key>htmlText</key>
+					<string>&lt;p style='color: rgba(21, 122, 150, 1.000000); font: 21px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Light"; '&gt;登录后点击“立即开通”没反应，重启应用才正常&lt;/p&gt;</string>
+					<key>shrinkToFitContent</key>
+					<integer>1</integer>
+					<key>text</key>
+					<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Light;}
+{\colortbl;\red255\green255\blue255;\red21\green122\blue150;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c8235\c47843\c58824;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs42 \cf2 \'b5\'c7\'c2\'bc\'ba\'f3\'b5\'e3\'bb\'f7\'a1\'b0\'c1\'a2\'bc\'b4\'bf\'aa\'cd\'a8\'a1\'b1\'c3\'bb\'b7\'b4\'d3\'a6\'a3\'ac\'d6\'d8\'c6\'f4\'d3\'a6\'d3\'c3\'b2\'c5\'d5\'fd\'b3\'a3}</string>
+				</dict>
+			</dict>
+		</array>
+	</dict>
+	<key>printInfo</key>
+	<data>
+	BAtzdHJlYW10eXBlZIHoA4QBQISEhAtOU1ByaW50SW5mbwGEhAhOU09iamVjdACFkoSE
+	hBNOU011dGFibGVEaWN0aW9uYXJ5AISEDE5TRGljdGlvbmFyeQCUhAFpCZKEhIQITlNT
+	dHJpbmcBlIQBKw9wcmludEJhY2tncm91bmSGkoSEhAhOU051bWJlcgCEhAdOU1ZhbHVl
+	AJSEASqEhAFjnQCGkoSZmRZOU0hvcml6b250YWxseUNlbnRlcmVkhpKEm5ydnQGGkoSZ
+	mQ1OU1JpZ2h0TWFyZ2luhpKEm5yEhAFmnkiGkoSZmQxOU0xlZnRNYXJnaW6GkqGShJmZ
+	FU5TSG9yaXpvbmFsUGFnaW5hdGlvboaShJuchIQBcZ8BhpKEmZkUTlNWZXJ0aWNhbFBh
+	Z2luYXRpb26GkqWShJmZFE5TVmVydGljYWxseUNlbnRlcmVkhpKfkoSZmQtOU1RvcE1h
+	cmdpboaShJucop5ahpKEmZkOTlNCb3R0b21NYXJnaW6GkqqGhg==
+	</data>
+	<key>title</key>
+	<string>登录后点击“立即开通”没反应，重启应用才正常</string>
+	<key>version</key>
+	<integer>4</integer>
+</dict>
+</plist>

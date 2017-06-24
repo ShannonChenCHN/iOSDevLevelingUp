@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>author</key>
+	<string></string>
+	<key>comments</key>
+	<string></string>
+	<key>isUsingConstrainedLayout</key>
+	<true/>
+	<key>keywords</key>
+	<string></string>
+	<key>mindMap</key>
+	<dict>
+		<key>associations</key>
+		<array/>
+		<key>color</key>
+		<string>{0.956, 0.966, 0.956, 1.000}</string>
+		<key>mainNodes</key>
+		<array>
+			<dict>
+				<key>contentAlignment</key>
+				<integer>1</integer>
+				<key>fillColor</key>
+				<string>{1.000, 1.000, 1.000, 1.000}</string>
+				<key>isDecreasingBranchThickness</key>
+				<true/>
+				<key>isDrawingFill</key>
+				<true/>
+				<key>isLeftAligned</key>
+				<false/>
+				<key>location</key>
+				<string>{-136.21875, -101.59375}</string>
+				<key>nodeID</key>
+				<string>DC09C949-F68D-45F5-8173-D7D8993D4F60</string>
+				<key>strokeColor</key>
+				<string>{0.965, 0.965, 0.965, 1.000}</string>
+				<key>strokeStyle</key>
+				<integer>0</integer>
+				<key>strokeWidth</key>
+				<real>2</real>
+				<key>subnodes</key>
+				<array>
+					<dict>
+						<key>contentAlignment</key>
+						<integer>1</integer>
+						<key>fillColor</key>
+						<string>{1.000, 1.000, 1.000, 1.000}</string>
+						<key>isDecreasingBranchThickness</key>
+						<true/>
+						<key>isDrawingFill</key>
+						<false/>
+						<key>isLeftAligned</key>
+						<false/>
+						<key>location</key>
+						<string>{226.78125, -16.09375}</string>
+						<key>nodeID</key>
+						<string>871E1748-55C0-416D-BB5C-4CE1EA1600AB</string>
+						<key>strokeColor</key>
+						<string>{0.689, 0.215, 0.952, 1.000}</string>
+						<key>strokeStyle</key>
+						<integer>0</integer>
+						<key>strokeWidth</key>
+						<real>6</real>
+						<key>subnodes</key>
+						<array>
+							<dict>
+								<key>contentAlignment</key>
+								<integer>1</integer>
+								<key>fillColor</key>
+								<string>{1.000, 1.000, 1.000, 1.000}</string>
+								<key>isDecreasingBranchThickness</key>
+								<true/>
+								<key>isDrawingFill</key>
+								<false/>
+								<key>isLeftAligned</key>
+								<false/>
+								<key>location</key>
+								<string>{587.78125, -16.09375}</string>
+								<key>nodeID</key>
+								<string>02574627-32F0-44AA-B023-12955A81DFEB</string>
+								<key>strokeColor</key>
+								<string>{0.689, 0.215, 0.952, 1.000}</string>
+								<key>strokeStyle</key>
+								<integer>0</integer>
+								<key>strokeWidth</key>
+								<real>5</real>
+								<key>subnodes</key>
+								<array>
+									<dict>
+										<key>contentAlignment</key>
+										<integer>1</integer>
+										<key>fillColor</key>
+										<string>{1.000, 1.000, 1.000, 1.000}</string>
+										<key>isDecreasingBranchThickness</key>
+										<true/>
+										<key>isDrawingFill</key>
+										<false/>
+										<key>isLeftAligned</key>
+										<false/>
+										<key>location</key>
+										<string>{938.78125, -16.09375}</string>
+										<key>nodeID</key>
+										<string>AB9C11DE-8989-4A72-9291-682B813B799D</string>
+										<key>strokeColor</key>
+										<string>{0.689, 0.215, 0.952, 1.000}</string>
+										<key>strokeStyle</key>
+										<integer>0</integer>
+										<key>strokeWidth</key>
+										<real>4</real>
+										<key>subnodes</key>
+										<array>
+											<dict>
+												<key>contentAlignment</key>
+												<integer>1</integer>
+												<key>fillColor</key>
+												<string>{1.000, 1.000, 1.000, 1.000}</string>
+												<key>isDecreasingBranchThickness</key>
+												<true/>
+												<key>isDrawingFill</key>
+												<false/>
+												<key>isLeftAligned</key>
+												<false/>
+												<key>location</key>
+												<string>{1299.78125, -53.59375}</string>
+												<key>nodeID</key>
+												<string>D363058C-7DCC-4FE6-B055-BD59348B66DE</string>
+												<key>strokeColor</key>
+												<string>{0.689, 0.215, 0.952, 1.000}</string>
+												<key>strokeStyle</key>
+												<integer>0</integer>
+												<key>strokeWidth</key>
+												<real>3</real>
+												<key>subnodes</key>
+												<array>
+													<dict>
+														<key>contentAlignment</key>
+														<integer>1</integer>
+														<key>fillColor</key>
+														<string>{1.000, 1.000, 1.000, 1.000}</string>
+														<key>isDecreasingBranchThickness</key>
+														<true/>
+														<key>isDrawingFill</key>
+														<false/>
+														<key>isLeftAligned</key>
+														<false/>
+														<key>location</key>
+														<string>{1661.78125, -141.09375}</string>
+														<key>nodeID</key>
+														<string>D1E4014D-7F39-4657-96EA-F1B90CA6AAB8</string>
+														<key>strokeColor</key>
+														<string>{0.689, 0.215, 0.952, 1.000}</string>
+														<key>strokeStyle</key>
+														<integer>0</integer>
+														<key>strokeWidth</key>
+														<real>2</real>
+														<key>subnodes</key>
+														<array/>
+														<key>title</key>
+														<dict>
+															<key>constrainedWidth</key>
+															<integer>300</integer>
+															<key>htmlText</key>
+															<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;为什么呢？因为会员页的 URL 是先读取本地的，然后等请求回来后才更新，而现在会员中心又采用了预加载的方式，加载时机特别早。所以当网络条件差的话，webView 加载的是本地配置文件中写死的 URL，也就是正式环境的 URL。另外一个问题是，为什么先退出登录再重新登录还不好呢？原因是我在 WebView 的 Controller 中对 URL 做了懒加载处理，所以只要第一次 URL 被赋值了，就一直是那个值&lt;/p&gt;</string>
+															<key>shrinkToFitContent</key>
+															<integer>1</integer>
+															<key>text</key>
+															<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'ce\'aa\'ca\'b2\'c3\'b4\'c4\'d8\'a3\'bf\'d2\'f2\'ce\'aa\'bb\'e1\'d4\'b1\'d2\'b3\'b5\'c4 URL \'ca\'c7\'cf\'c8\'b6\'c1\'c8\'a1\'b1\'be\'b5\'d8\'b5\'c4\'a3\'ac\'c8\'bb\'ba\'f3\'b5\'c8\'c7\'eb\'c7\'f3\'bb\'d8\'c0\'b4\'ba\'f3\'b2\'c5\'b8\'fc\'d0\'c2\'a3\'ac\'b6\'f8\'cf\'d6\'d4\'da\'bb\'e1\'d4\'b1\'d6\'d0\'d0\'c4\'d3\'d6\'b2\'c9\'d3\'c3\'c1\'cb\'d4\'a4\'bc\'d3\'d4\'d8\'b5\'c4\'b7\'bd\'ca\'bd\'a3\'ac\'bc\'d3\'d4\'d8\'ca\'b1\'bb\'fa\'cc\'d8\'b1\'f0\'d4\'e7\'a1\'a3\'cb\'f9\'d2\'d4\'b5\'b1\'cd\'f8\'c2\'e7\'cc\'f5\'bc\'fe\'b2\'ee\'b5\'c4\'bb\'b0\'a3\'acwebView \'bc\'d3\'d4\'d8\'b5\'c4\'ca\'c7\'b1\'be\'b5\'d8\'c5\'e4\'d6\'c3\'ce\'c4\'bc\'fe\'d6\'d0\'d0\'b4\'cb\'c0\'b5\'c4 URL\'a3\'ac\'d2\'b2\'be\'cd\'ca\'c7\'d5\'fd\'ca\'bd\'bb\'b7\'be\'b3\'b5\'c4 URL\'a1\'a3\'c1\'ed\'cd\'e2\'d2\'bb\'b8\'f6\'ce\'ca\'cc\'e2\'ca\'c7\'a3\'ac\'ce\'aa\'ca\'b2\'c3\'b4\'cf\'c8\'cd\'cb\'b3\'f6\'b5\'c7\'c2\'bc\'d4\'d9\'d6\'d8\'d0\'c2\'b5\'c7\'c2\'bc\'bb\'b9\'b2\'bb\'ba\'c3\'c4\'d8\'a3\'bf\'d4\'ad\'d2\'f2\'ca\'c7\'ce\'d2\'d4\'da WebView \'b5\'c4 Controller \'d6\'d0\'b6\'d4 URL \'d7\'f6\'c1\'cb\'c0\'c1\'bc\'d3\'d4\'d8\'b4\'a6\'c0\'ed\'a3\'ac\'cb\'f9\'d2\'d4\'d6\'bb\'d2\'aa\'b5\'da\'d2\'bb\'b4\'ce URL \'b1\'bb\'b8\'b3\'d6\'b5\'c1\'cb\'a3\'ac\'be\'cd\'d2\'bb\'d6\'b1\'ca\'c7\'c4\'c7\'b8\'f6\'d6\'b5}</string>
+														</dict>
+													</dict>
+												</array>
+												<key>title</key>
+												<dict>
+													<key>constrainedWidth</key>
+													<integer>300</integer>
+													<key>htmlText</key>
+													<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;查看开通会员后 h5 页面的请求是否有问题——打开 Safari，查看请求信息，发现 URL 有问题，当前环境应该是测试环境，但是这里的 URL 却是正式环境的&lt;/p&gt;</string>
+													<key>shrinkToFitContent</key>
+													<integer>1</integer>
+													<key>text</key>
+													<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35686\c35686\c35686;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b2\'e9\'bf\'b4\'bf\'aa\'cd\'a8\'bb\'e1\'d4\'b1\'ba\'f3 h5 \'d2\'b3\'c3\'e6\'b5\'c4\'c7\'eb\'c7\'f3\'ca\'c7\'b7\'f1\'d3\'d0\'ce\'ca\'cc\'e2\'a1\'aa\'a1\'aa\'b4\'f2\'bf\'aa Safari\'a3\'ac\'b2\'e9\'bf\'b4\'c7\'eb\'c7\'f3\'d0\'c5\'cf\'a2\'a3\'ac\'b7\'a2\'cf\'d6 URL \'d3\'d0\'ce\'ca\'cc\'e2\'a3\'ac\'b5\'b1\'c7\'b0\'bb\'b7\'be\'b3\'d3\'a6\'b8\'c3\'ca\'c7\'b2\'e2\'ca\'d4\'bb\'b7\'be\'b3\'a3\'ac\'b5\'ab\'ca\'c7\'d5\'e2\'c0\'ef\'b5\'c4 URL \'c8\'b4\'ca\'c7\'d5\'fd\'ca\'bd\'bb\'b7\'be\'b3\'b5\'c4}</string>
+												</dict>
+											</dict>
+										</array>
+										<key>title</key>
+										<dict>
+											<key>constrainedWidth</key>
+											<integer>300</integer>
+											<key>htmlText</key>
+											<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;服务端数据是否正常——换个手机等一下看看，结果正常&lt;/p&gt;</string>
+											<key>shrinkToFitContent</key>
+											<integer>1</integer>
+											<key>text</key>
+											<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35700\c35700\c35700;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'b7\'fe\'ce\'f1\'b6\'cb\'ca\'fd\'be\'dd\'ca\'c7\'b7\'f1\'d5\'fd\'b3\'a3\'a1\'aa\'a1\'aa\'bb\'bb\'b8\'f6\'ca\'d6\'bb\'fa\'b5\'c8\'d2\'bb\'cf\'c2\'bf\'b4\'bf\'b4\'a3\'ac\'bd\'e1\'b9\'fb\'d5\'fd\'b3\'a3}</string>
+										</dict>
+									</dict>
+								</array>
+								<key>title</key>
+								<dict>
+									<key>constrainedWidth</key>
+									<integer>300</integer>
+									<key>htmlText</key>
+									<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;h5 在用户开通后，如何判断是否开通的？——请求接口数据&lt;/p&gt;</string>
+									<key>shrinkToFitContent</key>
+									<integer>1</integer>
+									<key>text</key>
+									<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35700\c35700\c35700;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 h5 \'d4\'da\'d3\'c3\'bb\'a7\'bf\'aa\'cd\'a8\'ba\'f3\'a3\'ac\'c8\'e7\'ba\'ce\'c5\'d0\'b6\'cf\'ca\'c7\'b7\'f1\'bf\'aa\'cd\'a8\'b5\'c4\'a3\'bf\'a1\'aa\'a1\'aa\'c7\'eb\'c7\'f3\'bd\'d3\'bf\'da\'ca\'fd\'be\'dd}</string>
+								</dict>
+							</dict>
+						</array>
+						<key>title</key>
+						<dict>
+							<key>constrainedWidth</key>
+							<integer>300</integer>
+							<key>htmlText</key>
+							<string>&lt;p style='color: rgba(91, 91, 91, 1.000000); font: 18px "PingFang SC"; -cocoa-font-postscriptname: "PingFangSC-Regular"; '&gt;是移动端的问题？还是前端的问题？还是服务端的问题？&lt;/p&gt;</string>
+							<key>shrinkToFitContent</key>
+							<integer>1</integer>
+							<key>text</key>
+							<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red91\green91\blue91;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c35700\c35700\c35700;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs36 \cf2 \'ca\'c7\'d2\'c6\'b6\'af\'b6\'cb\'b5\'c4\'ce\'ca\'cc\'e2\'a3\'bf\'bb\'b9\'ca\'c7\'c7\'b0\'b6\'cb\'b5\'c4\'ce\'ca\'cc\'e2\'a3\'bf\'bb\'b9\'ca\'c7\'b7\'fe\'ce\'f1\'b6\'cb\'b5\'c4\'ce\'ca\'cc\'e2\'a3\'bf}</string>
+						</dict>
+					</dict>
+				</array>
+				<key>title</key>
+				<dict>
+					<key>constrainedWidth</key>
+					<integer>300</integer>
+					<key>htmlText</key>
+					<string>&lt;p style='color: rgba(21, 122, 150, 1.000000); font: 21px "PingFang SC"; text-align: left; -cocoa-font-postscriptname: "PingFangSC-Light"; '&gt;第一次安装时，新用户购买会员后会员中心页信息没有更新，还是未开通的状态，退出登录重新进也不行，但是杀掉进程后重新打开就好了。但是在我自己的手机上测，一直是正常的&lt;/p&gt;</string>
+					<key>shrinkToFitContent</key>
+					<integer>1</integer>
+					<key>text</key>
+					<string>{\rtf1\ansi\ansicpg936\cocoartf1504
+{\fonttbl\f0\fnil\fcharset134 PingFangSC-Light;}
+{\colortbl;\red255\green255\blue255;\red21\green122\blue150;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c8235\c47843\c58824;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs42 \cf2 \'b5\'da\'d2\'bb\'b4\'ce\'b0\'b2\'d7\'b0\'ca\'b1\'a3\'ac\'d0\'c2\'d3\'c3\'bb\'a7\'b9\'ba\'c2\'f2\'bb\'e1\'d4\'b1\'ba\'f3\'bb\'e1\'d4\'b1\'d6\'d0\'d0\'c4\'d2\'b3\'d0\'c5\'cf\'a2\'c3\'bb\'d3\'d0\'b8\'fc\'d0\'c2\'a3\'ac\'bb\'b9\'ca\'c7\'ce\'b4\'bf\'aa\'cd\'a8\'b5\'c4\'d7\'b4\'cc\'ac\'a3\'ac\'cd\'cb\'b3\'f6\'b5\'c7\'c2\'bc\'d6\'d8\'d0\'c2\'bd\'f8\'d2\'b2\'b2\'bb\'d0\'d0\'a3\'ac\'b5\'ab\'ca\'c7\'c9\'b1\'b5\'f4\'bd\'f8\'b3\'cc\'ba\'f3\'d6\'d8\'d0\'c2\'b4\'f2\'bf\'aa\'be\'cd\'ba\'c3\'c1\'cb\'a1\'a3\'b5\'ab\'ca\'c7\'d4\'da\'ce\'d2\'d7\'d4\'bc\'ba\'b5\'c4\'ca\'d6\'bb\'fa\'c9\'cf\'b2\'e2\'a3\'ac\'d2\'bb\'d6\'b1\'ca\'c7\'d5\'fd\'b3\'a3\'b5\'c4}</string>
+				</dict>
+			</dict>
+		</array>
+	</dict>
+	<key>printInfo</key>
+	<data>
+	BAtzdHJlYW10eXBlZIHoA4QBQISEhAtOU1ByaW50SW5mbwGEhAhOU09iamVjdACFkoSE
+	hBNOU011dGFibGVEaWN0aW9uYXJ5AISEDE5TRGljdGlvbmFyeQCUhAFpCZKEhIQITlNT
+	dHJpbmcBlIQBKw9wcmludEJhY2tncm91bmSGkoSEhAhOU051bWJlcgCEhAdOU1ZhbHVl
+	AJSEASqEhAFjnQCGkoSZmRZOU0hvcml6b250YWxseUNlbnRlcmVkhpKEm5ydnQGGkoSZ
+	mQ1OU1JpZ2h0TWFyZ2luhpKEm5yEhAFmnkiGkoSZmQxOU0xlZnRNYXJnaW6GkqGShJmZ
+	FU5TSG9yaXpvbmFsUGFnaW5hdGlvboaShJuchIQBcZ8BhpKEmZkUTlNWZXJ0aWNhbFBh
+	Z2luYXRpb26GkqWShJmZFE5TVmVydGljYWxseUNlbnRlcmVkhpKfkoSZmQtOU1RvcE1h
+	cmdpboaShJucop5ahpKEmZkOTlNCb3R0b21NYXJnaW6GkqqGhg==
+	</data>
+	<key>title</key>
+	<string>新用户购买会员后会员中心页无法刷新</string>
+	<key>version</key>
+	<integer>4</integer>
+</dict>
+</plist>
