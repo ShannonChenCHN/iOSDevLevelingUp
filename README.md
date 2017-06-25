@@ -5,23 +5,28 @@ A journey of leveling up iOS dev knowledge and skill.
 
 ## 知识大纲
 
-- [基础]()
-  - [语言]()
+- 基础
+  - 语言
     - [Objective-C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/39)
        - 对象模型
     - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
+    - C/C++
+    - JavaScript
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
   - [内存](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
   - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
   - [存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
-  - [渲染]()
+  - 渲染
     - [Drawing](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/48)
     - [文字/图像](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/44)
     - [动画](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/31)
   - [线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
-  - [计算机基础]()
-    - [算法]()
-    - [数据结构]()
+  - 计算机基础
+    - [算法](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/50)
+    - [数据结构](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/49)
+    - [编译原理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
+    - [操作系统](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/54)
+  - [APP 上架与审核](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/20)
 - [需求](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/41)
   - 普通需求
   - 特殊需求
@@ -30,30 +35,30 @@ A journey of leveling up iOS dev knowledge and skill.
     - [视频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/13)
     - [音频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/35)
     - [文本绘制和排版](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/30)
-    - [IM]()
+    - IM
     - 其他
   - 运营需求
     - 配置系统
     - 事件流
     - 统计系统
     - 动态化
-      - [Web view 和 JavaScript](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/32)
-- [质量]()
+      - [Web view 和 Hybrid](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/32)
+- 质量
   - [Code Quality](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/27)
   - [性能调优和监控体系](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/26)
   - [安全、逆向](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/28)
   - [TDD 和单元测试、UI 自动化测试](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/24)
-- [效率]()
+- 效率
   - [重构与架构、设计模式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/12)
     - [编程范式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/22)
   - [工程化](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/40)
   - [持续集成](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/29)
   - [版本控制](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/43)
   - [调试、IDE、工具](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/10)
-- [延伸]()
+- 延伸
   - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
-  - [人工智能和机器学习]()
-  - [AR]()
+  - [人工智能和机器学习](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/56)
+  - AR
 - [相关资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
 
 ## 生产力
