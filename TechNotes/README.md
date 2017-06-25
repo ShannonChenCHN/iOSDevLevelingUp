@@ -14,4 +14,5 @@ A collection of self-written articles about iOS development.
 - [NSCalendar 这个坑货——获取系统当前时间年份出错](http://www.jianshu.com/p/9626ecf28df8)
 - [Github 搜索技巧](http://www.jianshu.com/p/7321caea2a08)
 - [如何获取设备唯一标识？以及多个App间如何共享同一个设备唯一标识](http://www.jianshu.com/p/25eb5fd24c59)
+- [Daily Questions](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/18)
 - [更多...](http://www.jianshu.com/u/4ef5e287fc91)
