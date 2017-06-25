@@ -59,6 +59,8 @@ A journey of leveling up iOS dev knowledge and skill.
   - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
   - [人工智能和机器学习](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/56)
   - AR
+  - [软件工程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/9)
+    - 敏捷开发
 - [相关资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
 
 ## 生产力
