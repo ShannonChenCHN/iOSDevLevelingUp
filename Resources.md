@@ -325,7 +325,7 @@ A resources list for leveling up iOS dev knowledge and skills.
 - [MrPeak杂货铺](http://mrpeak.cn)
 - [Limboy's blog]( http://limboy.me)
 - [孙源的博客](http://blog.sunnyxx.com)
-- [bestswifter（张星宇）的博客](http://www.jianshu.com/u/3e55748920d2)
+- [张星宇的博客](http://www.jianshu.com/u/3e55748920d2)
 - [雷纯峰的博客](http://blog.leichunfeng.com)
 - [天猫无线技术团队博客-苹果核](http://pingguohe.net)
 - [美团点评技术团队博客](http://tech.meituan.com)
