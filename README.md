@@ -65,10 +65,12 @@ A journey of leveling up iOS dev knowledge and skill.
 
 ## 生产力
 
-- [个人博客](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/TechNotes)
+- [个人博客](https://github.com/ShannonChenCHN/eureka)
 - [技术笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/55)
 - [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
 - [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
 - [阅读笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingArticles)
-- [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSDevWeekly)
 - [个人作品](https://github.com/ShannonChenCHN?tab=repositories)
+- [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/62)
+- [版本总结](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/63)
+
