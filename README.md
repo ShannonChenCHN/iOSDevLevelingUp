@@ -16,7 +16,8 @@ A journey of leveling up iOS dev knowledge and skill.
   - [内存](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
   - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
   - [存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
-  - 渲染
+  - 布局和渲染
+    - [storyboard 与布局适配](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/8)
     - [Drawing](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/48)
     - [文字/图像](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/44)
     - [动画](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/31)
@@ -61,7 +62,9 @@ A journey of leveling up iOS dev knowledge and skill.
   - AR
   - [软件工程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/9)
     - 敏捷开发
-- [相关资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
+- [面试题集锦](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/18)
+- [学习资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
+- [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/issues)
 
 ## 生产力
 
