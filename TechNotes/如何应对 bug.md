@@ -58,4 +58,4 @@
 ## 延伸阅读
 - [Creating an issue template for your repository](https://help.github.com/articles/creating-an-issue-template-for-your-repository/)
 - [Issue and Pull Request templates](https://github.com/blog/2111-issue-and-pull-request-templates)
-
+- [如何写一份良好的 Bug 报告](https://mp.weixin.qq.com/s?__biz=MjM5MzA0OTkwMA==&mid=210478795&idx=2&sn=148b793fcad9f7e768e8cacc3cb1b1b3&mpshare=1&scene=1&srcid=07101lOEzlJSRG5fSmsXnhZW#rd)
