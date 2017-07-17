@@ -13,7 +13,7 @@ Repos|Version|Article|
 [AFNetworking](https://github.com/AFNetworking/AFNetworking)|3.1.0|[AFNetworking 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/AFNetworking.md)|
 [ASIHTTPRequest](https://github.com/pokeb/asi-http-request)||TODO|
 [MKNetworkKit](https://github.com/MugunthKumar/MKNetworkKit)||TODO|
-[SDWebImage](https://github.com/rs/SDWebImage)|3.7.3|[SDWebImage 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/SDWebImage.md)|
+[SDWebImage](https://github.com/rs/SDWebImage)|3.7.3|[SDWebImage 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes)|
 [YYWebImage](https://github.com/ibireme/YYWebImage)|1.0.4|[YYWebImage 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/YYWebImage.md)|
 [YYCache](https://github.com/ibireme/YYCache)|||
 [Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary)|2.1.0|[Mantle 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/Mantle.md)|
@@ -26,7 +26,7 @@ MBProgressHUD|||
 SVProgressHUD|||
 Aspects|||
 KSCrash||TODO|
-[WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)||TODO|
+[WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)||[WebViewJavascriptBridge 学习笔记.md]()|
 
 ##### Swift
 
