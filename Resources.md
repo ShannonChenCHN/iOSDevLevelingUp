@@ -330,6 +330,8 @@ A resources list for leveling up iOS dev knowledge and skills.
 - [天猫无线技术团队博客-苹果核](http://pingguohe.net)
 - [美团点评技术团队博客](http://tech.meituan.com)
 - [微信读书技术团队的博客](http://wereadteam.github.io)
+- [bestswifter 的博客](http://www.jianshu.com/u/3e55748920d2)
+- [一缕殇流化隐半边冰的博客](http://www.jianshu.com/u/12201cdd5d7a)
 - [iOS Dev Weekly](http://iosdevweekly.com)
 - [iOS Goodies](http://ios-goodies.com)
 - [Swift Developments Newsletter](https://andybargh.com/swiftdevelopments/)
@@ -343,4 +345,5 @@ A resources list for leveling up iOS dev knowledge and skills.
 - [The Big Nerd Ranch Blog](https://www.bignerdranch.com/blog/)
 - [Yalantis blog](https://yalantis.com/blog/)
 - [Ray Wenderlich](https://www.raywenderlich.com)
+- [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/iOSDevBlogs.md)
 
