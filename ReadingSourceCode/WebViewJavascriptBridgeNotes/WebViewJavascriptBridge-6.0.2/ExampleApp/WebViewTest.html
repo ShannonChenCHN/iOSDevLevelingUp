@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>测试</title>
+        <script type="text/JavaScript">
+        
+            function setupWebViewJavascriptBridge(callback) {
+                if (window.WebViewJavascriptBridge) {
+                    return callback(WebViewJavascriptBridge);
+                }
+                if (window.WVJBCallbacks) {
+                    return window.WVJBCallbacks.push(callback);
+                }
+                
+                window.WVJBCallbacks = [callback];
+                var WVJBIframe = document.createElement('iframe');
+                WVJBIframe.style.display = 'none';
+                WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+                document.documentElement.appendChild(WVJBIframe);
+                setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+            }
+            
+            setupWebViewJavascriptBridge(function(bridge) {
+                                         /* Initialize your app here */
+                                         bridge.registerHandler("share", function(data, responseCallback) {
+                                                                var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com'};
+                                                                responseCallback(params);
+                                                                });
+                                         });
+            
+        </script>
+        <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+                <link rel="stylesheet" href="css/default.css" />
+                <style>
+                    .ulrs {
+                        margin-bottom: 10px;
+                    }
+                    .ulrs button {
+                        display: block;
+                        height: 45px;
+                        width: 90%;
+                        margin: auto;
+                        text-align: center;
+                        background-color: lightseagreen;
+                        border-radius: 5px;
+                    }
+                </style>
+    </head>
+    <body>
+        <ul class="ulrs">
+            
+            <li><button onclick="requestLocation();">Get Location Info</button></li>
+            <li><button onclick="share();">Share</button></li>
+            <li><button onclick="chooseADay();">Choose Your Birthday</button></li>
+
+        </ul>
+    
+        
+        <script>
+            
+            function requestLocation() {
+                WebViewJavascriptBridge.callHandler("requestLocation", null, function(response) {
+                                                    alert(response);
+                                                    });
+            }
+        
+        
+            function share() {
+                var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com', 'user':{'name':'Jack', 'age':'23'}};
+                WebViewJavascriptBridge.callHandler("share", params, null);
+            }
+        
+            function chooseADay() {
+                WebViewJavascriptBridge.callHandler("chooseADay", null, function(response) {
+                                                        if (response == null) {
+                                                            alert('已取消');
+                                                        } else  {
+                                                            alert('您的生日是：' + response);
+                                                        }
+                                                    });
+            }
+
+        </script>
+    </body>
+</html>
