@@ -4,22 +4,34 @@
         <title>测试</title>
         <script type="text/JavaScript">
         
+            // 初始化 WebViewJavascriptBridge
             function setupWebViewJavascriptBridge(callback) {
+                
+                // 只在第一次调用时不执行，为了防止重复加载 WebViewJavascriptBridge_JS.m
                 if (window.WebViewJavascriptBridge) {
                     return callback(WebViewJavascriptBridge);
                 }
+                
+                // 保存 callback
                 if (window.WVJBCallbacks) {
                     return window.WVJBCallbacks.push(callback);
                 }
-                
                 window.WVJBCallbacks = [callback];
+                
+                // 开启一个 iframe，加载这段 URL 'wvjbscheme://__BRIDGE_LOADED__'
+                // 其目的是为了触发 WebViewJavascriptBridge_JS.m 文件内容的加载
                 var WVJBIframe = document.createElement('iframe');
                 WVJBIframe.style.display = 'none';
                 WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
                 document.documentElement.appendChild(WVJBIframe);
-                setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+                setTimeout(
+                           function() {
+                           document.documentElement.removeChild(WVJBIframe);
+                           },
+                           0);
             }
-            
+        
+            // 手动调用 setupWebViewJavascriptBridge 方法，触发 WebViewJavascriptBridge 的初始化
             setupWebViewJavascriptBridge(function(bridge) {
                                          /* Initialize your app here */
                                          bridge.registerHandler("share", function(data, responseCallback) {

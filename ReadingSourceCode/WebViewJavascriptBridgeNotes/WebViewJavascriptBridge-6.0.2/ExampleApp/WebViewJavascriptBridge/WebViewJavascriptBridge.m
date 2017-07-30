@@ -19,7 +19,7 @@
 #endif
 
 @implementation WebViewJavascriptBridge {
-    WVJB_WEAK WVJB_WEBVIEW_TYPE* _webView;
+    WVJB_WEAK WVJB_WEBVIEW_TYPE* _webView;  // 这里使用的是弱引用
     WVJB_WEAK id _webViewDelegate;
     long _uniqueId;
     WebViewJavascriptBridgeBase *_base;
@@ -35,18 +35,23 @@
     [WebViewJavascriptBridgeBase setLogMaxLength:length];
 }
 
+// 创建 Bridge
 + (instancetype)bridgeForWebView:(id)webView {
     return [self bridge:webView];
 }
+
 + (instancetype)bridge:(id)webView {
+    
+    // WKWebView
 #if defined supportsWKWebView
     if ([webView isKindOfClass:[WKWebView class]]) {
         return (WebViewJavascriptBridge*) [WKWebViewJavascriptBridge bridgeForWebView:webView];
     }
 #endif
+    // UIWebView（iOS） 或者 WebView（OSX）
     if ([webView isKindOfClass:[WVJB_WEBVIEW_TYPE class]]) {
-        WebViewJavascriptBridge* bridge = [[self alloc] init];
-        [bridge _platformSpecificSetup:webView];
+        WebViewJavascriptBridge* bridge = [[self alloc] init]; // 注意：这里用的不是 WebViewJavascriptBridge 而是 self
+        [bridge _platformSpecificSetup:webView];  // 针对不同平台进行初始设置：保存 webView，并设置 webView 的 delegate，创建 WebViewJavascriptBridgeBase 对象，并设置 WebViewJavascriptBridgeBase 的 delegate
         return bridge;
     }
     [NSException raise:@"BadWebViewType" format:@"Unknown web view type."];
@@ -78,7 +83,7 @@
 }
 
 - (void)registerHandler:(NSString *)handlerName handler:(WVJBHandler)handler {
-    _base.messageHandlers[handlerName] = [handler copy];
+    _base.messageHandlers[handlerName] = [handler copy]; // 保存 handler
 }
 
 - (void)removeHandler:(NSString *)handlerName {
@@ -160,7 +165,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     if (webView != _webView) { return; }
     
-    __strong WVJB_WEBVIEW_DELEGATE_TYPE* strongDelegate = _webViewDelegate;
+    __strong WVJB_WEBVIEW_DELEGATE_TYPE* strongDelegate = _webViewDelegate;  // MARK: 这里为什么用 strong？
     if (strongDelegate && [strongDelegate respondsToSelector:@selector(webViewDidFinishLoad:)]) {
         [strongDelegate webViewDidFinishLoad:webView];
     }
@@ -180,10 +185,15 @@
     
     NSURL *url = [request URL];
     __strong WVJB_WEBVIEW_DELEGATE_TYPE* strongDelegate = _webViewDelegate;
-    if ([_base isWebViewJavascriptBridgeURL:url]) {
-        if ([_base isBridgeLoadedURL:url]) {
-            [_base injectJavascriptFile];
-        } else if ([_base isQueueMessageURL:url]) {
+    
+    if ([_base isWebViewJavascriptBridgeURL:url]) { // 是不是 Bridge 的 URL
+        
+        if ([_base isBridgeLoadedURL:url]) {  // 是不是第一次加载时的 URL
+            
+            [_base injectJavascriptFile];    // 注入 WebViewJavascriptBridge_JS 文件中的 JavaScript
+            
+        } else if ([_base isQueueMessageURL:url]) {  // 是不是发送消息给 Native 的 URL
+            
             NSString *messageQueueString = [self _evaluateJavascript:[_base webViewJavascriptFetchQueyCommand]];
             [_base flushMessageQueue:messageQueueString];
         } else {

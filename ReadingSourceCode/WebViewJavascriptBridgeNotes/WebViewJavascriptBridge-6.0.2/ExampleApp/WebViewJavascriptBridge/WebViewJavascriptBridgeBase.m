@@ -11,7 +11,7 @@
 
 @implementation WebViewJavascriptBridgeBase {
     __weak id _webViewDelegate;
-    long _uniqueId;
+    long _uniqueId;  // 用来记录 responseCallback 用的唯一标识 id
 }
 
 static bool logging = false;
@@ -42,6 +42,7 @@ static int logMaxLength = 500;
     _uniqueId = 0;
 }
 
+// 原生发送消息给 JavaScript
 - (void)sendData:(id)data responseCallback:(WVJBResponseCallback)responseCallback handlerName:(NSString*)handlerName {
     NSMutableDictionary* message = [NSMutableDictionary dictionary];
     
@@ -51,23 +52,28 @@ static int logMaxLength = 500;
     
     if (responseCallback) {
         NSString* callbackId = [NSString stringWithFormat:@"objc_cb_%ld", ++_uniqueId];
-        self.responseCallbacks[callbackId] = [responseCallback copy];
-        message[@"callbackId"] = callbackId;
+        self.responseCallbacks[callbackId] = [responseCallback copy];  // 保存  responseCallback
+        message[@"callbackId"] = callbackId;  // 将 callbackId 传给 JavaScript
     }
     
     if (handlerName) {
         message[@"handlerName"] = handlerName;
     }
+    
     [self _queueMessage:message];
 }
 
+
+/// 处理 JavaScript 消息队列中的消息，发送给 Objective-C 方
 - (void)flushMessageQueue:(NSString *)messageQueueString{
     if (messageQueueString == nil || messageQueueString.length == 0) {
         NSLog(@"WebViewJavascriptBridge: WARNING: ObjC got nil while fetching the message queue JSON from webview. This can happen if the WebViewJavascriptBridge JS is not currently present in the webview, e.g if the webview just loaded a new page.");
         return;
     }
 
+    // 解析消息队列中的消息
     id messages = [self _deserializeMessageJSON:messageQueueString];
+    
     for (WVJBMessage* message in messages) {
         if (![message isKindOfClass:[WVJBMessage class]]) {
             NSLog(@"WebViewJavascriptBridge: WARNING: Invalid %@ received: %@", [message class], message);
@@ -80,16 +86,21 @@ static int logMaxLength = 500;
             WVJBResponseCallback responseCallback = _responseCallbacks[responseId];
             responseCallback(message[@"responseData"]);
             [self.responseCallbacks removeObjectForKey:responseId];
+            
         } else {
+            
+            // 1. JavaScript 中 callback 的转换
             WVJBResponseCallback responseCallback = NULL;
-            NSString* callbackId = message[@"callbackId"];
-            if (callbackId) {
+            NSString* callbackId = message[@"callbackId"];  // 取出 JavaScript 中传过来的 callbackId
+            
+            if (callbackId) {  // 有 JavaScript 回调，将 callback 转换为 block
                 responseCallback = ^(id responseData) {
                     if (responseData == nil) {
                         responseData = [NSNull null];
                     }
                     
                     WVJBMessage* msg = @{ @"responseId":callbackId, @"responseData":responseData };
+                    // 回调 JavaScript
                     [self _queueMessage:msg];
                 };
             } else {
@@ -98,6 +109,7 @@ static int logMaxLength = 500;
                 };
             }
             
+            // 2. 根据 handlerName 取出对应的 handler
             WVJBHandler handler = self.messageHandlers[message[@"handlerName"]];
             
             if (!handler) {
@@ -105,14 +117,16 @@ static int logMaxLength = 500;
                 continue;
             }
             
+            // 3. 执行 handler
             handler(message[@"data"], responseCallback);
         }
     }
 }
 
 - (void)injectJavascriptFile {
-    NSString *js = WebViewJavascriptBridge_js();
-    [self _evaluateJavascript:js];
+    NSString *js = WebViewJavascriptBridge_js(); // MARK: 为什么用这种方式加载，而不是写成一个 .js 文件再读取呢？
+    [self _evaluateJavascript:js];  // 执行 WebViewJavascriptBridge_JS 文件中的 JavaScript
+    
     if (self.startupMessageQueue) {
         NSArray* queue = self.startupMessageQueue;
         self.startupMessageQueue = nil;
@@ -129,16 +143,22 @@ static int logMaxLength = 500;
     return [self isBridgeLoadedURL:url] || [self isQueueMessageURL:url];
 }
 
+/// scheme 是不是 wvjbscheme 或者 https
 - (BOOL)isSchemeMatch:(NSURL*)url {
     NSString* scheme = url.scheme.lowercaseString;
+    
     return [scheme isEqualToString:kNewProtocolScheme] || [scheme isEqualToString:kOldProtocolScheme];
 }
 
+/// host 是不是 __wvjb_queue_message__，并且 scheme 也匹配
+/// 用来判断是不是发送消息给 Native 的 URL
 - (BOOL)isQueueMessageURL:(NSURL*)url {
     NSString* host = url.host.lowercaseString;
     return [self isSchemeMatch:url] && [host isEqualToString:kQueueHasMessage];
 }
 
+/// host 是不是 __bridge_loaded__，并且 scheme 也匹配
+/// 用来判断是不是第一次加载时的 URL
 - (BOOL)isBridgeLoadedURL:(NSURL*)url {
     NSString* host = url.host.lowercaseString;
     return [self isSchemeMatch:url] && [host isEqualToString:kBridgeLoaded];
@@ -152,6 +172,7 @@ static int logMaxLength = 500;
     return @"typeof WebViewJavascriptBridge == \'object\';";
 }
 
+/// 从消息队列中拉取消息
 - (NSString *)webViewJavascriptFetchQueyCommand {
     return @"WebViewJavascriptBridge._fetchQueue();";
 }
@@ -175,8 +196,11 @@ static int logMaxLength = 500;
     }
 }
 
+// Objective-C 发消息给 JavaScript
 - (void)_dispatchMessage:(WVJBMessage*)message {
-    NSString *messageJSON = [self _serializeMessage:message pretty:NO];
+    
+    NSString *messageJSON = [self _serializeMessage:message pretty:NO]; // 将消息转成 JSON string
+    
     [self _log:@"SEND" json:messageJSON];
     messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
     messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];

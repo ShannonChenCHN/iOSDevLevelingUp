@@ -19,33 +19,51 @@
 
 @implementation ViewController
 
+#pragma mark - Life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+    // 创建 WebViewJavascriptBridge 对象
     self.bridge = [WebViewJavascriptBridge bridgeForWebView:self.webView];
     
+    // 注册 handler
+    [self registerHandlers];
     
-    __weak typeof(self) weakSelf = self;
-    [self.bridge registerHandler:@"requestLocation" handler:^(id data, WVJBResponseCallback responseCallback) {
-        responseCallback(@"上海市浦东新区张江高科");
-    }];
-    
-    [self.bridge registerHandler:@"share" handler:^(id data, WVJBResponseCallback responseCallback) {
-        NSString *shareContent = [NSString stringWithFormat:@"标题：%@\n 内容：%@ \n url：%@",data[@"title"], data[@"content"], data[@"url"]];
-        [self showAlertViewWithTitle:@"调用原生分享菜单" message:shareContent];
-    }];
-    
-    
+    // 加载网页
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"WebViewTest" ofType:@"html"];
     NSString *HTMLString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     [self.webView loadHTMLString:HTMLString baseURL:nil];
 }
 
+#pragma mark - Native <-> JavaScript
+
+- (void)registerHandlers {
+    
+    // 获取位置信息
+    [self.bridge registerHandler:@"requestLocation" handler:^(id data, WVJBResponseCallback responseCallback) {
+        // callback 回调
+        responseCallback(@"上海市浦东新区张江高科");
+    }];
+    
+    // 分享
+    [self.bridge registerHandler:@"share" handler:^(id data, WVJBResponseCallback responseCallback) {
+        NSString *shareContent = [NSString stringWithFormat:@"标题：%@\n 内容：%@ \n url：%@",
+                                  data[@"title"],
+                                  data[@"content"],
+                                  data[@"url"]];
+        [self showAlertViewWithTitle:@"调用原生分享菜单" message:shareContent];
+    }];
+
+}
+
 - (IBAction)callJavaScript {
     
+    // 原生调 JS
     [self.bridge callHandler:@"share" data:nil responseCallback:^(id responseData) {
-        NSString *shareContent = [NSString stringWithFormat:@"标题：%@\n 内容：%@ \n url：%@", responseData[@"title"], responseData[@"content"], responseData[@"url"]];
+        NSString *shareContent = [NSString stringWithFormat:@"标题：%@\n 内容：%@ \n url：%@",
+                                  responseData[@"title"],
+                                  responseData[@"content"],
+                                  responseData[@"url"]];
         [self showAlertViewWithTitle:@"调用原生分享菜单" message:shareContent];
     }];
     
