@@ -153,6 +153,7 @@ NSString * WebViewJavascriptBridge_js() {
 
 	registerHandler("_disableJavascriptAlertBoxSafetyTimeout", disableJavscriptAlertBoxSafetyTimeout);
 	
+    // 执行 WVJBCallbacks 中的回调函数，也就是通过 setupWebViewJavascriptBridge 函数添加的用来初始化的 callback
 	setTimeout(_callWVJBCallbacks, 0);
 	function _callWVJBCallbacks() {
 		var callbacks = window.WVJBCallbacks;

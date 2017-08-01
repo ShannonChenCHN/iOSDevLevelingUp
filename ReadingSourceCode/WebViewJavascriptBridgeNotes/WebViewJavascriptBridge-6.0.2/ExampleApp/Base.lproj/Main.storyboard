@@ -35,6 +35,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="WebViewJavaScriptBridge" id="CwV-Le-mIg">
+                        <barButtonItem key="leftBarButtonItem" title="开始加载" id="J9w-8a-HTh">
+                            <connections>
+                                <action selector="startLoading:" destination="BYZ-38-t0r" id="Bl7-wE-PHe"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="CUl-Bw-IDS">
                             <connections>
                                 <action selector="callJavaScript" destination="BYZ-38-t0r" id="RJY-uo-ARg"/>

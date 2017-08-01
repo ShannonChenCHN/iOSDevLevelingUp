@@ -29,6 +29,10 @@
     // 注册 handler
     [self registerHandlers];
     
+    
+}
+
+- (IBAction)startLoading:(id)sender {
     // 加载网页
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"WebViewTest" ofType:@"html"];
     NSString *HTMLString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];

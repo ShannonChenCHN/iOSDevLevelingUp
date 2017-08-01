@@ -31,14 +31,47 @@
                            0);
             }
         
+            var YHApp = {};
+            
             // 手动调用 setupWebViewJavascriptBridge 方法，触发 WebViewJavascriptBridge 的初始化
-            setupWebViewJavascriptBridge(function(bridge) {
+            setupWebViewJavascriptBridge(
+            
+                                         function(bridge) {
                                          /* Initialize your app here */
+                                         
+                                         var handlerNames = new Array("share", "requestLocation");
+                                         
+                                         for (var i in handlerNames) {
+                                            var handlerName = handlerNames[i];
+                                         
+                                            YHApp[handlerName] = function (tempHandlerName) {
+                                                return function(data, callback) {
+                                         
+                                                            if (typeof data == "function") { // 意味着没有参数 data，只有一个参数 callback
+                                         
+                                                                    bridge.callHandler(tempHandlerName, null, data);
+                                         
+                                                            } else if (callback == null) {  // 第二个参数 callback 为 null 或者只有第一个参数 data
+                                         
+                                                                    bridge.callHandler(tempHandlerName, data);
+                                         
+                                                            } else {  // 两个参数都有
+                                         
+                                                                    bridge.callHandler(tempHandlerName, data, callback);
+                                                            }
+                                                       }
+                                            }(handlerName);
+                                         
+                                         };
+                                         
                                          bridge.registerHandler("share", function(data, responseCallback) {
                                                                 var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com'};
                                                                 responseCallback(params);
                                                                 });
-                                         });
+                                         }
+            
+            );
+             
             
         </script>
         <meta charset="utf-8">
@@ -64,7 +97,6 @@
             
             <li><button onclick="requestLocation();">Get Location Info</button></li>
             <li><button onclick="share();">Share</button></li>
-            <li><button onclick="chooseADay();">Choose Your Birthday</button></li>
 
         </ul>
     
@@ -72,26 +104,17 @@
         <script>
             
             function requestLocation() {
-                WebViewJavascriptBridge.callHandler("requestLocation", null, function(response) {
-                                                    alert(response);
-                                                    });
+                YHApp.requestLocation(function(response) {
+                                      alert(response);
+                                      });
             }
         
         
             function share() {
                 var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com', 'user':{'name':'Jack', 'age':'23'}};
-                WebViewJavascriptBridge.callHandler("share", params, null);
+                YHApp.share(params);
             }
         
-            function chooseADay() {
-                WebViewJavascriptBridge.callHandler("chooseADay", null, function(response) {
-                                                        if (response == null) {
-                                                            alert('已取消');
-                                                        } else  {
-                                                            alert('您的生日是：' + response);
-                                                        }
-                                                    });
-            }
 
         </script>
     </body>
