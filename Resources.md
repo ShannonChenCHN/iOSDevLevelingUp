@@ -1,6 +1,6 @@
 # iOSLevelingUp
 
--------------
+
 A resources list for leveling up iOS dev knowledge and skills.
 
 ## Contents
@@ -340,6 +340,7 @@ A resources list for leveling up iOS dev knowledge and skills.
 - [Ole Begemann's blog](https://oleb.net/blog/)
 - [Mike Ash's blog](https://mikeash.com/pyblog/)
 - [Matt Gallagher's blog](http://www.cocoawithlove.com)
+- [Jesse Squires's blog](https://www.jessesquires.com)
 - [PSPDFKit blog](https://pspdfkit.com/blog/)
 - [The Big Nerd Ranch Blog](https://www.bignerdranch.com/blog/)
 - [Yalantis blog](https://yalantis.com/blog/)

@@ -197,6 +197,12 @@ A collection of awesome iOS development resources for reading.
 
 95.Apple Swift blog：https://developer.apple.com/swift/blog/
 
+96.张星宇的博客：http://www.jianshu.com/u/3e55748920d2
+
+97.一缕殇流化隐半边冰的博客：http://www.jianshu.com/u/12201cdd5d7a
+
+98.JSQMessagesViewController 作者 Jesse Squires 的博客：https://www.jessesquires.com
+
 
 ## 其他学习资源合集
 trip-to-iOS：https://github.com/Aufree/trip-to-iOS
