@@ -11,7 +11,7 @@
 
 @implementation WebViewJavascriptBridgeBase {
     __weak id _webViewDelegate;
-    long _uniqueId;  // 用来记录 responseCallback 用的唯一标识 id
+    long _uniqueId;  // 用来保存 responseCallback 用的唯一标识，从 responseCallbacks 中取 callback 的时候，就用对应的 id 去取
 }
 
 static bool logging = false;
@@ -22,9 +22,9 @@ static int logMaxLength = 500;
 
 - (id)init {
     if (self = [super init]) {
-        self.messageHandlers = [NSMutableDictionary dictionary];
-        self.startupMessageQueue = [NSMutableArray array];
-        self.responseCallbacks = [NSMutableDictionary dictionary];
+        self.messageHandlers = [NSMutableDictionary dictionary];    // 用来保存 handler （一个 `WVJBHandler` 类型的 block）的字典
+        self.startupMessageQueue = [NSMutableArray array];          // 用来保存初始消息的数组
+        self.responseCallbacks = [NSMutableDictionary dictionary];  // 用来保存回调 JS 的 block 的字典（原生调 JS 后，JS 再回调原生时会用到）
         _uniqueId = 0;
     }
     return self;
@@ -123,6 +123,7 @@ static int logMaxLength = 500;
     }
 }
 
+/// 注入 JS ，进行一些初始化操作
 - (void)injectJavascriptFile {
     NSString *js = WebViewJavascriptBridge_js(); // MARK: 为什么用这种方式加载，而不是写成一个 .js 文件再读取呢？
     [self _evaluateJavascript:js];  // 执行 WebViewJavascriptBridge_JS 文件中的 JavaScript

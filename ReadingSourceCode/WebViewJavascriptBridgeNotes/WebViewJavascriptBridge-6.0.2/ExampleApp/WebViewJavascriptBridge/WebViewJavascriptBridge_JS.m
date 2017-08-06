@@ -16,6 +16,7 @@ NSString * WebViewJavascriptBridge_js() {
 	// BEGIN preprocessorJSCode
 	static NSString * preprocessorJSCode = @__wvjb_js_func__(
 ;(function() {
+    // 避免重复执行
 	if (window.WebViewJavascriptBridge) {
 		return;
 	}
@@ -36,7 +37,7 @@ NSString * WebViewJavascriptBridge_js() {
 	};
 
 	var messagingIframe;
-	var sendMessageQueue = [];  // 保存已发送消息的队列
+	var sendMessageQueue = [];  // 保存消息的数组
 	var messageHandlers = {};   // 保存 handler 的对象
 	
 	var CUSTOM_PROTOCOL_SCHEME = 'https';
