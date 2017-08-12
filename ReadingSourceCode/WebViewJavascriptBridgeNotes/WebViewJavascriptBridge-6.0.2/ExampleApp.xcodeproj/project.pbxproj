@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		58702A2C1F2DCA9400C0F809 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 58702A2B1F2DCA9400C0F809 /* main.m */; };
 		58702A2F1F2DCA9400C0F809 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 58702A2E1F2DCA9400C0F809 /* AppDelegate.m */; };
-		58702A321F2DCA9400C0F809 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58702A311F2DCA9400C0F809 /* ViewController.m */; };
 		58702A351F2DCA9400C0F809 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58702A331F2DCA9400C0F809 /* Main.storyboard */; };
 		58702A371F2DCA9400C0F809 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58702A361F2DCA9400C0F809 /* Assets.xcassets */; };
 		58702A3A1F2DCA9400C0F809 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58702A381F2DCA9400C0F809 /* LaunchScreen.storyboard */; };
@@ -17,7 +16,14 @@
 		58702A4B1F2DCABE00C0F809 /* WebViewJavascriptBridge_JS.m in Sources */ = {isa = PBXBuildFile; fileRef = 58702A451F2DCABE00C0F809 /* WebViewJavascriptBridge_JS.m */; };
 		58702A4C1F2DCABE00C0F809 /* WebViewJavascriptBridgeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 58702A471F2DCABE00C0F809 /* WebViewJavascriptBridgeBase.m */; };
 		58702A4D1F2DCABE00C0F809 /* WKWebViewJavascriptBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 58702A491F2DCABE00C0F809 /* WKWebViewJavascriptBridge.m */; };
-		58702A4F1F2DCB1500C0F809 /* WebViewTest.html in Resources */ = {isa = PBXBuildFile; fileRef = 58702A4E1F2DCB1500C0F809 /* WebViewTest.html */; };
+		58702A4F1F2DCB1500C0F809 /* WebViewTest_01.html in Resources */ = {isa = PBXBuildFile; fileRef = 58702A4E1F2DCB1500C0F809 /* WebViewTest_01.html */; };
+		58DD276D1F3E0EC500BE7663 /* WebViewTest_02.html in Resources */ = {isa = PBXBuildFile; fileRef = 58DD276B1F3E0EC500BE7663 /* WebViewTest_02.html */; };
+		58DD276E1F3E0EC500BE7663 /* WebViewTest_03.html in Resources */ = {isa = PBXBuildFile; fileRef = 58DD276C1F3E0EC500BE7663 /* WebViewTest_03.html */; };
+		58DD27841F3F4D5700BE7663 /* SCTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DD277A1F3F4D5700BE7663 /* SCTableViewController.m */; };
+		58DD27851F3F4D5700BE7663 /* SCWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DD277C1F3F4D5700BE7663 /* SCWebViewController.m */; };
+		58DD27861F3F4D5700BE7663 /* SCWebViewMessageHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DD277F1F3F4D5700BE7663 /* SCWebViewMessageHandler.m */; };
+		58DD27871F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DD27811F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.m */; };
+		58DD27881F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DD27831F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,8 +31,6 @@
 		58702A2B1F2DCA9400C0F809 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		58702A2D1F2DCA9400C0F809 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		58702A2E1F2DCA9400C0F809 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		58702A301F2DCA9400C0F809 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		58702A311F2DCA9400C0F809 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		58702A341F2DCA9400C0F809 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		58702A361F2DCA9400C0F809 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		58702A391F2DCA9400C0F809 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -39,7 +43,19 @@
 		58702A471F2DCABE00C0F809 /* WebViewJavascriptBridgeBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewJavascriptBridgeBase.m; sourceTree = "<group>"; };
 		58702A481F2DCABE00C0F809 /* WKWebViewJavascriptBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKWebViewJavascriptBridge.h; sourceTree = "<group>"; };
 		58702A491F2DCABE00C0F809 /* WKWebViewJavascriptBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WKWebViewJavascriptBridge.m; sourceTree = "<group>"; };
-		58702A4E1F2DCB1500C0F809 /* WebViewTest.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = WebViewTest.html; sourceTree = "<group>"; };
+		58702A4E1F2DCB1500C0F809 /* WebViewTest_01.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = WebViewTest_01.html; sourceTree = "<group>"; };
+		58DD276B1F3E0EC500BE7663 /* WebViewTest_02.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = WebViewTest_02.html; sourceTree = "<group>"; };
+		58DD276C1F3E0EC500BE7663 /* WebViewTest_03.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = WebViewTest_03.html; sourceTree = "<group>"; };
+		58DD27791F3F4D5700BE7663 /* SCTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCTableViewController.h; sourceTree = "<group>"; };
+		58DD277A1F3F4D5700BE7663 /* SCTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCTableViewController.m; sourceTree = "<group>"; };
+		58DD277B1F3F4D5700BE7663 /* SCWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWebViewController.h; sourceTree = "<group>"; };
+		58DD277C1F3F4D5700BE7663 /* SCWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWebViewController.m; sourceTree = "<group>"; };
+		58DD277E1F3F4D5700BE7663 /* SCWebViewMessageHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWebViewMessageHandler.h; sourceTree = "<group>"; };
+		58DD277F1F3F4D5700BE7663 /* SCWebViewMessageHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWebViewMessageHandler.m; sourceTree = "<group>"; };
+		58DD27801F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWebViewSpecialMessageHandlerA.h; sourceTree = "<group>"; };
+		58DD27811F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWebViewSpecialMessageHandlerA.m; sourceTree = "<group>"; };
+		58DD27821F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWebViewSpecialMessageHandlerB.h; sourceTree = "<group>"; };
+		58DD27831F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWebViewSpecialMessageHandlerB.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +91,8 @@
 				58702A411F2DCABE00C0F809 /* WebViewJavascriptBridge */,
 				58702A2D1F2DCA9400C0F809 /* AppDelegate.h */,
 				58702A2E1F2DCA9400C0F809 /* AppDelegate.m */,
-				58702A301F2DCA9400C0F809 /* ViewController.h */,
-				58702A311F2DCA9400C0F809 /* ViewController.m */,
+				58DD27781F3F4D5700BE7663 /* Controllers */,
+				58DD277D1F3F4D5700BE7663 /* MessageHandlers */,
 				58702A331F2DCA9400C0F809 /* Main.storyboard */,
 				58702A361F2DCA9400C0F809 /* Assets.xcassets */,
 				58702A381F2DCA9400C0F809 /* LaunchScreen.storyboard */,
@@ -89,7 +105,9 @@
 		58702A2A1F2DCA9400C0F809 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				58702A4E1F2DCB1500C0F809 /* WebViewTest.html */,
+				58702A4E1F2DCB1500C0F809 /* WebViewTest_01.html */,
+				58DD276B1F3E0EC500BE7663 /* WebViewTest_02.html */,
+				58DD276C1F3E0EC500BE7663 /* WebViewTest_03.html */,
 				58702A2B1F2DCA9400C0F809 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -108,6 +126,30 @@
 				58702A491F2DCABE00C0F809 /* WKWebViewJavascriptBridge.m */,
 			);
 			path = WebViewJavascriptBridge;
+			sourceTree = "<group>";
+		};
+		58DD27781F3F4D5700BE7663 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				58DD27791F3F4D5700BE7663 /* SCTableViewController.h */,
+				58DD277A1F3F4D5700BE7663 /* SCTableViewController.m */,
+				58DD277B1F3F4D5700BE7663 /* SCWebViewController.h */,
+				58DD277C1F3F4D5700BE7663 /* SCWebViewController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		58DD277D1F3F4D5700BE7663 /* MessageHandlers */ = {
+			isa = PBXGroup;
+			children = (
+				58DD277E1F3F4D5700BE7663 /* SCWebViewMessageHandler.h */,
+				58DD277F1F3F4D5700BE7663 /* SCWebViewMessageHandler.m */,
+				58DD27801F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.h */,
+				58DD27811F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.m */,
+				58DD27821F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.h */,
+				58DD27831F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.m */,
+			);
+			path = MessageHandlers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,8 +211,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58702A4F1F2DCB1500C0F809 /* WebViewTest.html in Resources */,
+				58DD276D1F3E0EC500BE7663 /* WebViewTest_02.html in Resources */,
+				58702A4F1F2DCB1500C0F809 /* WebViewTest_01.html in Resources */,
 				58702A3A1F2DCA9400C0F809 /* LaunchScreen.storyboard in Resources */,
+				58DD276E1F3E0EC500BE7663 /* WebViewTest_03.html in Resources */,
 				58702A371F2DCA9400C0F809 /* Assets.xcassets in Resources */,
 				58702A351F2DCA9400C0F809 /* Main.storyboard in Resources */,
 			);
@@ -183,11 +227,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58702A321F2DCA9400C0F809 /* ViewController.m in Sources */,
 				58702A4A1F2DCABE00C0F809 /* WebViewJavascriptBridge.m in Sources */,
 				58702A2F1F2DCA9400C0F809 /* AppDelegate.m in Sources */,
+				58DD27881F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerB.m in Sources */,
 				58702A2C1F2DCA9400C0F809 /* main.m in Sources */,
+				58DD27861F3F4D5700BE7663 /* SCWebViewMessageHandler.m in Sources */,
+				58DD27851F3F4D5700BE7663 /* SCWebViewController.m in Sources */,
+				58DD27871F3F4D5700BE7663 /* SCWebViewSpecialMessageHandlerA.m in Sources */,
 				58702A4C1F2DCABE00C0F809 /* WebViewJavascriptBridgeBase.m in Sources */,
+				58DD27841F3F4D5700BE7663 /* SCTableViewController.m in Sources */,
 				58702A4B1F2DCABE00C0F809 /* WebViewJavascriptBridge_JS.m in Sources */,
 				58702A4D1F2DCABE00C0F809 /* WKWebViewJavascriptBridge.m in Sources */,
 			);

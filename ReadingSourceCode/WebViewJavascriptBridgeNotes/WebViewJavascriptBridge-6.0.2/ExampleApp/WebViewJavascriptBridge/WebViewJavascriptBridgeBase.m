@@ -82,7 +82,7 @@ static int logMaxLength = 500;
         [self _log:@"RCVD" json:message];
         
         NSString* responseId = message[@"responseId"];
-        if (responseId) {
+        if (responseId) {   // JS 回调原生的处理
             WVJBResponseCallback responseCallback = _responseCallbacks[responseId];
             responseCallback(message[@"responseData"]);
             [self.responseCallbacks removeObjectForKey:responseId];
@@ -137,6 +137,7 @@ static int logMaxLength = 500;
     }
 }
 
+/// 判断 URL 是不是跟 bridge 相关的
 - (BOOL)isWebViewJavascriptBridgeURL:(NSURL*)url {
     if (![self isSchemeMatch:url]) {
         return NO;

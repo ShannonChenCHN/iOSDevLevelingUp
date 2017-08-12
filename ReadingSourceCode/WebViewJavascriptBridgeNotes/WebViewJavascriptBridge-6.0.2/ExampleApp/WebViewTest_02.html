@@ -31,7 +31,7 @@
                            0);
             }
         
-            var YHApp = {};
+            var SCApp = {};
             
             // 手动调用 setupWebViewJavascriptBridge 方法，触发 WebViewJavascriptBridge 的初始化
             setupWebViewJavascriptBridge(
@@ -39,12 +39,12 @@
                                          function(bridge) {
                                          /* Initialize your app here */
                                          
-                                         var handlerNames = new Array("share", "requestLocation");
+                                         var handlerNames = new Array("share", "requestLocation", "makeACall");
                                          
                                          for (var i in handlerNames) {
                                             var handlerName = handlerNames[i];
                                          
-                                            YHApp[handlerName] = function (tempHandlerName) {
+                                            SCApp[handlerName] = function (tempHandlerName) {
                                                 return function(data, callback) {
                                          
                                                             if (typeof data == "function") { // 意味着没有参数 data，只有一个参数 callback
@@ -97,6 +97,7 @@
             
             <li><button onclick="requestLocation();">Get Location Info</button></li>
             <li><button onclick="share();">Share</button></li>
+            <li><button onclick="makeACall();">Make A Call</button></li>
 
         </ul>
     
@@ -104,15 +105,24 @@
         <script>
             
             function requestLocation() {
-                YHApp.requestLocation(function(response) {
+                
+                SCApp.requestLocation(function(response) {
                                       alert(response);
                                       });
             }
         
         
             function share() {
-                var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com', 'user':{'name':'Jack', 'age':'23'}};
-                YHApp.share(params);
+                var params = {'title': '测试分享的标题',
+                             'content':'测试分享的内容',
+                             'url':'http://www.baidu.com',
+                              'user':{'name':'Jack', 'age':'23'}};
+                SCApp.share(params);
+            }
+        
+            function makeACall() {
+                var params = {'number': '13456789012'};
+                SCApp.makeACall(params);
             }
         
 

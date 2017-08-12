@@ -149,6 +149,7 @@ NSString * WebViewJavascriptBridge_js() {
     // 创建 iframe，用来加载 URL 发送消息给 Native
 	messagingIframe = document.createElement('iframe');
 	messagingIframe.style.display = 'none';
+    // https://github.com/marcuswestin/WebViewJavascriptBridge/commit/48f88cf07d4eea63d15676b913d3d768041189c7
 	messagingIframe.src = CUSTOM_PROTOCOL_SCHEME + '://' + QUEUE_HAS_MESSAGE;  // https://__wvjb_queue_message__
 	document.documentElement.appendChild(messagingIframe);
 

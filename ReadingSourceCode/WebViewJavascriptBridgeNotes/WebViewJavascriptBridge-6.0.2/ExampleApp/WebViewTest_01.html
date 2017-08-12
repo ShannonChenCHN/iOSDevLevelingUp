@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>测试</title>
+        <script type="text/JavaScript">
+        
+            // 初始化 WebViewJavascriptBridge
+            function setupWebViewJavascriptBridge(callback) {
+                
+                // 只在第一次调用时不执行，为了防止重复加载 WebViewJavascriptBridge_JS.m
+                if (window.WebViewJavascriptBridge) {
+                    return callback(WebViewJavascriptBridge);
+                }
+                
+                // 保存 callback
+                if (window.WVJBCallbacks) {
+                    return window.WVJBCallbacks.push(callback);
+                }
+                window.WVJBCallbacks = [callback];
+                
+                // 开启一个 iframe，加载这段 URL 'wvjbscheme://__BRIDGE_LOADED__'
+                // 其目的是为了触发 WebViewJavascriptBridge_JS.m 文件内容的加载
+                var WVJBIframe = document.createElement('iframe');
+                WVJBIframe.style.display = 'none';
+                WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+                document.documentElement.appendChild(WVJBIframe);
+                setTimeout(
+                           function() {
+                           document.documentElement.removeChild(WVJBIframe);
+                           },
+                           0);
+            }
+        
+            var SCApp = {};
+            
+            // 手动调用 setupWebViewJavascriptBridge 方法，触发 WebViewJavascriptBridge 的初始化
+            setupWebViewJavascriptBridge(
+            
+                                         function(bridge) {
+                                         /* Initialize your app here */
+                                         
+                                         var handlerNames = new Array("share", "requestLocation");
+                                         
+                                         for (var i in handlerNames) {
+                                            var handlerName = handlerNames[i];
+                                         
+                                            SCApp[handlerName] = function (tempHandlerName) {
+                                                return function(data, callback) {
+                                         
+                                                            if (typeof data == "function") { // 意味着没有参数 data，只有一个参数 callback
+                                         
+                                                                    bridge.callHandler(tempHandlerName, null, data);
+                                         
+                                                            } else if (callback == null) {  // 第二个参数 callback 为 null 或者只有第一个参数 data
+                                         
+                                                                    bridge.callHandler(tempHandlerName, data);
+                                         
+                                                            } else {  // 两个参数都有
+                                         
+                                                                    bridge.callHandler(tempHandlerName, data, callback);
+                                                            }
+                                                       }
+                                            }(handlerName);
+                                         
+                                         };
+                                         
+                                         bridge.registerHandler("share", function(data, responseCallback) {
+                                                                var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com'};
+                                                                responseCallback(params);
+                                                                });
+                                         }
+            
+            );
+             
+            
+        </script>
+        <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+                <link rel="stylesheet" href="css/default.css" />
+                <style>
+                    .ulrs {
+                        margin-bottom: 10px;
+                    }
+                    .ulrs button {
+                        display: block;
+                        height: 45px;
+                        width: 90%;
+                        margin: auto;
+                        text-align: center;
+                        background-color: lightseagreen;
+                        border-radius: 5px;
+                    }
+                </style>
+    </head>
+    <body>
+        <ul class="ulrs">
+            
+            <li><button onclick="requestLocation();">Get Location Info</button></li>
+            <li><button onclick="share();">Share</button></li>
+
+        </ul>
+    
+        
+        <script>
+            
+            function requestLocation() {
+                SCApp.requestLocation(function(response) {
+                                      alert(response);
+                                      });
+            }
+        
+        
+            function share() {
+                var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com', 'user':{'name':'Jack', 'age':'23'}};
+                SCApp.share(params);
+            }
+        
+
+        </script>
+    </body>
+</html>
