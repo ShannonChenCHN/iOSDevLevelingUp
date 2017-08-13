@@ -198,9 +198,10 @@ WebViewJavascriptBridge 的初始化分为两部分，一部分是 Objective-C �
 最终的目标是， Objective-C 和 JavaScript 两边各有一个 `WebViewJavascriptBridge` 对象，有了这两个对象，两边都可以收发“消息”，同时两边还各自维护一个管理响应事件的 messageHandlers 容器、一个管理回调的 callbackId 容器。
 所以，我们这里讨论的初始化，不单单是一个对象的初始化，而是一个完整的准备过程，如下图所示。
 
-![原生部分的初始化.png](https://coding.net/u/ShannonChen/p/Static-Resources/git/raw/master/%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596_01.png)
+![原生部分的初始化.png](./src/初始化_01.png)
 
-![JavaScript 部分的初始化.png](https://coding.net/u/ShannonChen/p/Static-Resources/git/raw/master/%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596_02.png)
+![JavaScript 部分的初始化.png](./src/初始化_02.png)
+
 **（1）**  Objective-C 中的初始化
 - 初始化 UIWebView
 - 初始化 WebViewJavascriptBridge，设置 web view 代理
@@ -235,7 +236,7 @@ WebViewJavascriptBridge 的初始化分为两部分，一部分是 Objective-C �
 
 #### 2.2 JS 调用原生
 
-![JS 调用原生.png](https://coding.net/u/ShannonChen/p/Static-Resources/git/raw/master/%25E6%25B5%2581%25E7%25A8%258B%25E5%259B%25BE_01.png)
+![JS 调用原生.png](./src/流程图_01.png)
 
 实际上，相比 原生调用 JS，JS 调用原生的逻辑更婉转，对照上面的示意图，我们可以把JS 调用原生的逻辑简化成以下五个环节：
 - JS 中调用 `callHandler()` 方法，发消息给原生
@@ -268,7 +269,7 @@ WebViewJavascriptBridge.callHandler(@"share",
 
 #### 2.3 原生调用 JS
 
-![原生调用 JS.png](https://coding.net/u/ShannonChen/p/Static-Resources/git/raw/master/%25E6%25B5%2581%25E7%25A8%258B%25E5%259B%25BE_02.png)
+![原生调用 JS.png](./src/流程图_02.png)
 
 原生调用 JS 其实本身可以直接通过 web view 来执行 JavaScript 脚本来实现的，但是 `WebViewJavascriptBridge` 提供了一个更贴近原生的方式。一是调用更规范，二是使用 block 的方式将调用与 JS 回调归并到一起了，代码逻辑更连贯。
 
@@ -1120,9 +1121,9 @@ page_id_2| handlerProcessor_2(Based on basicHandlerProcessor)|
 ...|... + baseHandlerProcessor |
 
 以下面的 3 个页面为例，这 3 个页面是在同一个 `WebViewController` 中加载的，其中页面 1 中只有两个基础功能：分享和获取地理位置，页面 2 中相比页面 1 多了一个 拨打电话的功能，页面 3 中相比页面 1 多了一个支付的功能。
-![Example_01](http://upload-images.jianshu.io/upload_images/814356-43ab390e3b580017.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![Example_02](http://upload-images.jianshu.io/upload_images/814356-a4f99ae053a2e945.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![Example_03](http://upload-images.jianshu.io/upload_images/814356-f37462d8a04ee4f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Example_01](./src/Example_01.png)
+![Example_02](./src/Example_02.png)
+![Example_03](./src/Example_03.png)
 
 首先我们创建一个管理公共 API 的 handler processor `SCWebViewMessageHandler `：
 ```
