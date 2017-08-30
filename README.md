@@ -27,7 +27,7 @@ A journey of leveling up iOS dev knowledge and skill.
     - [数据结构](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/49)
     - [编译原理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
     - [操作系统](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/54)
-    - [正则表达式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/85)
+    - [正则表达式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/85)
   - [APP 上架与审核](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/20)
 - [需求](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/41)
   - 普通需求
