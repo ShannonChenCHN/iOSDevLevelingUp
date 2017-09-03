@@ -2,6 +2,16 @@
 
 A journey of leveling up iOS dev knowledge and skill.
 
+## 生产力
+
+- [个人博客](http://www.jianshu.com/u/4ef5e287fc91)
+- [个人作品](https://github.com/ShannonChenCHN/SCKit)
+- [技术笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/55)
+- [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
+- [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
+- [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/62)
+- [版本总结](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/63)
+
 
 ## 知识大纲
 
@@ -67,13 +77,4 @@ A journey of leveling up iOS dev knowledge and skill.
 - [学习资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
 - [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/issues)
 
-## 生产力
-
-- [个人博客](http://www.jianshu.com/u/4ef5e287fc91)
-- [个人作品](https://github.com/ShannonChenCHN/SCKit)
-- [技术笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/55)
-- [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
-- [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
-- [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/62)
-- [版本总结](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/63)
 
