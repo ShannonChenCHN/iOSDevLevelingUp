@@ -73,8 +73,9 @@ A journey of leveling up iOS dev knowledge and skill.
   - AR
   - [软件工程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/9)
     - 敏捷开发
-- [面试题集锦](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/18)
+- [第三方库](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Awesome-iOS.md)
 - [学习资源](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Resources.md)
+- [面试题集锦](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/18)
 - [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/issues)
 
 
