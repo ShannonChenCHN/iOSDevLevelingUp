@@ -13,6 +13,7 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 
 
 ### 网络
+- [yuantiku/YTKNetwork](https://github.com/yuantiku/YTKNetwork)：基于 AFNetworking 封装的网络层框架
 
 ### 音频
 
@@ -26,6 +27,7 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 #### 动画曲线
 #### 特效
 - [LeFal/WaterDrops](https://github.com/LeFal/WaterDrops)（Swift）：下雪❄️的特效
+- [Resory/RYCuteView](https://github.com/Resory/RYCuteView)：用 UIBezierPath 实现下拉时的果冻弹性效果
 
 ### UI 控件
 
