@@ -1,0 +1,17 @@
+{
+  "url": "https://api.github.com/users/octocat",
+  "html_url": "https://github.com/octocat",
+  "number": 10,
+  "state": "open",
+  "assignee": {
+      "login": "octocat",
+      "name": "ShannonChenCHN",
+      "id": "1",
+      "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+      "type": "user",
+      "site_admin": true
+  },
+  "updated_at": "2016-05-20T20:09:31Z",
+  "title": null,
+  "body": "There's a typo mistake"
+  }

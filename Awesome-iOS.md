@@ -42,6 +42,8 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 - [Draveness/DKNightVersion](https://github.com/Draveness/DKNightVersion)：用于管理主题/换肤, 夜间模式
 
 ### 辅助工具（开发、调试、统计）
+- [Tencent/MLeaksFinder](https://github.com/Tencent/MLeaksFinder)：腾讯开源的内存泄漏实时监控工具
+- [coderyi/NetworkEye](https://github.com/coderyi/NetworkEye)：记录实时网络请求日志的 In-App 工具
 
 ### 完整项目
 #### 套装
