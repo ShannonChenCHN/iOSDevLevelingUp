@@ -5,6 +5,7 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 > - [vsouza/awesome-ios](https://github.com/vsouza/awesome-ios)
 > - [ibireme：iOS 第三方开源库的吐槽和备忘](https://blog.ibireme.com/2013/09/23/ios-third-party-libs/)
 > - [33 个 2017 年必须了解的 iOS 开源库](http://www.jianshu.com/p/d75a9a8d13b5)
+> - [国内顶尖团队的开源地址](https://github.com/niezhiyang/open_source_team)
 
 ## Content
 

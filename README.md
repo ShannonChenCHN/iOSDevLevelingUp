@@ -69,7 +69,7 @@ A journey of leveling up iOS dev knowledge and skill.
 - 延伸
   - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
   - [人工智能和机器学习](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/56)
-  - AR
+  - [AR，VR](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/92)
   - [软件工程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/9)
     - 敏捷开发
 - [第三方库](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Awesome-iOS.md)
