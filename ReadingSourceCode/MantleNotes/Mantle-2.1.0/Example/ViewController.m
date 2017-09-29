@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "GHIssue.h"
 #import "NSJSONSerialization+Nonnull.h"
+#import "UIImageView+downloader.h"
 
 
 @interface ViewController ()
@@ -42,7 +43,10 @@
         NSLog(@"model: error: %@", modelError);
     }
     
+    
+    // 更新界面
     self.nameLabel.text = issue.assignee.name;
+    [self.avatar setImageWithURL:issue.assignee.avatarURL];
     
 }
 
