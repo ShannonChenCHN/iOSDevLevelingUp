@@ -60,7 +60,7 @@ A journey of leveling up iOS dev knowledge and skill.
   - [安全、逆向](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/28)
   - [TDD 和单元测试、UI 自动化测试](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/24)
 - 效率
-  - [重构与架构、设计模式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/12)
+  - [重构与架构、设计模式](https://github.com/ShannonChenCHN/iOS-App-Architecture)
     - [编程范式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/22)
   - [工程化](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/40)
   - [持续集成](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/29)
