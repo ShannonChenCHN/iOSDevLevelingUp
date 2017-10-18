@@ -35,3 +35,26 @@ Repos|Version|Article|
 [Kingfisher](https://github.com/onevcat/Kingfisher)|||
 
 
+
+##### 延伸阅读
+
+- AFNetworking
+  - [iOS AFNetWorking源码详解（一）](http://www.jianshu.com/p/b98cf91b9ce2)
+  - [AFNetworking源码分析](http://www.jianshu.com/p/8eac5b1975de)
+  - [AFNetworking到底做了什么？](http://www.jianshu.com/p/856f0e26279d)
+- Mantle
+  - [《iOS进阶指南》试读之《Mantle解析》](http://www.jianshu.com/p/f49ddbf8a2ea)
+  - [iOS模型框架- Mantle 解读](http://www.jianshu.com/p/d9e66beedb8f)
+- YYModel
+  - [YYModel源代码分析（一）整体介绍](http://www.jianshu.com/p/5428552be6ce)
+  - [YYModel源代码分析（二）YYClassInfo](http://www.jianshu.com/p/012dbce17a50)
+  - [YYModel源代码分析（三）NSObject+YYModel](http://www.jianshu.com/p/7cf8b43f5d88)
+  - [一篇文章全吃透—史上最全YYModel的使用详解](http://www.jianshu.com/p/25e678fa43d3)
+  - [手把手带你撸一个 YYModel 的精简版](http://www.jianshu.com/p/b822285f73ac)
+- Masonry
+  - [追求Masonry](http://www.jianshu.com/p/1841e6c69611)
+  - [iOS自动布局框架-Masonry详解](http://www.jianshu.com/p/ea74b230c70d)
+  - [iOS开发之Masonry框架源码解析](http://www.cnblogs.com/ludashi/p/5591572.html)
+  - [厚积薄发之从Masonry 源码看Objective-C [开篇]](http://www.jianshu.com/p/73a5eecc4bab)
+  - [Masonry源代码解析](http://www.jianshu.com/p/cc945cc667b4)
+- [说一些你也许不知道的DZNEmptyDataSet细节](http://www.jianshu.com/p/8b2db71db449)
