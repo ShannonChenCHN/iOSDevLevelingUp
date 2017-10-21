@@ -22,6 +22,8 @@ A journey of leveling up iOS dev knowledge and skill.
     - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
     - C/C++
     - JavaScript
+    - Python
+    - Java
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
   - [内存](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
   - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
@@ -66,6 +68,7 @@ A journey of leveling up iOS dev knowledge and skill.
   - [持续集成](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/29)
   - [版本控制](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/43)
   - [调试、IDE、工具](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/10)
+  - [Linux 相关（vim、shell、shell script）](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/2)
 - 延伸
   - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
   - [人工智能和机器学习](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/56)
