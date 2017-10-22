@@ -21,9 +21,10 @@ A journey of leveling up iOS dev knowledge and skill.
        - 对象模型
     - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
     - C/C++
-    - JavaScript
+    - [JavaScript](https://github.com/ShannonChenCHN/AFrontEndWebDevTour)
     - Python
     - Java
+    - [Ruby](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/96)
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
   - [内存](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
   - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
