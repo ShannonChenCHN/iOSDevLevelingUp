@@ -61,7 +61,7 @@
 	        }
 	    }];
    ```
- - mas_update：不移除原来的约束，只是更新指定的约束
+ - mas_update：不移除原来的约束，只是更新指定的约束，Apple 官方推荐在 UIView 的 updateConstraints 方法中更新（当然也可以在别的地方调用）
  
 	  ```
 	    // 添加约束后，可以单独更新该控件的某一个约束
@@ -90,6 +90,8 @@
 	```
 
 4. 动画
+
+先修改约束，然后再在 UIView 的 animation 方法的 block 中调用 layoutIfNeeded 方法
 
   ```
 int padding = invertedInsets ? 100 : self.padding;
@@ -201,3 +203,14 @@ int padding = invertedInsets ? 100 : self.padding;
         make.height.equalTo(@60);
     }];
   ``` 
+  
+9. UIViewController 的 layoutGuide 
+
+	```
+	[topView makeConstraints:^(MASConstraintMaker *make) {
+	        make.top.equalTo(self.mas_topLayoutGuide);
+	        make.left.equalTo(self.view);
+	        make.right.equalTo(self.view);
+	        make.height.equalTo(@40);
+	    }];
+	```
