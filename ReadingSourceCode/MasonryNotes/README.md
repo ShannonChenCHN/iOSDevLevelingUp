@@ -214,3 +214,15 @@ int padding = invertedInsets ? 100 : self.padding;
 	        make.height.equalTo(@40);
 	    }];
 	```
+	
+10. HuggingPriority 和 CompressionResistancePriority
+
+  - Content Compression Resistance = 不许挤我！
+对，这个属性说白了就是“不许挤我”=。=
+这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不下所有的View的时候，Content Compression Resistance优先级越高的，显示的内容越完整。
+
+  - Content Hugging = 抱紧！
+这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。
+
+11. NSLayoutConstraint 的 constant 属性
+
