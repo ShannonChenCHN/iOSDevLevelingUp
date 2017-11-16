@@ -1,0 +1,6 @@
+use_frameworks!
+platform :tvos, '9.0'
+
+target 'IGListKitExamples' do
+  pod 'IGListKit', :path => '../../IGListKit.podspec'
+end
