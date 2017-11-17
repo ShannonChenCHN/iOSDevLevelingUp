@@ -32,7 +32,7 @@
     [self addSubview:self.movingButton];
     
     self.topLeft = YES;
-    UILayoutPriority
+    
     return self;
 }
 

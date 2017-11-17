@@ -1,4 +1,4 @@
-# Masonry
+# AutoLayout 和 Masonry
 
 ### Usage Tips
 
@@ -61,7 +61,7 @@
 	        }
 	    }];
    ```
- - mas_update：不移除原来的约束，只是更新指定的约束
+ - mas_update：不移除原来的约束，只是更新指定的约束，Apple 官方推荐在 UIView 的 updateConstraints 方法中更新（当然也可以在别的地方调用）
  
 	  ```
 	    // 添加约束后，可以单独更新该控件的某一个约束
@@ -70,8 +70,10 @@
 	    }];
 	  ```
 
-3. 保存约束
+3. 保存约束、更新约束
 
+	- 删除单个约束
+	
 	```
 	// in public/private interface
 	@property (nonatomic, strong) MASConstraint *topConstraint;
@@ -88,8 +90,24 @@
 	// then later you can call
 	[self.topConstraint uninstall];
 	```
+	
+	- 更新单个约束
+	
+	```
+	// 添加约束
+[_parallaxHeaderView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.left.and.right.equalTo(self.view);
+    make.top.equalTo(self.mas_topLayoutGuideBottom);
+    // 保存高度约束
+    _parallaxHeaderHeightConstraint = make.height.equalTo(@(ParallaxHeaderHeight));
+}];
+...
+_parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight - scrollView.contentOffset.y));
+	```
 
 4. 动画
+
+	先修改约束，然后再在 UIView 的 animation 方法的 block 中调用 layoutIfNeeded 方法
 
   ```
 int padding = invertedInsets ? 100 : self.padding;
@@ -201,3 +219,80 @@ int padding = invertedInsets ? 100 : self.padding;
         make.height.equalTo(@60);
     }];
   ``` 
+  
+9. UIViewController 的 layoutGuide 
+
+   topLayoutGuide 表示当前页面的上方被 status bar、navigation bar 遮挡的部分。同理，bottomLayoutGuide 表示下方被遮挡的部分。
+   有些时候，一个 ViewController 可能单独显示出来，也可能内嵌在 UINavigationController 里面显示出来。在这两种情况下，页面的“可视范围”是不一样的，很明显，NavigationBar 会遮挡住一部分，用了UITabBarController 时，tabBar 也会遮挡住下方一部分。再加上各种 Bar 都可以隐藏，情况会变得更复杂。
+所以有了 topLayoutGuide 和 bottomLayoutGuide，我们可以只需要写一份布局代码。
+
+	```
+	[topView makeConstraints:^(MASConstraintMaker *make) {
+	        make.top.equalTo(self.mas_topLayoutGuide);
+	        make.left.equalTo(self.view);
+	        make.right.equalTo(self.view);
+	        make.height.equalTo(@40);
+	    }];
+	```
+	
+10. HuggingPriority 和 CompressionResistancePriority
+
+  - Content Compression Resistance = 不许挤我！
+对，这个属性说白了就是“不许挤我”=。=
+这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不下所有的View的时候，Content Compression Resistance优先级越高的，显示的内容越完整。
+
+  - Content Hugging = 抱紧！
+这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。一般用于 UILabel 之类的控件。
+
+11. NSLayoutConstraint 的 constant 属性
+
+  如果约束是一个常量值，可以直接修改 NSLayoutConstraint 的 constant 属性来改变这个值
+
+
+12. 自动计算 UITableViewCell 高度
+
+	iOS 8 以后：
+	
+	第一步，给 cell 中的所有子控件添加好约束，如果 UILabel 要支持多行显示时，需要通过手动计算最大宽度，来设置 preferredMaxWidth 属性 
+	
+	第二步，利用 Self-sizing 机制设置 cell 高度，设置 rowHeight 为 UITableViewAutomaticDimension 或者在 heightForRow 方法中返回 UITableViewAutomaticDimension
+	
+	```
+	// self.tableView.rowHeight = UITableViewAutomaticDimension;
+	self.tableView.estimatedRowHeight = 80;
+	...
+	- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	    return UITableViewAutomaticDimension;
+	}
+```
+
+13. baseline
+
+	在Autolayout里面对应着NSLayoutFormatAlignAllBaseline，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字。
+	
+	对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的viewForBaselineLayout，返回当成baseline的view即可。
+	
+14. MASConstraint 的 -setOffset: 方法
+
+	```
+	_leftConstraint.offset = touchPoint.x;
+	_topConstraint.offset = touchPoint.y;
+	```
+	除了 -setOffset: 方法之外，还有 setCenterOffset:、setSizeOffset: 和 setInsets: 方法
+	
+15. UIView 的 -intrinsicContentSize 方法
+
+   可以通过重写该方法，告知 AutoLayout 系统内容尺寸有多大
+   
+16. UIView 的 requiresConstraintBasedLayout 方法什么时候用？
+   当需要在 -updateConstraints 方法中更新自定义 view 的约束时，但是还没有添加过约束的话，就需要重写该方法。
+   
+   
+   
+### 参考：
+- [有趣的Autolayout示例-Masonry实现](http://tutuge.me/2015/05/23/autolayout-example-with-masonry/)
+- [Masonry 官方文档](https://github.com/SnapKit/Masonry)
+- [Autolayout之 关于+requiresConstraintBasedLayout方法作用](http://www.jianshu.com/p/ef6b6578148d)
+- [IOS开发通过代码方式使用AutoLayout (NSLayoutConstraint + Masonry)
+](http://blog.csdn.net/he_jiabin/article/details/48677911)
+- [AutoLayout的那些事儿](http://www.cocoachina.com/ios/20160530/16522.html)

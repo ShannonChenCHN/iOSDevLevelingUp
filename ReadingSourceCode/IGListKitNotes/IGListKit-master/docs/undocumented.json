@@ -1,0 +1,33 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/rnystrom/Development/iOS/IGListKit/IGListKit/IGListBindingSectionControllerSelectionDelegate.h",
+      "line": 43,
+      "symbol": "IGListBindingSectionControllerSelectionDelegate.-sectionController:didDeselectItemAtIndex:viewModel:",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/rnystrom/Development/iOS/IGListKit/IGListKit/IGListDiff.h",
+      "line": 21,
+      "symbol": "IGListDiffOption",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/rnystrom/Development/iOS/IGListKit/IGListKit/IGListExperiments.h",
+      "line": 17,
+      "symbol": "IGListExperiment",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/rnystrom/Development/iOS/IGListKit/IGListKit/IGListScrollDelegate.h",
+      "line": 58,
+      "symbol": "IGListScrollDelegate.-listAdapter:didEndDeceleratingSectionController:",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/rnystrom/Development/iOS/IGListKit"
+}
