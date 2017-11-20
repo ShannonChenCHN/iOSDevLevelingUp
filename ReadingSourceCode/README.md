@@ -51,10 +51,13 @@ Repos|Version|Article|
   - [YYModel源代码分析（三）NSObject+YYModel](http://www.jianshu.com/p/7cf8b43f5d88)
   - [一篇文章全吃透—史上最全YYModel的使用详解](http://www.jianshu.com/p/25e678fa43d3)
   - [手把手带你撸一个 YYModel 的精简版](http://www.jianshu.com/p/b822285f73ac)
+  - [揭秘 YYModel 的魔法](https://lision.me/yymodel_x01/)
 - Masonry
   - [追求Masonry](http://www.jianshu.com/p/1841e6c69611)
   - [iOS自动布局框架-Masonry详解](http://www.jianshu.com/p/ea74b230c70d)
   - [iOS开发之Masonry框架源码解析](http://www.cnblogs.com/ludashi/p/5591572.html)
   - [厚积薄发之从Masonry 源码看Objective-C [开篇]](http://www.jianshu.com/p/73a5eecc4bab)
   - [Masonry源代码解析](http://www.jianshu.com/p/cc945cc667b4)
+- YYCache
+  - [从 YYCache 源码 Get 到如何设计一个优秀的缓存](http://www.cocoachina.com/ios/20171030/20980.html)
 - [说一些你也许不知道的DZNEmptyDataSet细节](http://www.jianshu.com/p/8b2db71db449)
