@@ -2,9 +2,13 @@
 
 
 ### 亮点
-- 封装 UICollectionView 的代理方法，拆分 UIViewController 
+- 更好的架构：
+  - 封装了 UICollectionView 的代理方法
+  - 通过将 UIViewController  中的逻辑分散到 UIViewController， List adapter，section controller 和 cell 中，以减低 massive view controllers 出现的可能性
+  - 可复用的 section controller 和 cell
 - Working range
 - Diff 算法
+  - 更方便地增删改移，不用再繁琐地手动调用 performBatchUpdates 方法，也不用担心 crash 的问题了
 
 
 ### 参考
