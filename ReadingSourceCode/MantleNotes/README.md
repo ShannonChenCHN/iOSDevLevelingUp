@@ -1,4 +1,4 @@
-[Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary)(v 2.1.0)
+[Mantle](https://github.com/Mantle/Mantle)(v 2.1.0)
 -------
 
 ###MTLJSONAdapter
