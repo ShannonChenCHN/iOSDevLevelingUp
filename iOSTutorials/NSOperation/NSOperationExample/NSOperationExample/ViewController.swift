@@ -13,9 +13,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        let operation = Operation.init()
+        operation.queuePriority
         
     }
+
 
 
 }
