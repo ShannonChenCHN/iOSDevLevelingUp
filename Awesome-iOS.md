@@ -47,6 +47,10 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 #### 滚动视图
 - [WenchaoD/FSPagerView](https://github.com/WenchaoD/FSPagerView)：FSPagerView is an elegant Screen Slide Library. It is extremely helpful for making Banner View、Product Show、Welcome/Guide Pages、Screen/ViewController Sliders.
 
+#### 其他
+- [LoveZYForever/HXWeiboPhotoPicker](https://github.com/LoveZYForever/HXWeiboPhotoPicker): 照片选择器
+- [CoderZhuXH/XHLaunchAd](https://github.com/CoderZhuXH/XHLaunchAd): 应用启动广告
+
 #### 辅助视图
 - [HamzaGhazouani/HGPlaceholders](https://github.com/HamzaGhazouani/HGPlaceholders)（Swift）：为 UItableView 和 UICollectionView 展示空态页的 UI 控件
 - [dzenbot/DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet)：自动为 UItableView 和 UICollectionView 展示空态页的 UI 控件
@@ -76,6 +80,7 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 - [Flipboard/FLEX](https://github.com/Flipboard/FLEX)：非常强大的一款 In-App 调试和查看工具，可以查看网络请求日志和视图层级、文件系统等 
 - [nicklockwood/iConsole](https://github.com/nicklockwood/iConsole)：一款 In-App 控制台工具，可以用来查看 log
 - [CocoaLumberjack/CocoaLumberjack](https://github.com/CocoaLumberjack/CocoaLumberjack)：一款企业级的日志收集框架
+- [willowtreeapps / Hyperion-iOS](https://github.com/willowtreeapps/Hyperion-iOS): In-app UI 查看工具，可以查看 UI 元素的尺寸、位置、色值、动画
 
 ### 完整项目
 #### 套装
