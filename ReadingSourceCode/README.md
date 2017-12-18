@@ -61,3 +61,5 @@ Repos|Version|Article|
 - YYCache
   - [从 YYCache 源码 Get 到如何设计一个优秀的缓存](http://www.cocoachina.com/ios/20171030/20980.html)
 - [说一些你也许不知道的DZNEmptyDataSet细节](http://www.jianshu.com/p/8b2db71db449)
+- YYImage
+   - [无图言屌？YYImage 设计思路，实现细节剖析](http://www.cocoachina.com/ios/20171211/21499.html)
