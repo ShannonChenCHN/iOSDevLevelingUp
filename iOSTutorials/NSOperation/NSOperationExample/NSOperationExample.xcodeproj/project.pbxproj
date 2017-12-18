@@ -12,7 +12,7 @@
 		58161F641FE4131400365C71 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58161F621FE4131400365C71 /* Main.storyboard */; };
 		58161F661FE4131400365C71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58161F651FE4131400365C71 /* Assets.xcassets */; };
 		58161F691FE4131400365C71 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58161F671FE4131400365C71 /* LaunchScreen.storyboard */; };
-		58161F711FE4C4E500365C71 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 58161F701FE4C4E500365C71 /* README.md */; };
+		584AAFFF1FE80C810008A049 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 584AAFFE1FE80C810008A049 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +23,7 @@
 		58161F651FE4131400365C71 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		58161F681FE4131400365C71 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		58161F6A1FE4131400365C71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		58161F701FE4C4E500365C71 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		584AAFFE1FE80C810008A049 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +40,7 @@
 		58161F521FE4131400365C71 = {
 			isa = PBXGroup;
 			children = (
-				58161F701FE4C4E500365C71 /* README.md */,
+				584AAFFE1FE80C810008A049 /* README.md */,
 				58161F5D1FE4131400365C71 /* NSOperationExample */,
 				58161F5C1FE4131400365C71 /* Products */,
 			);
@@ -128,7 +128,7 @@
 			files = (
 				58161F691FE4131400365C71 /* LaunchScreen.storyboard in Resources */,
 				58161F661FE4131400365C71 /* Assets.xcassets in Resources */,
-				58161F711FE4C4E500365C71 /* README.md in Resources */,
+				584AAFFF1FE80C810008A049 /* README.md in Resources */,
 				58161F641FE4131400365C71 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

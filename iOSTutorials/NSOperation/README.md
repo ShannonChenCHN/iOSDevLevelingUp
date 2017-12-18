@@ -71,23 +71,24 @@ queuePriority 属性决定队列中操作相互之间的依赖关系，因此使
 [operationQueue addOperation:resizingOperation];
 ```
 注意点：
-- 除非一个操作的依赖的isFinished返回YES，不然这个操作不会开始
-- 时时牢记将所有的依赖关系添加到操作队列很重要
+- 在每个操作完成时，请将i sFinished 设置为YES，不然后续依赖的操作是不会开始执行的。
+- 时时牢记将所有的依赖关系添加到操作队列很重要。？？？
 - 确保不要意外地创建依赖循环，像A依赖B，B又依赖A，这也会导致杯具的死锁。
 
 
 #### 5. completionBlock
 
+每当一个NSOperation执行完毕，它就会调用它的completionBlock属性一次，这提供了一个非常好的方式让你能在视图控制器(View Controller)里或者模型(Model)里加入自己更多自己的代码逻辑。比如说，你可以在一个网络请求操作的completionBlock来处理操作执行完以后从服务器下载下来的数据。
 
 
 
 
 
+### 参考
 
-
-https://www.appcoda.com/ios-concurrency/
-
-http://nshipster.cn/nsoperation/
-
-
-http://www.jianshu.com/p/a044cd145a3d
+- https://www.appcoda.com/ios-concurrency/
+- http://nshipster.cn/nsoperation/
+- http://www.jianshu.com/p/a044cd145a3d
+- https://blog.cnbluebox.com/blog/2014/07/01/cocoashen-ru-xue-xi-nsoperationqueuehe-nsoperationyuan-li-he-shi-yong/
+- https://bestswifter.com/multithreadconclusion/
+- http://blog.leichunfeng.com/blog/2015/07/29/ios-concurrency-programming-operation-queues/
