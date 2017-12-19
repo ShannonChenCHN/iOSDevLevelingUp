@@ -13,6 +13,7 @@
 		27DF647B19657AD900B42725 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27DF647A19657AD900B42725 /* Storyboard.storyboard */; };
 		27DF647D19657B7500B42725 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DF647C19657B7500B42725 /* ListViewController.swift */; };
 		27DF647F19657EDE00B42725 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DF647E19657EDE00B42725 /* CoreImage.framework */; };
+		5837C4471FE8BB0900C3CEF6 /* PhotoOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5837C4461FE8BB0900C3CEF6 /* PhotoOperations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		27DF647A19657AD900B42725 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		27DF647C19657B7500B42725 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		27DF647E19657EDE00B42725 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		5837C4461FE8BB0900C3CEF6 /* PhotoOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoOperations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 			children = (
 				27DF646219657A9300B42725 /* AppDelegate.swift */,
 				27DF647C19657B7500B42725 /* ListViewController.swift */,
+				5837C4461FE8BB0900C3CEF6 /* PhotoOperations.swift */,
 				27DF646419657A9300B42725 /* Images.xcassets */,
 				27DF647A19657AD900B42725 /* Storyboard.storyboard */,
 				27DF646019657A9300B42725 /* Supporting Files */,
@@ -215,6 +218,7 @@
 			files = (
 				27DF647D19657B7500B42725 /* ListViewController.swift in Sources */,
 				27DF646319657A9300B42725 /* AppDelegate.swift in Sources */,
+				5837C4471FE8BB0900C3CEF6 /* PhotoOperations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
