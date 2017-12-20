@@ -1,12 +1,12 @@
-
 # NSOperation
 
+[示例代码](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSTutorials/多线程/NSOperation)
 
-### 简介
+### 一、简介
 后台异步执行任务一般有 GCD 和 NSOperation 这两种选择。
 相对于GCD来说，NSOperaton 提供的是面向对象的方式，可控性更强，并且可以加入操作依赖。NSOperation 和 NSOperationQueue 实际上是在 GCD 的基础上构建的。
 
-### 任务、线程和进程
+### 二、任务、线程和进程
 
 - 进程（process）：指的是一个正在运行中的可执行文件。每一个进程都拥有独立的虚拟内存空间和系统资源，包括端口权限等，且至少包含一个主线程和任意数量的辅助线程。另外，当一个进程的主线程退出时，这个进程就结束了；
 - 线程（thread）：指的是一个独立的代码执行路径，也就是说线程是代码执行路径的最小分支。在 iOS 中，线程的底层实现是基于 POSIX threads API 的，也就是我们常说的 pthreads ；
@@ -23,11 +23,7 @@
 > - NSOperation
 > - NSThread
 
-### NSOperation 和 GCD 的对比
-- GCD：轻量好用，但是不方便暂停、取消任务，以及控制任务之间的依赖，
-- NSOperation：弥补了 GCD 的缺点，提供了更高层次的 API，但是使用起来却更复杂
-
-### 什么是 NSOperation？
+### 三、什么是 NSOperation？
 NSOperation是一个抽象的基类，表示一个独立的计算单元，可以为子类提供有用且线程安全的建立状态，优先级，依赖和取消等操作。
 
 NSOperation 的 3 种使用形式
@@ -35,17 +31,26 @@ NSOperation 的 3 种使用形式
 - NSInvocationOperation
 - 自定义 NSOperation 子类
 
-### NSOperation 的应用场景
+### 四、NSOperation 和 GCD 的对比
+简单来说，GCD 是苹果基于 C 语言开发的，一个用于多核编程的解决方案，主要用于优化应用程序以支持多核处理器以及其他对称多处理系统。而 Operation Queues 则是一个建立在 GCD 的基础之上的，面向对象的解决方案。它使用起来比 GCD 更加灵活，功能也更加强大。
+
+- GCD：是一种轻量级的，以 FIFO 的顺序执行并发任务的方式，使用 GCD 时我们并不关心任务的调度情况，而让系统帮我们自动处理。但是 GCD 的短板也是非常明显的，比如我们想要给任务之间添加依赖关系、取消或者暂停一个正在执行的任务时就会变得非常棘手。
+- NSOperation：相对 GCD 来说，使用 Operation Queues 会增加一点点额外的开销，但是我们却换来了非常强大的灵活性和功能，我们可以给 operation 之间添加依赖关系、取消一个正在执行的 operation 、暂停和恢复 operation queue 等。
+
+### 五、NSOperation 的应用场景
 很多执行任务类型的案例都很好的运用了NSOperation，包括网络请求，图像压缩，自然语言处理或者其他很多需要返回处理后数据的、可重复的、结构化的、相对长时间运行的任务。
 
-### NSOperationQueue 与 NSOperation 的结合使用
+在很多的优秀开源项目中都能看到 NSOperation 的身影，比如 SDWebImage、AFNetworking 等。
+
+### 六、NSOperationQueue 与 NSOperation 的结合使用
+- 启动 operation：让一个NSOperation操作开始，你可以直接调用-start，或者将它添加到NSOperationQueue中，添加之后，它会在队列排到它以后自动异步执行。
+
 - 优先级：NSOperationQueue 控制着这些并行操作的执行，它扮演者优先级队列的角色，让它管理的高优先级操作(NSOperation -queuePriority)能优先于低优先级的操作运行的情况下，使它管理的操作能基本遵循先进先出的原则执行。
 
 - 最大并发数：在你设置了能并行运行的操作的最大值(maxConcurrentOperationCount)之后，NSOperationQueue还能并行执行操作。
 
-- 启动 operation：让一个NSOperation操作开始，你可以直接调用-start，或者将它添加到NSOperationQueue中，添加之后，它会在队列排到它以后自动执行。
 
-### 如何实现 NSOperation 子类
+### 七、如何使用 NSOperation
 
 #### 1. 状态的管理
 
@@ -55,9 +60,9 @@ NSOperation包含了一个十分优雅的状态机来描述每一个操作的执
 
 - NSOperation提供了isReady, isCancelled, isExecuting, isFinished这几个状态变化，我们在使用时也必须处理自己关心的其中的状态。这些状态都是基于keypath的KVO通知决定，所以在你手动改变自己关心的状态时，请别忘了手动发送通知。
 - 每一个属性对于其他的属性必须是互相独立不同的，也就是同时只可能有一个属性返回YES，从而才能维护一个连续的状态：
-  - isReady: 返回 YES 表示操作已经准备好被执行, 如果返回NO则说明还有其他没有先前的相关步骤没有完成。
-  - isExecuting: 返回YES表示操作正在执行，反之则没在执行。
-  - isFinished : 返回YES表示操作执行成功或者被取消了（**注意：NSOperationQueue只有当它管理的所有操作的isFinished属性全标为YES以后操作才停止出列，也就是队列停止运行，所以正确实现这个方法对于内存管理和避免死锁很关键。**）
+- isReady: 返回 YES 表示操作已经准备好被执行, 如果返回NO则说明还有其他没有先前的相关步骤没有完成。
+- isExecuting: 返回YES表示操作正在执行，反之则没在执行。
+- isFinished : 返回YES表示操作执行成功或者被取消了（**注意：NSOperationQueue只有当它管理的所有操作的isFinished属性全标为YES以后操作才停止出列，也就是队列停止运行，所以正确实现这个方法对于内存管理和避免死锁很关键。**）
 
 
 #### 2. 启动、暂停和取消操作
@@ -91,9 +96,9 @@ main ：负责执行 operation 对象中的非并发部分的操作，非必须�
 ##### 2.3 取消
 - 当 NSOperation 的 -cancel 方法被调用的时候，会通过 KVO 通知 isCancelled 的 keypath 来修改 isCancelled 属性的返回值，NSOperation 需要尽快地清理一些内部细节，而后到达一个合适的最终状态。这个时候 isCancelled 和 isFinished 的值将是YES，而isExecuting的值则为NO。
 - 值得注意的是，-cancel 方法被调用的时候，操作并没有直接被取消。
-  - 如果这个操作在队列中没有执行，那么这个时候取消并将状态finished设置为YES，那么这个时候的取消就是直接取消了。
-  - 如果这个操作已经在执行了，当我们调用cancel方法的时候，只是将isCancelled设置为YES，那么我们只能等其操作完成。
-  - 所以，我们应该在每个操作开始前，或者在每个有意义的实际操作完成后，先检查下这个属性是不是已经被设置为YES，如果是YES，则后面操作都可以不用再执行了。比如 start 方法、main 方法以及 completionBlock 中，耗时比较长的循环中等。
+- 如果这个操作在队列中没有执行，那么这个时候取消并将状态finished设置为YES，那么这个时候的取消就是直接取消了。
+- 如果这个操作已经在执行了，当我们调用cancel方法的时候，只是将isCancelled设置为YES，那么我们只能等其操作完成。
+- 所以，我们应该在每个操作开始前，或者在每个有意义的实际操作完成后，先检查下这个属性是不是已经被设置为YES，如果是YES，则后面操作都可以不用再执行了。比如 start 方法、main 方法以及 completionBlock 中，耗时比较长的循环中等。
 
 
 #### 3. 优先级
@@ -131,7 +136,7 @@ queuePriority 属性决定队列中操作相互之间的依赖关系，因此使
 注意：completionBlock 被回调时，不能确保是在主线程，所以需要你自己控制是否回到主线程。
 
 
-### 如何自定义 NSOperation
+### 八、如何自定义 NSOperation 子类
 
 我们可以通过重写 main 或者 start 方法 来定义自己的 operations 。
 
@@ -149,7 +154,8 @@ queuePriority 属性决定队列中操作相互之间的依赖关系，因此使
 
 为了能使用操作队列所提供的取消功能，你需要在适当的时机检查 isCancelled 属性。
 
-### 总结
+
+### 九、总结
 
 我们应该尽可能地直接使用队列而不是线程，让系统去与线程打交道，而我们只需定义好要调度的任务就可以了。一般情况下，我们也完全不需要去自定义一个并发的 operation ，因为在与 operation queue 结合使用时，operation queue 会自动为非并发的 operation 创建一个线程。Operation Queues 是对 GCD 面向对象的封装，它可以高度定制化，对依赖关系、队列优先级和线程优先级等提供了很好的支持，是我们实现复杂任务调度时的不二之选。
 
@@ -157,11 +163,11 @@ queuePriority 属性决定队列中操作相互之间的依赖关系，因此使
 
 - http://nshipster.cn/nsoperation/
 - http://www.jianshu.com/p/a044cd145a3d
-- https://www.raywenderlich.com/76341/use-nsoperation-nsoperationqueue-swift
-- https://developer.apple.com/library/content/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationObjects/OperationObjects.html#//apple_ref/doc/uid/TP40008091-CH101-SW16
+- https://www.raywenderlich.com/76341/use-nsoperation-nsoperationqueue-swift （推荐）
+- https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/ （推荐）
 - http://blog.leichunfeng.com/blog/2015/07/29/ios-concurrency-programming-operation-queues/
+- https://developer.apple.com/library/content/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationObjects/OperationObjects.html#//apple_ref/doc/uid/TP40008091-CH101-SW16 （推荐）
 - https://blog.cnbluebox.com/blog/2014/07/01/cocoashen-ru-xue-xi-nsoperationqueuehe-nsoperationyuan-li-he-shi-yong/
 - https://stackoverflow.com/a/4300849
 - https://github.com/AFNetworking/AFNetworking/blob/2.x/AFNetworking/AFURLConnectionOperation.m
-
 
