@@ -20,7 +20,7 @@ A journey of leveling up iOS dev knowledge and skill.
     - [Objective-C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/39)
        - 对象模型
     - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
-    - C/C++
+    - [C/C++](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/99)
     - [JavaScript](https://github.com/ShannonChenCHN/AFrontEndWebDevTour)
     - Python
     - Java
