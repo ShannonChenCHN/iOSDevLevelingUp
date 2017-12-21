@@ -49,16 +49,16 @@
   - runtime****（TODO）
   - 内存管理****
   - UIKit***
-  - CoreGraphics/Quartz2D 绘图***
-  - CoreAnimation***
-  - runloop***
-  - 多线程****
+  - CoreGraphics/Quartz2D 绘图***(TODO)
+  - CoreAnimation***（TODO）
+  - runloop***（In Progress）
+  - 多线程****（In Progress）
   - 数据存储****
   - 响应者链条
   - 性能优化
 - 计算机基础****
-  - 网络编程****
-  - 算法和数据结构****（In Progress）
+  - 网络编程****（In Progress）
+  - 算法和数据结构****（Done）
 - 其他
   - 逆向
   - Swift
@@ -99,12 +99,12 @@
     - 本职
       - Objective-C 语言
       - iOS 开发基础、进阶
-      - 设计模式、架构
+      - 设计模式、架构（Done）
     - 计算机基础
-        - 数据结构和算法
-        - 网络
+        - 数据结构和算法（Done）
+        - 网络（In Progress）
         - 数据库
-        - 多线程
+        - 多线程（In Progress）
     - 扩展
       - 前端
         - h5
