@@ -86,7 +86,13 @@ dispatch_sync和 dispatch_async需要两个参数，一个是队列，一个是b
 
 
 
-2. GCD 死锁
+2. 什么情况下使用 GCD 会出现死锁？
+
+在一个串行队列上同步添加一个任务到当前队列上（主队列也是一个串行队列）会导致死锁。
+
+分析：当执行这个同步函数时，block 提交到队列中后，并不会马上返回，而是等到 block 执行后才会返回，因此会阻塞主队列；
+而 block 中的任务加入的是当前的串行队列（在这里也就是主队列），所以需要等待队列中前面的任务完成后，才会执行 block 。
+但是这个同步函数又阻塞了当前队列，结果就导致了死锁。
 
 ```
 // 在主线程调用该函数
@@ -100,6 +106,34 @@ dispatch_sync和 dispatch_async需要两个参数，一个是队列，一个是b
 
 }
 ```
+
+
+```
+               Serial Queue
+             ┏━━━━━━━━━━━━━━━━━━┓
+             ┃       task 1     ┃ ↑
+             ┃━━━━━━━━━━━━━━━━━━┃ ┃
+             ┃  dispatch_sync   ┃ ↑ ━━━━┓
+             ┃━━━━━━━━━━━━━━━━━━┃ ┃     ┃
+             ┃      task 2      ┃ ↑     ↓  等待 block 执行完后 dispatch_sync 函数再返回
+             ┃━━━━━━━━━━━━━━━━━━┃ ┃     ┃  而 block 需要等到队列中前面所有任务执行完才执行
+             ┃ submitted block  ┃ ↑ <━━━┛
+             ┗━━━━━━━━━━━━━━━━━━┛
+```
+
+但是，对于一个并行队列，并不会出现上述的死锁情况，因为并行队列的任务是并发的，一个任务不需要等待上一个任务结束才开始执行。
+```
+dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+dispatch_async(globalQueue, ^{
+
+    NSLog(@"任务1 %@", [NSThread currentThread]);
+    dispatch_sync(globalQueue, ^{
+        NSLog(@"任务2 %@", [NSThread currentThread]);
+    });
+    NSLog(@"任务3 %@", [NSThread currentThread]);
+});
+```
+
 
 
 

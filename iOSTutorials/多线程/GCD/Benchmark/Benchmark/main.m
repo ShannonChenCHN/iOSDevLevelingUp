@@ -77,8 +77,21 @@ void startOperationOnMainQueue(BOOL isAysnc) {
             
             NSLog(@"滑动列表");
         } else {
-            // block 中的任务加入主线程队列里等待主队列中的任务完成，才回返回 block 里面的内容。
-            // 但是当同步执行这个函数时，会阻塞主线程，所以 block 中的任务不能执行，因此没有返回，结果导致这个函数也就一直没有返回，所以就造成了死锁现象.
+            // 当执行这个同步函数时，block 提交到队列中后，并不会马上返回，而是等到 block 执行后才会返回，因此会阻塞主队列；
+            // 而 block 中的任务加入的是当前的串行队列（在这里也就是主队列），所以需要等待队列中前面的任务完成后，才会执行 block 。
+            // 但是这个同步函数又阻塞了当前队列，结果就导致了死锁。
+            /*
+                 Serial Queue
+             ┏━━━━━━━━━━━━━━━━━━┓
+             ┃       task 1     ┃ ↑
+             ┃━━━━━━━━━━━━━━━━━━┃ ┃
+             ┃  dispatch_sync   ┃ ↑ ━━━━┓
+             ┃━━━━━━━━━━━━━━━━━━┃ ┃     ┃
+             ┃      task 2      ┃ ↑     ↓  等待 block 执行完后 dispatch_sync 函数再返回
+             ┃━━━━━━━━━━━━━━━━━━┃ ┃     ┃  而 block 需要等到队列中前面所有任务执行完才执行
+             ┃ submitted block  ┃ ↑ <━━━┛
+             ┗━━━━━━━━━━━━━━━━━━┛
+             */
             dispatch_sync(mainQueue, ^{
                 NSLog(@"这是一个死锁");
             });
@@ -104,7 +117,8 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool {
         
         dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
+        dispatch_queue_t serialQueue = dispatch_queue_create("com.shannon.queue", DISPATCH_QUEUE_SERIAL);
+        dispatch_queue_t concurrentQueue = dispatch_queue_create("com.shannon.queue", DISPATCH_QUEUE_CONCURRENT);
         
         
         // 全局队列，异步执行
@@ -125,6 +139,19 @@ int main(int argc, const char * argv[]) {
         
         // 主队列，同步执行
 //        startOperationOnMainQueue(NO);
+        
+        dispatch_async(serialQueue, ^{
+//            NSLog(@"异步-任务1");
+        });
+        
+        dispatch_async(concurrentQueue, ^{
+            NSLog(@"异步-任务1 %@", [NSThread currentThread]);
+            dispatch_sync(concurrentQueue, ^{
+                NSLog(@"同步-任务2 %@", [NSThread currentThread]);
+            });
+            NSLog(@"异步-任务2 %@", [NSThread currentThread]);
+        });
+        
 
         sleep(10);
         
