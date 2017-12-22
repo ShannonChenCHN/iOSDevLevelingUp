@@ -6,7 +6,17 @@
 #### 1. 什么是 GCD
 
 - 什么是 GCD？
+通过 GCD，开发者不用再直接跟线程打交道了，只需要向队列中添加代码块即可，GCD 在后端管理着一个线程池。GCD 不仅决定着你的代码块将在哪个线程被执行，它还根据可用的系统资源对这些线程进行管理。这样可以将开发者从线程管理的工作中解放出来，通过集中的管理线程，来缓解大量线程被创建的问题。
+
+GCD 带来的另一个重要改变是，作为开发者可以将工作考虑为一个队列，而不是一堆线程，这种并行的抽象模型更容易掌握和使用。
+
+GCD 公开有 5 个不同的队列：运行在主线程中的 main queue，3 个不同优先级的后台队列，以及一个优先级更低的后台队列（用于 I/O）。 另外，开发者可以创建自定义队列：串行或者并行队列。自定义队列非常强大，在自定义队列中被调度的所有 block 最终都将被放入到系统的全局队列中和线程池中。
+
+![](https://www.objc.io/images/issue-2/gcd-queues@2x-82965db9.png)
+
+
 - GCD 与其他多线程编程技术（NSThread、NSOperation）的比较：
+
 - GCD 的优缺点：
 
 #### 2. 多线程编程
@@ -139,6 +149,7 @@ dispatch_async(globalQueue, ^{
 
 ### 参考
 
+- [并发编程 - objc.io](https://www.objc.io/issues/2-concurrency/)
 - https://bestswifter.com/multithreadconclusion/
 - [dispatch_sync 和 dispatch_async 有什么区别？](https://www.zhihu.com/question/23436395)
 - [五个案例让你明白GCD死锁](http://www.superqq.com/blog/2015/10/16/five-case-know-gcd/)（其中的图解非常棒）

@@ -1,10 +1,14 @@
-# 多线程中的锁
+# 锁
 
 ### 一、简介
 
-### 二、iOS 保证线程安全的几种方式
+锁是最常用的同步工具。一段代码段在同一个时间只能允许被一个线程访问，比如一个线程A进入加锁代码之后由于已经加锁，另一个线程B就无法访问，只有等待前一个线程A执行完加锁代码后解锁，B线程才能访问加锁代码。不要将过多的其他操作代码放到里面，否则一个线程执行的时候另一个线程就一直在等待，就无法发挥多线程的作用了。
 
-iOS 保证线程安全的几种方式有：
+
+
+### 二、iOS 保证线程安全的几种锁
+
+iOS 保证线程安全的几种锁有：
 - 互斥锁 NSLock
 - 互斥锁 @synchronized
 - 信号量 dispatch_semaphore
@@ -275,12 +279,12 @@ ibireme 在 [ 不再安全的 OSSpinLock](https://link.jianshu.com/?t=http://blo
 
 ### 参考
 
-- [深入理解 iOS 开发中的锁](https://bestswifter.com/ios-lock/)
-- [关于 @synchronized，这儿比你想知道的还要多](http://yulingtianxia.com/blog/2015/11/01/More-than-you-want-to-know-about-synchronized/)
-- [iOS中保证线程安全的几种方式与性能对比](https://www.jianshu.com/p/938d68ed832c)
-- [不再安全的 OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)
 - [iOS 常见知识点（三）：Lock](https://www.jianshu.com/p/ddbe44064ca4)
+- [iOS中保证线程安全的几种方式与性能对比](https://www.jianshu.com/p/938d68ed832c)
+- [关于 @synchronized，这儿比你想知道的还要多](http://yulingtianxia.com/blog/2015/11/01/More-than-you-want-to-know-about-synchronized/)
+- [不再安全的 OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)
+- [深入理解 iOS 开发中的锁](https://bestswifter.com/ios-lock/)
 - [Threading Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html)
-- [iOS多线程到底不安全在哪里？ - MrPeak](http://mrpeak.cn/blog/ios-thread-safety/)
-- [iOS多线程-各种线程锁的简单介绍](http://www.jianshu.com/p/35dd92bcfe8c)
 - [正确使用多线程同步锁@synchronized() - MrPeak](http://mrpeak.cn/blog/synchronized/)
+- [iOS多线程-各种线程锁的简单介绍](http://www.jianshu.com/p/35dd92bcfe8c)
+

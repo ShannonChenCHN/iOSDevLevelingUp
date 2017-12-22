@@ -60,7 +60,7 @@
 
 ### 三、iOS 中的几种多线程方案
 - pthreads
-- NSThread
+- NSThread：NSThread 是 Objective-C 对 pthread 的一个封装。
 - NSOperation
 - GCD
 
@@ -68,7 +68,7 @@
 ### 四、NSRunloop
 
 ### 五、多线程下的线程安全问题
-- 资源竞争
+- 资源共享
 - 死锁
 - 互斥锁
 - 资源饥饿（Starvation）
