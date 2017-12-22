@@ -75,6 +75,7 @@
   - Objective-C 设计模式（Done）
   - 计算机科学概论（In Progress）
   - 网络是怎样连接的（In Progress）
+  - 程序是怎样跑起来的
   - 程序员的自我修养
   - 数据结构和算法分析
   - Effective Objective-C 2.0
