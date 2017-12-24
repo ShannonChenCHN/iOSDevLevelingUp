@@ -372,6 +372,8 @@ AFURLConnectionOperation 这个类是基于 NSURLConnection 构建的，其希�
 ```
 从上面的代码可以看出，AFN创建了一个新的线程命名为 AFNetworking ，然后在这个线程中创建了一个 RunLoop ，在上面2.3章节 RunLoop 运行机制中提到了，一个RunLoop中如果source/timer/observer 都为空则会退出，并不进入循环。所以，AFN在这里为 RunLoop 添加了一个 NSMachPort ，这个port开启相当于添加了一个Source1事件源，但是这个事件源并没有真正的监听什么东西，只是为了不让 RunLoop 退出。
 
+>遗留问题：在子线程使用 NSURLSession 时，还需要手动启动 Runloop 来实现线程保活吗？
+
 
 #### 3. 实现 UITableView 中平滑滚动延迟加载图片
 利用CFRunLoopMode的特性，可以将图片的加载放到NSDefaultRunLoopMode的mode里，这样在滚动UITrackingRunLoopMode这个mode时不会被加载而影响到：
