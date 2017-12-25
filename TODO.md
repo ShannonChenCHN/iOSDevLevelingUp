@@ -51,8 +51,8 @@
   - UIKit***
   - CoreGraphics/Quartz2D 绘图***(TODO)
   - CoreAnimation***（TODO）
-  - runloop***（In Progress）
-  - 多线程****（In Progress）
+  - runloop***（Done）
+  - 多线程****（Done）
   - 数据存储****
   - 响应者链条
   - 性能优化
@@ -105,7 +105,7 @@
         - 数据结构和算法（Done）
         - 网络（In Progress）
         - 数据库
-        - 多线程（In Progress）
+        - 多线程（Done）
     - 扩展
       - 前端
         - h5
