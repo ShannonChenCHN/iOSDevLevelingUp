@@ -1,8 +1,8 @@
 # AutoLayout 和 Masonry
 
-### Usage Tips
+### Tips
 
-1. priority 什么时候使用
+#### 1. priority 什么时候使用
 
 	几种不同的 `.priority` 和 `UILayoutPriority` 的对应关系如下：
 	 > .priority allows you to specify an exact priority
@@ -41,7 +41,7 @@
 	        }];
  ```
 
-2. 添加、更新约束
+#### 2. 添加、更新约束
 
  - mas_make：添加约束
  - mas_remake：移除之前的所有约束，再重新添加
@@ -70,7 +70,7 @@
 	    }];
 	  ```
 
-3. 保存约束、更新约束
+#### 3. 保存约束、更新约束
 
 	- 删除单个约束
 	
@@ -105,7 +105,7 @@
 _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight - scrollView.contentOffset.y));
 	```
 
-4. 动画
+#### 4. 动画
 
 	先修改约束，然后再在 UIView 的 animation 方法的 block 中调用 layoutIfNeeded 方法
 
@@ -124,7 +124,7 @@ int padding = invertedInsets ? 100 : self.padding;
     }];
   ```
 
-5. 两个相邻 `UILabel` 自适应的问题
+#### 5. 两个相邻 `UILabel` 自适应的问题
 
  （1）官方 Example Project 推荐方法
 
@@ -173,7 +173,7 @@ int padding = invertedInsets ? 100 : self.padding;
 	    }];
   ```
   
-6. 一次性设置一组控件的约束（NSArray 有一个分类）
+#### 6. 一次性设置一组控件的约束（NSArray 有一个分类）
 
     ```
     // 设置一组控件的某一个约束
@@ -184,7 +184,7 @@ int padding = invertedInsets ? 100 : self.padding;
 
 
 
-7.  `UIView` 的 `layoutMargins` 属性
+#### 7.  `UIView` 的 `layoutMargins` 属性
 
    ```
         ...
@@ -199,7 +199,7 @@ int padding = invertedInsets ? 100 : self.padding;
         }];
 ```
 
-8. 批量整体添加约束
+#### 8. 批量整体添加约束
 
   ```
     NSMutableArray *arr = @[].mutableCopy;
@@ -220,7 +220,7 @@ int padding = invertedInsets ? 100 : self.padding;
     }];
   ``` 
   
-9. UIViewController 的 layoutGuide 
+#### 9. UIViewController 的 layoutGuide
 
    topLayoutGuide 表示当前页面的上方被 status bar、navigation bar 遮挡的部分。同理，bottomLayoutGuide 表示下方被遮挡的部分。
    有些时候，一个 ViewController 可能单独显示出来，也可能内嵌在 UINavigationController 里面显示出来。在这两种情况下，页面的“可视范围”是不一样的，很明显，NavigationBar 会遮挡住一部分，用了UITabBarController 时，tabBar 也会遮挡住下方一部分。再加上各种 Bar 都可以隐藏，情况会变得更复杂。
@@ -235,7 +235,7 @@ int padding = invertedInsets ? 100 : self.padding;
 	    }];
 	```
 	
-10. HuggingPriority 和 CompressionResistancePriority
+#### 10. HuggingPriority 和 CompressionResistancePriority
 
   - Content Compression Resistance = 不许挤我！
 对，这个属性说白了就是“不许挤我”=。=
@@ -244,12 +244,12 @@ int padding = invertedInsets ? 100 : self.padding;
   - Content Hugging = 抱紧！
 这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。一般用于 UILabel 之类的控件。
 
-11. NSLayoutConstraint 的 constant 属性
+#### 11. NSLayoutConstraint 的 constant 属性
 
   如果约束是一个常量值，可以直接修改 NSLayoutConstraint 的 constant 属性来改变这个值
 
 
-12. 自动计算 UITableViewCell 高度
+#### 12. 自动计算 UITableViewCell 高度
 
 	iOS 8 以后：
 	
@@ -266,13 +266,13 @@ int padding = invertedInsets ? 100 : self.padding;
 	}
 ```
 
-13. baseline
+#### 13. baseline
 
 	在Autolayout里面对应着NSLayoutFormatAlignAllBaseline，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字。
 	
 	对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的viewForBaselineLayout，返回当成baseline的view即可。
 	
-14. MASConstraint 的 -setOffset: 方法
+#### 14. MASConstraint 的 -setOffset: 方法
 
 	```
 	_leftConstraint.offset = touchPoint.x;
@@ -280,15 +280,63 @@ int padding = invertedInsets ? 100 : self.padding;
 	```
 	除了 -setOffset: 方法之外，还有 setCenterOffset:、setSizeOffset: 和 setInsets: 方法
 	
-15. UIView 的 -intrinsicContentSize 方法
+#### 15. UIView 的 -intrinsicContentSize 方法
 
    可以通过重写该方法，告知 AutoLayout 系统内容尺寸有多大
    
-16. UIView 的 requiresConstraintBasedLayout 方法什么时候用？
+#### 16. UIView 的 requiresConstraintBasedLayout 方法什么时候用？
    当需要在 -updateConstraints 方法中更新自定义 view 的约束时，但是还没有添加过约束的话，就需要重写该方法。
    
-   
-   
+#### 17. 如何实现两个相邻的 view 整体居中？
+
+场景：A 和 B 间距为 10，尺寸根据内容自适应，同时要求在两者共同的 superview C 中保持整体水平居中。
+
+┏━━━━━━━━━━━━━━━━━┓
+┃  ┏━━━━┓ ┏━━━┓              ┃
+┃  ┃ A           ┃ ┃ B       ┃ C ┃
+┃  ┗━━━━┛ ┗━━━┛   ┃
+┗━━━━━━━━━━━━━━━━━┛
+
+解决办法：在 superview 中添加一个 subview 作为 container，然后用这个 subview 将 A 和 B 包装起来，先给 container 添加水平居中的约束，并且左边跟 A 的左边对齐，右边跟 B 的右边对齐。
+
+```
+[container mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.centerX.equalTo(C);
+    make.centerY.equalTo(C);
+    make.left.equalTo(A.mas_left);
+    make.right.equalTo(B.mas_right);
+}];
+
+```
+然后再设置 A 和 B 的约束，保证 A 和 B 之间的间距为 10。
+
+```
+[A mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.centerY.equalTo(container);
+    make.right.equalTo(B.mas_left).offset(-10);
+    make.left.greaterThanOrEqualTo(C.mas_left);
+}];
+
+[B mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.centerY.equalTo(container);
+    make.right.lessThanOrEqualTo(C.mas_right);
+}];
+```
+
+#### 18. 当只有 title 时，如何设置 UIButton 的 title 内边距，同时保证 button 尺寸根据内容自适应？
+
+有多种方式可以实现，这里用的是最简单的一种方式。
+当只有 title 时，设置 `titleEdgeInsets` 不会生效，设置  `contentEdgeInsets` 才会生效。
+```
+- (IBAction)ChangeTitle:(UIButton *)sender {
+    self.button.contentEdgeInsets = UIEdgeInsetsMake(0,20,0,20);
+    [self.button setTitle:@"Long Long Title" forState:UIControlStateNormal];
+}
+```
+
+> 参考：[Autolayout - intrinsic size of UIButton does not include title insets](https://stackoverflow.com/a/37218908)
+
+
 ### 参考：
 - [有趣的Autolayout示例-Masonry实现](http://tutuge.me/2015/05/23/autolayout-example-with-masonry/)
 - [Masonry 官方文档](https://github.com/SnapKit/Masonry)

@@ -154,8 +154,8 @@ A resources list for leveling up iOS dev knowledge and skills.
         - [Asset Catalog Format Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/index.html#//apple_ref/doc/uid/TP40015170)
         - [Markup Formatting Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_markup_formatting_ref/index.html#//apple_ref/doc/uid/TP40016497)
 - [Networking, Internet, & Web](https://developer.apple.com/library/content/navigation/#section=Topics&topic=Networking%2C%20Internet%2C%20%26amp%3B%20Web)
-    - [ ] [Networking Overview](https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/Introduction/Introduction.html)
-    - [ ] [Networking Concepts](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/NetworkingConcepts/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012487)
+- [ ] [Networking Overview](https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/Introduction/Introduction.html): Provides a basic understanding of how networking software works, and how to avoid common mistakes.
+- [ ] [Networking Concepts](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/NetworkingConcepts/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012487): Provides a basic explanation of socket-based networking at a conceptual level.
     - [ ] [Networking Programming Topics](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Introduction/Introduction.html)
     - [ ] [URL Session Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html#//apple_ref/doc/uid/10000165i)
     - [ ] [About HTTP Live Streaming](https://developer.apple.com/library/content/referencelibrary/GettingStarted/AboutHTTPLiveStreaming/about/about.html#//apple_ref/doc/uid/TP40013978)
