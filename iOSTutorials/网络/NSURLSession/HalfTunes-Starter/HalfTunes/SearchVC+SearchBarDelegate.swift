@@ -31,16 +31,24 @@
 import Foundation
 import UIKit
 
+
+// MARK: - 搜索页面搜索工具条的 delegate 方法
 extension SearchViewController: UISearchBarDelegate {
 
   @objc func dismissKeyboard() {
     searchBar.resignFirstResponder()
   }
 
+  /// 点击键盘上的搜索按钮
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    dismissKeyboard()
+    
+    dismissKeyboard() // 收起键盘
+    
     guard let searchText = searchBar.text, !searchText.isEmpty else { return }
-    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true  // 显示网络加载状态标识
+    
+    // 发起搜索请求
     queryService.getSearchResults(searchTerm: searchText) { results, errorMessage in
       UIApplication.shared.isNetworkActivityIndicatorVisible = false
       if let results = results {
@@ -52,6 +60,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
   }
 
+  
   func position(for bar: UIBarPositioning) -> UIBarPosition {
     return .topAttached
   }

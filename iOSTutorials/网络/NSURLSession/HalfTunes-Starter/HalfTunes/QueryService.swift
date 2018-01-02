@@ -31,6 +31,8 @@
 import Foundation
 
 // Runs query data task, and stores results in array of Tracks
+
+/// 执行搜索请求任务，并将结果保存到 Tracks 数组中
 class QueryService {
 
   typealias JSONDictionary = [String: Any]
@@ -39,30 +41,70 @@ class QueryService {
   var tracks: [Track] = []
   var errorMessage = ""
 
-  // TODO
+  // 默认的 URLSession 对象
+  let defaultSession = URLSession(configuration: .default)
+  
+  // 每次搜索都会通过 URLSession 对象重新创建一个 data task
+  var dataTask: URLSessionDataTask?
 
+  /// 获取搜索结果
   func getSearchResults(searchTerm: String, completion: @escaping QueryResult) {
-    // TODO
-    DispatchQueue.main.async {
-      completion(self.tracks, self.errorMessage)
+    
+    // 1 取消正在请求的 task
+    dataTask?.cancel()
+    
+    // 2 拼接 URL
+    if var urlComponents = URLComponents(string: "https://itunes.apple.com/search") {
+      urlComponents.query = "media=music&entity=song&term=\(searchTerm)"
+      
+      // 3 optional-bind
+      guard let url = urlComponents.url else { return }
+     
+      // 4 根据 URL 创建 data task
+      dataTask = defaultSession.dataTask(with: url) { data, response, error in
+        defer { self.dataTask = nil } // closure 执行完后，置空 data task
+        
+        // 5 请求成功则解析数据，将 data 转成 track 数组
+        if let error = error {
+          self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
+        } else if let data = data,
+          let response = response as? HTTPURLResponse,
+          response.statusCode == 200 {
+          self.updateSearchResults(data)
+          
+          // 6 回到主队列，回调 closure，返回数据
+          DispatchQueue.main.async {
+            completion(self.tracks, self.errorMessage)
+          }
+        }
+      }
+      
+      // 7 开启请求任务
+      dataTask?.resume()
     }
   }
 
+  /// 解析搜索结果数据：Data -> Dictionary
   fileprivate func updateSearchResults(_ data: Data) {
     var response: JSONDictionary?
+    
+    // 先删除原来的所有数据
     tracks.removeAll()
 
+    // JSON 解析：Data -> Dictionary
     do {
       response = try JSONSerialization.jsonObject(with: data, options: []) as? JSONDictionary
     } catch let parseError as NSError {
       errorMessage += "JSONSerialization error: \(parseError.localizedDescription)\n"
       return
     }
-
+    
     guard let array = response!["results"] as? [Any] else {
       errorMessage += "Dictionary does not contain results key\n"
       return
     }
+    
+    // 将 Dictionary 转成自定义对象
     var index = 0
     for trackDictionary in array {
       if let trackDictionary = trackDictionary as? JSONDictionary,

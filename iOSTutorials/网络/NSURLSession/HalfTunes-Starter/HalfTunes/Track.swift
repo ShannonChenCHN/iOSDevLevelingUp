@@ -30,7 +30,7 @@
 
 import Foundation.NSURL
 
-// Query service creates Track objects
+// 表示每条 Track 数据的类
 class Track {
 
   let name: String

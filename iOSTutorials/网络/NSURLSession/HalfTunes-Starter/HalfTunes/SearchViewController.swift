@@ -41,21 +41,24 @@ class SearchViewController: UIViewController {
     return recognizer
   }()
   
-  var searchResults: [Track] = []
-  let queryService = QueryService()
-  let downloadService = DownloadService()
+  var searchResults: [Track] = []         // 搜索结果
+  let queryService = QueryService()       // 搜索请求
+  let downloadService = DownloadService() // 下载请求
 
   // Get local file path: download task stores tune here; AV player plays it.
+  // 获取本地的文件路径：下载下来的 tune 文件就存储在这里，可以通过 AV player 来播放
   let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
   func localFilePath(for url: URL) -> URL {
     return documentsPath.appendingPathComponent(url.lastPathComponent)
   }
 
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     tableView.tableFooterView = UIView()
   }
 
+  // 播放下好的音频文件
   func playDownload(_ track: Track) {
     let playerViewController = AVPlayerViewController()
     present(playerViewController, animated: true, completion: nil)
@@ -90,7 +93,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     return 62.0
   }
 
-  // When user taps cell, play the local file, if it's downloaded
+  // 当用户点击 cell 时，如果已经下载好了，就播放本地文件
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let track = searchResults[indexPath.row]
     if track.downloaded {
@@ -105,6 +108,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
 // then pass this to download service method.
 extension SearchViewController: TrackCellDelegate {
 
+  // 点击下载按钮
   func downloadTapped(_ cell: TrackCell) {
     if let indexPath = tableView.indexPath(for: cell) {
       let track = searchResults[indexPath.row]
@@ -113,6 +117,7 @@ extension SearchViewController: TrackCellDelegate {
     }
   }
 
+  // 点击暂停按钮
   func pauseTapped(_ cell: TrackCell) {
     if let indexPath = tableView.indexPath(for: cell) {
       let track = searchResults[indexPath.row]
@@ -121,6 +126,7 @@ extension SearchViewController: TrackCellDelegate {
     }
   }
   
+  // 点击开始按钮
   func resumeTapped(_ cell: TrackCell) {
     if let indexPath = tableView.indexPath(for: cell) {
       let track = searchResults[indexPath.row]
@@ -129,6 +135,7 @@ extension SearchViewController: TrackCellDelegate {
     }
   }
   
+  // 取消下载
   func cancelTapped(_ cell: TrackCell) {
     if let indexPath = tableView.indexPath(for: cell) {
       let track = searchResults[indexPath.row]

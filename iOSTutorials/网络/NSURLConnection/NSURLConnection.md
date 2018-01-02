@@ -7,9 +7,16 @@
 
 NSURLConnection 作为 Core Foundation / CFNetwork 框架的 API 之上的一个抽象，在 2003 年第一版的 Safari 发布时就出世了。NSURLConnection 这个名字，实际上是指代的 Foundation 框架的 URL Loading System 中一系列有关联的组件：NSURLRequest、NSURLResponse、NSURLProtocol、 NSURLCache、 NSHTTPCookieStorage、NSURLCredentialStorage 以及同名类 NSURLConnection。
 
+#### 二、NSURLConnection 的工作流程
+
+首先 NSURLRequest 被传递给 NSURLConnection。被委托对象（遵守非正式协议 <NSURLConnectionDelegate> 和 <NSURLConnectionDataDelegate>）异步地返回一个 NSURLResponse 以及包含服务器返回信息的 NSData。
+
+在一个请求被发送到服务器之前，系统会先查询共享的缓存信息，然后根据策略（policy）以及可用性（availability）的不同，一个已经被缓存的响应可能会被立即返回。如果没有缓存的响应可用，则这个请求将根据我们指定的策略来缓存它的响应以便将来的请求可以使用。
+
+在把请求发送给服务器的过程中，服务器可能会发出鉴权查询（authentication challenge），这可以由共享的 cookie 或机密存储（credential storage）来自动响应，或者由被委托对象来响应。发送中的请求也可以被注册的 NSURLProtocol 对象所拦截，以便在必要的时候无缝地改变其加载行为。
 
 
-### 二、使用 NSURLConnection 发起 HTTP 请求
+### 三、使用 NSURLConnection 发起 HTTP 请求
 
 #### 1.相关类
 （1） NSURL：请求地址，定义一个网络资源路径；
@@ -97,7 +104,7 @@ NSURLConnection 有以下三种协议：
 ```
 
 
-### 三、使用注意点
+### 四、使用注意点
 在子线程使用 NSURLConnection 发起异步请求时，需要手动开启 [Runloop](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16#issuecomment-353788365) 以防止线程在请求返回前退出。详见 SDWebImage 和 AFNetworking 源码。
 
 
