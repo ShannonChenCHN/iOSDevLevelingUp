@@ -11,6 +11,7 @@
 		4051C2DE1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4051C2DD1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift */; };
 		409BF3EE1EB80BE2004B06AD /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409BF3EC1EB80BE2004B06AD /* QueryService.swift */; };
 		409BF3EF1EB80BE2004B06AD /* DownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409BF3ED1EB80BE2004B06AD /* DownloadService.swift */; };
+		584698691FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584698681FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift */; };
 		D9EF8FC71B53FD2100EFC4B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9EF8FC61B53FD2100EFC4B6 /* AppDelegate.swift */; };
 		D9EF8FCE1B53FD2100EFC4B6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9EF8FCC1B53FD2100EFC4B6 /* Main.storyboard */; };
 		D9EF8FD01B53FD2100EFC4B6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9EF8FCF1B53FD2100EFC4B6 /* Images.xcassets */; };
@@ -25,6 +26,7 @@
 		4051C2DD1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SearchVC+SearchBarDelegate.swift"; sourceTree = "<group>"; };
 		409BF3EC1EB80BE2004B06AD /* QueryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryService.swift; sourceTree = "<group>"; };
 		409BF3ED1EB80BE2004B06AD /* DownloadService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadService.swift; sourceTree = "<group>"; };
+		584698681FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchVC+URLSessionDelegates.swift"; sourceTree = "<group>"; };
 		D9EF8FC11B53FD2100EFC4B6 /* HalfTunes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HalfTunes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9EF8FC51B53FD2100EFC4B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D9EF8FC61B53FD2100EFC4B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 			children = (
 				D9EF8FE81B53FD6900EFC4B6 /* SearchViewController.swift */,
 				4051C2DD1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift */,
+				584698681FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				D9EF8FEA1B53FD6900EFC4B6 /* SearchViewController.swift in Sources */,
 				409BF3EF1EB80BE2004B06AD /* DownloadService.swift in Sources */,
 				D9EF8FC71B53FD2100EFC4B6 /* AppDelegate.swift in Sources */,
+				584698691FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift in Sources */,
 				18C0C62A1DF4858D00393D33 /* StoryboardSupport.swift in Sources */,
 				D9EF8FF11B53FDCB00EFC4B6 /* TrackCell.swift in Sources */,
 				409BF3EE1EB80BE2004B06AD /* QueryService.swift in Sources */,
