@@ -34,25 +34,46 @@ import Foundation
 // Allows cancel, pause, resume download.
 class DownloadService {
 
-  // SearchViewController creates downloadsSession
+  // SearchViewController 中创建 downloadsSession
   var downloadsSession: URLSession!
+  var activeDownloads: [URL: Download] = [:]
 
-  // MARK: - Download methods called by TrackCell delegate methods
+  // MARK: - 给 TrackCell delegate 方法调用的下载相关的方法
 
   func startDownload(_ track: Track) {
-    // TODO
+    
+    let download = Download(track: track)
+    
+    download.task = downloadsSession.downloadTask(with: track.previewURL)
+    
+    download.task!.resume()
+    
+    download.isDownloading = true
+    
+    activeDownloads[download.track.previewURL] = download
     
     
   }
   // TODO: previewURL is http://a902.phobos.apple.com/...
   // why doesn't ATS prevent this download?
 
+  // 暂停下载任务：先取消，然后保存下载好的数据
   func pauseDownload(_ track: Track) {
-    // TODO
+    guard let download = activeDownloads[track.previewURL] else { return }
+    if download.isDownloading {
+      download.task?.cancel(byProducingResumeData: { data in
+        download.resumeData = data
+      })
+      download.isDownloading = false
+    }
   }
 
+  // 取消下载任务
   func cancelDownload(_ track: Track) {
-    // TODO
+    if let download = activeDownloads[track.previewURL] {
+      download.task?.cancel()
+      activeDownloads[track.previewURL] = nil
+    }
   }
 
   func resumeDownload(_ track: Track) {
