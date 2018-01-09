@@ -30,8 +30,8 @@
 
 import Foundation
 
-// Downloads song snippets, and stores in local file.
-// Allows cancel, pause, resume download.
+// 下载文件，存储到本地
+// 取消、暂停、开始下载
 class DownloadService {
 
   // SearchViewController 中创建 downloadsSession
@@ -76,8 +76,24 @@ class DownloadService {
     }
   }
 
+  // 开始下载任务
   func resumeDownload(_ track: Track) {
-    // TODO
+    guard let download = activeDownloads[track.previewURL] else {
+      return
+    }
+    
+    // 创建下载任务
+    if let resumeData = download.resumeData {
+      // 断点续传下载
+      download.task = downloadsSession.downloadTask(withResumeData: resumeData)
+    } else {
+      // 从 0 开始下载
+      download.task = downloadsSession.downloadTask(with: download.track.previewURL)
+    }
+    
+    // 开始下载
+    download.task!.resume()
+    download.isDownloading = true
   }
 
 }

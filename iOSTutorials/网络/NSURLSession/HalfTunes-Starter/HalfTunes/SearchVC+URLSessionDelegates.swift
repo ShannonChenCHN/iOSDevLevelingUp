@@ -50,4 +50,27 @@ extension SearchViewController: URLSessionDownloadDelegate {
     
   }
   
+  func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    
+    // 获取下载链接
+    guard let url = downloadTask.originalRequest?.url, let download = downloadService.activeDownloads[url] else {
+        return
+    }
+    
+    // 设置 download 对象的下载进度
+    download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+    
+    // 文件总大小
+    let totalSize = ByteCountFormatter.string(fromByteCount: totalBytesExpectedToWrite, countStyle: .file)
+    
+    // 更新 UI
+    DispatchQueue.main.async {
+      if let trackCell = self.tableView.cellForRow(at: IndexPath(row: download.track.index,
+                                                                 section: 0)) as? TrackCell {
+        trackCell.updateDisplay(progress: download.progress, totalSize: totalSize)
+      }
+    }
+
+  }
+  
 }
