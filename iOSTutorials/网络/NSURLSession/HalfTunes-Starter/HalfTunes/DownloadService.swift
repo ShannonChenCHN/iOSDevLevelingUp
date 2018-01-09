@@ -58,6 +58,16 @@ class DownloadService {
   // why doesn't ATS prevent this download?
 
   // 暂停下载任务：先取消，然后保存下载好的数据
+  /*
+   https://developer.apple.com/documentation/foundation/urlsessiondownloadtask/1411634-cancel
+   A download can be resumed only if the following conditions are met:
+   - 自从上次请求后，该资源没有被改变过
+   - 这个下载任务是一个 HTTP 或者 HTTPS 的 GET 请求
+   - 服务器在响应头里面提供了 ETag 或者 Last-Modified，或者两者都提供了
+   - 服务器支持 byte-range 的请求
+   - 本地临时文件没有因为磁盘空间压力而被系统删除
+   
+ */
   func pauseDownload(_ track: Track) {
     guard let download = activeDownloads[track.previewURL] else { return }
     if download.isDownloading {
