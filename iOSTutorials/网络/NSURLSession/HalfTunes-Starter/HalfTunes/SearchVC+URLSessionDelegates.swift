@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import UIKit
 
 
 // MARK: 下载回调
@@ -50,6 +50,7 @@ extension SearchViewController: URLSessionDownloadDelegate {
     
   }
   
+  // 下载进度
   func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
     
     // 获取下载链接
@@ -71,6 +72,32 @@ extension SearchViewController: URLSessionDownloadDelegate {
       }
     }
 
+  }
+  
+  // Standard background session handler
+  /* 什么是后台传输（Background Transfers）？
+   后台传输是指，当应用程序在后台运行甚至崩溃后，下载任务仍然可以继续执行。
+   
+   运行原理：当 app 没有运行时，系统会在 app 外自动开启一个单独的后台驻留程序，来管理后台传输任务，当后台下载任务在执行时，系统会通过发送相应的代理消息给 app。
+           如果在活跃的传输过程中应用终止运行，下载任务会不受影响地在后台继续执行。
+           当一个后台下载任务完成后，后台驻留程序会在后台重新启动应用，重启后的应用会重新创建后台 session，来接受相应的 completion 代理消息，以及执行一些必需的动作，比如保存下载好的文件到磁盘。
+   
+   注：如果用户通过双击 home 键强行退出应用，系统会取消所有的下载任务，而且不会再尝试重启应用。
+   
+   实现后台传输的步骤：
+   1. 在初始化 URLSession 时，通过 background(withIdentifier: ) 方法创建一个特殊的 URLSessionConfiguration；
+   2. 在 AppDelegate 中实现 application(_:handleEventsForBackgroundURLSession:)  方法，保存闭包 completionHandler；
+   3. 在代理方法 urlSessionDidFinishEvents(forBackgroundURLSession:): 中，调用 AppDelegate 的 completionHandler；
+   
+ */
+  func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+    DispatchQueue.main.async {
+      if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+        let completionHandler = appDelegate.backgroundSessionCompletionHandler {
+        appDelegate.backgroundSessionCompletionHandler = nil
+        completionHandler()
+      }
+    }
   }
   
 }

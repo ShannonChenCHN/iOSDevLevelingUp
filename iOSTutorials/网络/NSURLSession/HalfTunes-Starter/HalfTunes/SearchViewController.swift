@@ -54,7 +54,8 @@ class SearchViewController: UIViewController {
   
   // 创建下载的 URLSession
   lazy var downloadsSession: URLSession = {
-    let configuration = URLSessionConfiguration.default
+    let configuration = URLSessionConfiguration.background(withIdentifier:
+      "bgSessionConfiguration")
     return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
   }()
 
