@@ -30,6 +30,8 @@
 
 import UIKit
 
+
+/// cell 的代理方法
 protocol TrackCellDelegate {
   func pauseTapped(_ cell: TrackCell)
   func resumeTapped(_ cell: TrackCell)
@@ -51,6 +53,7 @@ class TrackCell: UITableViewCell {
   @IBOutlet weak var cancelButton: UIButton!
   @IBOutlet weak var downloadButton: UIButton!
   
+  // 暂停/开始/继续
   @IBAction func pauseOrResumeTapped(_ sender: AnyObject) {
     if(pauseButton.titleLabel?.text == "Pause") {
       delegate?.pauseTapped(self)
@@ -59,26 +62,45 @@ class TrackCell: UITableViewCell {
     }
   }
   
+  // 取消下载
   @IBAction func cancelTapped(_ sender: AnyObject) {
     delegate?.cancelTapped(self)
   }
   
+  // 点击下载按钮
   @IBAction func downloadTapped(_ sender: AnyObject) {
     delegate?.downloadTapped(self)
   }
+  
+  // 更新进度
+  func updateDisplay(progress: Float, totalSize : String) {
+    progressView.progress = progress
+    progressLabel.text = String(format: "%.1f%% of %@", progress * 100, totalSize)
+  }
 
-  func configure(track: Track, downloaded: Bool) {
+  // 绑定数据
+  func configure(track: Track, downloaded: Bool, download: Download?) {
     titleLabel.text = track.name
     artistLabel.text = track.artist
 
-    // Show/hide download controls Pause/Resume, Cancel buttons, progress info
-    // TODO
-    // Non-nil Download object means a download is in progress
-    // TODO
+    // 显示/隐藏 下载控件： 暂停/继续，取消按钮，下载进度
+    // Download 对象不为空，则代表正在下载中
+    var showDownloadControls = false
+    if let download = download {
+      showDownloadControls = true
+      let title = download.isDownloading ? "Pause" : "Resume"
+      pauseButton.setTitle(title, for: .normal)
+      progressLabel.text = download.isDownloading ? "Downloading..." : "Paused"
+    }
+
+    pauseButton.isHidden = !showDownloadControls
+    cancelButton.isHidden = !showDownloadControls
+    progressView.isHidden = !showDownloadControls
+    progressLabel.isHidden = !showDownloadControls
     
-    // If the track is already downloaded, enable cell selection and hide the Download button
+    // 如果已经下载好了， cell 变成可点击状态，并且需要隐藏下载按钮
     selectionStyle = downloaded ? UITableViewCellSelectionStyle.gray : UITableViewCellSelectionStyle.none
-    downloadButton.isHidden = downloaded
+    downloadButton.isHidden = downloaded || showDownloadControls
   }
 
 }

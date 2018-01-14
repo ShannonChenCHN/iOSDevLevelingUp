@@ -11,6 +11,7 @@
 		4051C2DE1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4051C2DD1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift */; };
 		409BF3EE1EB80BE2004B06AD /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409BF3EC1EB80BE2004B06AD /* QueryService.swift */; };
 		409BF3EF1EB80BE2004B06AD /* DownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409BF3ED1EB80BE2004B06AD /* DownloadService.swift */; };
+		5839FB572000B3C00083627A /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5839FB562000B3C00083627A /* Download.swift */; };
 		584698691FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584698681FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift */; };
 		D9EF8FC71B53FD2100EFC4B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9EF8FC61B53FD2100EFC4B6 /* AppDelegate.swift */; };
 		D9EF8FCE1B53FD2100EFC4B6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9EF8FCC1B53FD2100EFC4B6 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 		4051C2DD1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SearchVC+SearchBarDelegate.swift"; sourceTree = "<group>"; };
 		409BF3EC1EB80BE2004B06AD /* QueryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryService.swift; sourceTree = "<group>"; };
 		409BF3ED1EB80BE2004B06AD /* DownloadService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadService.swift; sourceTree = "<group>"; };
+		5839FB562000B3C00083627A /* Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
 		584698681FFC556E009BC990 /* SearchVC+URLSessionDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchVC+URLSessionDelegates.swift"; sourceTree = "<group>"; };
 		D9EF8FC11B53FD2100EFC4B6 /* HalfTunes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HalfTunes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9EF8FC51B53FD2100EFC4B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				D9EF8FEE1B53FDCB00EFC4B6 /* Track.swift */,
+				5839FB562000B3C00083627A /* Download.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				409BF3EE1EB80BE2004B06AD /* QueryService.swift in Sources */,
 				D9EF8FF21B53FDCB00EFC4B6 /* Track.swift in Sources */,
 				4051C2DE1E078EE00031FE46 /* SearchVC+SearchBarDelegate.swift in Sources */,
+				5839FB572000B3C00083627A /* Download.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

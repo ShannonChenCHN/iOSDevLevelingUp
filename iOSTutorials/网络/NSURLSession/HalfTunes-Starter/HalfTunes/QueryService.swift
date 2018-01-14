@@ -30,7 +30,6 @@
 
 import Foundation
 
-// Runs query data task, and stores results in array of Tracks
 
 /// 执行搜索请求任务，并将结果保存到 Tracks 数组中
 class QueryService {

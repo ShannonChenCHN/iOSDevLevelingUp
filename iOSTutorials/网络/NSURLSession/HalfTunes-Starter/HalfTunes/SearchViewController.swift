@@ -45,22 +45,28 @@ class SearchViewController: UIViewController {
   let queryService = QueryService()       // 搜索请求
   let downloadService = DownloadService() // 下载请求
 
-  // Get local file path: download task stores tune here; AV player plays it.
+
   // 获取本地的文件路径：下载下来的 tune 文件就存储在这里，可以通过 AV player 来播放
   let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
   func localFilePath(for url: URL) -> URL {
     return documentsPath.appendingPathComponent(url.lastPathComponent)
   }
   
+  // 创建下载的 URLSession
   lazy var downloadsSession: URLSession = {
-    let configuration = URLSessionConfiguration.default
+    let configuration = URLSessionConfiguration.background(withIdentifier:
+      "bgSessionConfiguration")
     return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
   }()
 
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     tableView.tableFooterView = UIView()
+    
+    downloadService.downloadsSession = downloadsSession
+    
   }
 
   // 播放下好的音频文件
@@ -89,7 +95,9 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     cell.delegate = self
 
     let track = searchResults[indexPath.row]
-    cell.configure(track: track, downloaded: track.downloaded)
+    cell.configure(track: track,
+                   downloaded: track.downloaded,
+                   download: downloadService.activeDownloads[track.previewURL])
 
     return cell
   }
