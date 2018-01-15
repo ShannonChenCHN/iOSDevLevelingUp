@@ -244,6 +244,31 @@ int padding = invertedInsets ? 100 : self.padding;
   - Content Hugging = 抱紧！
 这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。一般用于 UILabel 之类的控件。
 
+    比如现在有一个 label 和一个 view，两者水平相邻，我们想要让 label 尺寸根据内容变化，左边跟容器保持固定间距，右侧跟 view 保持固定间距，view 的右侧跟容器的右侧保持固定间距。就像下面这样：
+    ```
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃  ┏━━━━━━━┓    ┏━━━━━━━┓   ┃
+    ┃  ┃ label ┃    ┃ view  ┃   ┃
+    ┃  ┗━━━━━━━┛    ┗━━━━━━━┛   ┃
+    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    
+    
+    ```
+    
+    实现代码如下：
+    ```
+    // 1. 给 label 添加约束
+    // ...
+    
+    // 2. 设置 label1 的 Hugging Priority，使其宽度跟文字内容一样宽
+    [label setContentHuggingPriority:UILayoutPriorityRequired
+                                forAxis:UILayoutConstraintAxisHorizontal];
+                                
+    // 3. 给 view 添加约束
+    // ...
+    
+    ```
+
 #### 11. NSLayoutConstraint 的 constant 属性
 
   如果约束是一个常量值，可以直接修改 NSLayoutConstraint 的 constant 属性来改变这个值
