@@ -46,8 +46,7 @@ A journey of leveling up iOS dev knowledge and skill.
   - 特殊需求
     - [图片](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/33)
     - [直播](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/36)
-    - [视频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/13)
-    - [音频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/35)
+    - [音视频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/13)
     - [文本绘制和排版](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/30)
     - IM
     - 其他
@@ -81,4 +80,8 @@ A journey of leveling up iOS dev knowledge and skill.
 - [面试题集锦](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/18)
 - [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/issues)
 
+## 友情链接
+- [iOS 开发周报](https://github.com/SwiftOldDriver/iOS-Weekly)
+- [iOS 开发知识小集](https://github.com/southpeak/iOS-tech-set)
+- [iOS Dev Weekly](https://iosdevweekly.com/)
 
