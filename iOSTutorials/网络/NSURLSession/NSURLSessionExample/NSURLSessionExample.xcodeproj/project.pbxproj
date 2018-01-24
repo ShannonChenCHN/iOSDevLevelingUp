@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5857DE5C2015EC4B00BD33EF /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 5857DE5B2015EC4B00BD33EF /* Test.m */; };
 		58F68CE42005B9F700D3B189 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 58F68CE32005B9F700D3B189 /* AppDelegate.m */; };
 		58F68CE72005B9F700D3B189 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58F68CE62005B9F700D3B189 /* ViewController.m */; };
 		58F68CEA2005B9F700D3B189 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58F68CE82005B9F700D3B189 /* Main.storyboard */; };
@@ -18,8 +17,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5857DE5A2015EC4B00BD33EF /* Test.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Test.h; sourceTree = "<group>"; };
-		5857DE5B2015EC4B00BD33EF /* Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Test.m; sourceTree = "<group>"; };
 		58F68CDF2005B9F700D3B189 /* NSURLSessionExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NSURLSessionExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58F68CE22005B9F700D3B189 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		58F68CE32005B9F700D3B189 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -68,8 +65,6 @@
 				58F68CE32005B9F700D3B189 /* AppDelegate.m */,
 				58F68CE52005B9F700D3B189 /* ViewController.h */,
 				58F68CE62005B9F700D3B189 /* ViewController.m */,
-				5857DE5A2015EC4B00BD33EF /* Test.h */,
-				5857DE5B2015EC4B00BD33EF /* Test.m */,
 				58F68CE82005B9F700D3B189 /* Main.storyboard */,
 				58F68CEB2005B9F700D3B189 /* Assets.xcassets */,
 				58F68CED2005B9F700D3B189 /* LaunchScreen.storyboard */,
@@ -152,7 +147,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				58F68CE72005B9F700D3B189 /* ViewController.m in Sources */,
-				5857DE5C2015EC4B00BD33EF /* Test.m in Sources */,
 				58F68CF22005B9F700D3B189 /* main.m in Sources */,
 				58F68CE42005B9F700D3B189 /* AppDelegate.m in Sources */,
 			);
