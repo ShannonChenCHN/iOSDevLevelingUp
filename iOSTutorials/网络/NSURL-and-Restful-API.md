@@ -54,7 +54,7 @@
       - Security-scoped URLs provide access to resources outside an app’s sandbox.
    - iCloud Document Thumbnails
       - The NSURL class includes the ability to get and set document thumbnails as a resource property for iCloud documents.
-      
+           
 #### 2.APIs
 2.1 Creating an NSURL Object
 

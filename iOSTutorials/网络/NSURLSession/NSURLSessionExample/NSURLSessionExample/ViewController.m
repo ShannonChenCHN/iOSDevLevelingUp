@@ -215,7 +215,7 @@
     NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
     mutableRequest.HTTPMethod = @"POST";
-    
+    mutableRequest.HTTPShouldHandleCookies
     // 创建 session，采用苹果提供全局的共享session
     NSURLSession *sharedSession = [NSURLSession sharedSession];
     
