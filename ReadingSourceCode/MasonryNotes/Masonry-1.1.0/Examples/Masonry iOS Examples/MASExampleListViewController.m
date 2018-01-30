@@ -23,6 +23,7 @@
 #import "MASExampleAspectFitView.h"
 #import "MASExampleMarginView.h"
 #import "MASExampleDistributeView.h"
+#import "MASExampleTableViewController.h"
 
 static NSString * const kMASCellReuseIdentifier = @"kMASCellReuseIdentifier";
 
@@ -76,6 +77,8 @@ static NSString * const kMASCellReuseIdentifier = @"kMASCellReuseIdentifier";
     {
         self.exampleControllers = [self.exampleControllers arrayByAddingObject:[[MASExampleLayoutGuideViewController alloc] init]];
     }
+    
+    self.exampleControllers = [self.exampleControllers arrayByAddingObject:[[MASExampleTableViewController alloc] init]];
     
     return self;
 }

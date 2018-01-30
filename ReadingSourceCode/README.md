@@ -17,6 +17,9 @@ Repos|Version|Article|
 [Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary)|2.1.0|TODO|
 MJExtension|||
 YTKNetwork||TODO|
+JLRoutes||TODO|
+OHHTTOStubs||TODO|
+IGListKit||TODO|
 RTNetwork|||
 MJRefresh|||
 EGOTableViewPullRefresh|N/A|[EGOTableViewPullRefresh 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/EGOTableViewPullRefresh.md)|

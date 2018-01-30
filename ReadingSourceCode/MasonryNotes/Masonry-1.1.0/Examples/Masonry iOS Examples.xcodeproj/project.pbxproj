@@ -14,6 +14,8 @@
 		3DB1CAD5184538E200E91FC5 /* MASExampleArrayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DB1CAD4184538E200E91FC5 /* MASExampleArrayView.m */; };
 		44C0E6AF1A9B9C55003C70CF /* MASExampleMarginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44C0E6AE1A9B9C55003C70CF /* MASExampleMarginView.m */; };
 		4BEB55B61957394E008C862B /* MASExampleRemakeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BEB55B51957394E008C862B /* MASExampleRemakeView.m */; };
+		584A06A820201A5000C1245C /* MASExampleTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 584A06A720201A5000C1245C /* MASExampleTableViewController.m */; };
+		584A06AC20201B0200C1245C /* MASTextTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 584A06AB20201B0200C1245C /* MASTextTableViewCell.m */; };
 		6C87DADA5AB046D9A3181A65 /* libPods-Masonry iOS Examples.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDC1B8303EED42A2B01B94B1 /* libPods-Masonry iOS Examples.a */; };
 		DD175E6A182639FB0099129A /* MASExampleUpdateView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD175E69182639FB0099129A /* MASExampleUpdateView.m */; };
 		DD32C3FD18E8BFF6001F6AD2 /* MASExampleAttributeChainingView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD32C3FC18E8BFF6001F6AD2 /* MASExampleAttributeChainingView.m */; };
@@ -50,6 +52,10 @@
 		4BEB55B41957394E008C862B /* MASExampleRemakeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASExampleRemakeView.h; sourceTree = "<group>"; };
 		4BEB55B51957394E008C862B /* MASExampleRemakeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASExampleRemakeView.m; sourceTree = "<group>"; };
 		50B25D0621957AEB87C3FCC2 /* Pods-Masonry iOS Examples.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Masonry iOS Examples.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Masonry iOS Examples/Pods-Masonry iOS Examples.debug.xcconfig"; sourceTree = "<group>"; };
+		584A06A620201A5000C1245C /* MASExampleTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MASExampleTableViewController.h; sourceTree = "<group>"; };
+		584A06A720201A5000C1245C /* MASExampleTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MASExampleTableViewController.m; sourceTree = "<group>"; };
+		584A06AA20201B0200C1245C /* MASTextTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MASTextTableViewCell.h; sourceTree = "<group>"; };
+		584A06AB20201B0200C1245C /* MASTextTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MASTextTableViewCell.m; sourceTree = "<group>"; };
 		BDC1B8303EED42A2B01B94B1 /* libPods-Masonry iOS Examples.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Masonry iOS Examples.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD175E68182639FB0099129A /* MASExampleUpdateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASExampleUpdateView.h; sourceTree = "<group>"; };
 		DD175E69182639FB0099129A /* MASExampleUpdateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASExampleUpdateView.m; sourceTree = "<group>"; };
@@ -102,6 +108,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		584A06A920201AD100C1245C /* MASExampleTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				584A06A620201A5000C1245C /* MASExampleTableViewController.h */,
+				584A06A720201A5000C1245C /* MASExampleTableViewController.m */,
+				584A06AA20201B0200C1245C /* MASTextTableViewCell.h */,
+				584A06AB20201B0200C1245C /* MASTextTableViewCell.m */,
+			);
+			path = MASExampleTableViewController;
+			sourceTree = "<group>";
+		};
 		DD52F21E179CAD57005CD195 = {
 			isa = PBXGroup;
 			children = (
@@ -200,6 +217,7 @@
 				DD52F250179CADC0005CD195 /* MASExampleViewController.m */,
 				DD653E481843E61500D1EC5A /* MASExampleLayoutGuideViewController.h */,
 				DD653E491843E61500D1EC5A /* MASExampleLayoutGuideViewController.m */,
+				584A06A920201AD100C1245C /* MASExampleTableViewController */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -347,9 +365,11 @@
 				DD52F254179CADC0005CD195 /* MASExampleSidesView.m in Sources */,
 				DD32C3FD18E8BFF6001F6AD2 /* MASExampleAttributeChainingView.m in Sources */,
 				DD52F255179CADC0005CD195 /* MASExampleViewController.m in Sources */,
+				584A06AC20201B0200C1245C /* MASTextTableViewCell.m in Sources */,
 				DDF3875C179D648D00178773 /* MASExampleAnimatedView.m in Sources */,
 				DD7CC17617ACE990007A469E /* MASExampleDebuggingView.m in Sources */,
 				4BEB55B61957394E008C862B /* MASExampleRemakeView.m in Sources */,
+				584A06A820201A5000C1245C /* MASExampleTableViewController.m in Sources */,
 				DD9B4D35183CC980002BF408 /* MASExampleScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
