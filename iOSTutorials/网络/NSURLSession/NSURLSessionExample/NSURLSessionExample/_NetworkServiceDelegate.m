@@ -35,17 +35,12 @@
 #pragma mark - NSURLSessionDelegate （session 级别的 delegate 回调）
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler {
-    
+    NSLog(@"%s", __FUNCTION__);
+    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
 }
 
 
 #pragma mark - NSURLSessionTaskDelegate（task 级别的 delegate 回调方法，跟特定的 task 有关）
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
-didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
- completionHandler:(nonnull void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler {
-    
-}
 
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
@@ -60,16 +55,18 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 #pragma mark - NSURLSessionDataDelegate （跟 task 发送数据给 delegate 有关的方法）
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
-    
+    NSLog(@"%@", response);
+    completionHandler(NSURLSessionResponseAllow);
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    
+    NSLog(@"%s", __FUNCTION__);
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
  willCacheResponse:(nonnull NSCachedURLResponse *)proposedResponse completionHandler:(nonnull void (^)(NSCachedURLResponse * _Nullable))completionHandler {
-    
+    NSLog(@"%s", __FUNCTION__);
+    completionHandler(proposedResponse);
 }
 
 

@@ -5,8 +5,8 @@
 
 #### 1. 使用场景
 
-- deep link：通过 Custom URL Scheme 由外部跳转到 app，比如推送，app 间跳转。
-- app 内部路由跳转：中介者模式对 Controller 进行解耦。
+- deep link：通过 Custom URL Scheme 由外部跳转到 app，比如推送跳转，app 间跳转。
+- app 内部路由跳转：使用中介者模式对 controller 进行解耦。
 
 #### 2. 使用方法
 
@@ -46,22 +46,27 @@ NSURL *viewUserURL = [NSURL URLWithString:@"myapp://user/view/joeldev"];
 
 调用 `addRoute:handler:` 方法注册 url scheme，保存/取出每个 scheme 对应的 routes controller 对象（以 key-value 形式保存的）；注册 url pattern，按优先级将每个 pattern 对应的 JLRRouteDefinition（封装 pattern、priority、回调 block 等数据）通过*插入排序*的方式保存到数组中，这里一个 pattern 可能对应一个或者多个 JLRRouteDefinition。
 
-示意图：
+![](./resources/data-map.png)
+<div align = "center">图 1. 注册 URL 流程</div>
 
-
-#### 2. 调用流程
+#### 2. 解析 URL 流程
 
 调用 `routeURL:` 方法唤起 URL时，取出 scheme 对应的 routes controller，生成  JLRRouteRequest，然后遍历所有注册过的 JLRRouteDefinition，遍历时每个 JLRRouteDefinition 会根据 request 进行匹配并生成一个  `JLRRouteResponse` 对象，如果匹配上了，就回调 block，并回传参数。
 
+
+![](./resources/routing-urls.png)
+<div align = "center">图 2. 解析 URL 流程</div>
+
 #### 3. 主要的类
 
-
-- JLRoutes：作为 JLRoutes 框架的入口，负责注册 URL，管理路由以及分配路由。
-- JLRRouteDefinition：用来封装注册 URL 的路由信息，包括 URL scheme, route pattern, and priority，并且可以根据 request 提供相应的 response。可以通过继承该类来实现自定义的匹配方式。
-- JLRRouteRequest：用来封装一个 URL 的路由请求信息，包括 URL、解析后的 path components 和 query parameters。
-- JLRRouteResponse：根据 URL 匹配路由信息时的 response，包含 isMatch、parameters 等信息。如果 JLRRouteDefinition 匹配 URL 成功时，就会设置属性  isMatch 为 YES，同时将解析 URL 后的参数和 默认参数、附加参数组合返回。
-- JLRRouteHandler 和 JLRRouteHandlerTarget：自定义路由 handler，也就是将回调参数处理的逻辑交给自定义类去处理。（ps：暂时还没有想到这样的好处是什么，给作者提了 issue）
-- JLRParsingUtilities：解析 URL 参数的工具类。
+类名      | 作用
+----------|------
+JLRoutes | 作为 JLRoutes 框架的入口，负责注册 URL，管理路由以及分配路由。
+JLRRouteDefinition | 用来封装注册 URL 的路由信息，包括 URL scheme, route pattern, and priority，并且可以根据 request 提供相应的 response。可以通过继承该类来实现自定义的匹配方式。
+JLRRouteRequest | 用来封装一个 URL 的路由请求信息，包括 URL、解析后的 path components 和 query parameters。
+JLRRouteResponse | 根据 URL 匹配路由信息时的 response，包含 isMatch、parameters 等信息。如果 JLRRouteDefinition 匹配 URL 成功时，就会设置属性  isMatch 为 YES，同时将解析 URL 后的参数和 默认参数、附加参数组合返回。
+JLRRouteHandler 和 JLRRouteHandlerTarget | 自定义路由 handler，也就是将回调参数处理的逻辑交给自定义类去处理。（ps：暂时还没有想到这样的好处是什么，给作者提了 issue）
+JLRParsingUtilities | 解析 URL 参数的工具类。
 
 ### 三、JLRoutes 的优缺点
 
