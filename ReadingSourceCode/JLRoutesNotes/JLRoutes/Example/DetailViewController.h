@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JLRRouteHandler.h"
 
 @interface DetailViewController : UIViewController
 

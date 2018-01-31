@@ -22,17 +22,26 @@
     
     [JLRoutes setVerboseLoggingEnabled:YES];
     
-    [[JLRoutes routesForScheme:@"myapp"] addRoute:@"/detail/:id" handler:^BOOL(NSDictionary<NSString *,id> * _Nonnull parameters) {
-        NSString *title = parameters[@"title"];
-        NSString *pageId = parameters[@"id"];
+    id handlerBlock = [JLRRouteHandler handlerBlockForTargetClass:[DetailViewController class] completion:^BOOL(DetailViewController <JLRRouteHandlerTarget> *createdObject) {
         
-        DetailViewController *detailVC = [[DetailViewController alloc] init];
-        detailVC.title = [title stringByAppendingString:pageId];
         UINavigationController *navi = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
-        [navi pushViewController:detailVC animated:YES];
-        
+        [navi pushViewController:createdObject animated:YES];
         return YES;
     }];
+    
+    [[JLRoutes routesForScheme:@"myapp"] addRoute:@"/detail/:id" handler:handlerBlock];
+    
+//    [[JLRoutes routesForScheme:@"myapp"] addRoute:@"/detail/:id" handler:^BOOL(NSDictionary<NSString *,id> * _Nonnull parameters) {
+//        NSString *title = parameters[@"title"];
+//        NSString *pageId = parameters[@"id"];
+//
+//        DetailViewController *detailVC = [[DetailViewController alloc] init];
+//        detailVC.title = [title stringByAppendingString:pageId];
+//        UINavigationController *navi = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+//        [navi pushViewController:detailVC animated:YES];
+//
+//        return YES;
+//    }];
     
     return YES;
 }

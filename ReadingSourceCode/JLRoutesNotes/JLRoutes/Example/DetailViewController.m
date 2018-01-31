@@ -8,11 +8,25 @@
 
 #import "DetailViewController.h"
 
-@interface DetailViewController ()
+@interface DetailViewController () <JLRRouteHandlerTarget>
 
 @end
 
 @implementation DetailViewController
+
+- (instancetype)initWithRouteParameters:(NSDictionary<NSString *,id> *)parameters {
+    self = [super initWithNibName:nil bundle:nil];
+    
+    if (self) {
+        
+        NSString *title = parameters[@"title"];
+        NSString *pageId = parameters[@"id"];
+        
+        self.title = [title stringByAppendingString:pageId];
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
