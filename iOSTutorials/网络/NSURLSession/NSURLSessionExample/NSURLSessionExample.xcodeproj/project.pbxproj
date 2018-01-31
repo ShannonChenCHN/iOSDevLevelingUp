@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		584A07112021D85900C1245C /* NetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 584A07102021D85900C1245C /* NetworkService.m */; };
+		584A07142021DACB00C1245C /* _NetworkServiceBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 584A07132021DACB00C1245C /* _NetworkServiceBlock.m */; };
+		584A07172021DADE00C1245C /* _NetworkServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 584A07162021DADE00C1245C /* _NetworkServiceDelegate.m */; };
 		58F68CE42005B9F700D3B189 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 58F68CE32005B9F700D3B189 /* AppDelegate.m */; };
 		58F68CE72005B9F700D3B189 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58F68CE62005B9F700D3B189 /* ViewController.m */; };
 		58F68CEA2005B9F700D3B189 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58F68CE82005B9F700D3B189 /* Main.storyboard */; };
@@ -17,6 +20,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		584A070F2021D85900C1245C /* NetworkService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkService.h; sourceTree = "<group>"; };
+		584A07102021D85900C1245C /* NetworkService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkService.m; sourceTree = "<group>"; };
+		584A07122021DACB00C1245C /* _NetworkServiceBlock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _NetworkServiceBlock.h; sourceTree = "<group>"; };
+		584A07132021DACB00C1245C /* _NetworkServiceBlock.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _NetworkServiceBlock.m; sourceTree = "<group>"; };
+		584A07152021DADE00C1245C /* _NetworkServiceDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _NetworkServiceDelegate.h; sourceTree = "<group>"; };
+		584A07162021DADE00C1245C /* _NetworkServiceDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _NetworkServiceDelegate.m; sourceTree = "<group>"; };
 		58F68CDF2005B9F700D3B189 /* NSURLSessionExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NSURLSessionExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58F68CE22005B9F700D3B189 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		58F68CE32005B9F700D3B189 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -65,6 +74,12 @@
 				58F68CE32005B9F700D3B189 /* AppDelegate.m */,
 				58F68CE52005B9F700D3B189 /* ViewController.h */,
 				58F68CE62005B9F700D3B189 /* ViewController.m */,
+				584A070F2021D85900C1245C /* NetworkService.h */,
+				584A07102021D85900C1245C /* NetworkService.m */,
+				584A07122021DACB00C1245C /* _NetworkServiceBlock.h */,
+				584A07132021DACB00C1245C /* _NetworkServiceBlock.m */,
+				584A07152021DADE00C1245C /* _NetworkServiceDelegate.h */,
+				584A07162021DADE00C1245C /* _NetworkServiceDelegate.m */,
 				58F68CE82005B9F700D3B189 /* Main.storyboard */,
 				58F68CEB2005B9F700D3B189 /* Assets.xcassets */,
 				58F68CED2005B9F700D3B189 /* LaunchScreen.storyboard */,
@@ -148,6 +163,9 @@
 			files = (
 				58F68CE72005B9F700D3B189 /* ViewController.m in Sources */,
 				58F68CF22005B9F700D3B189 /* main.m in Sources */,
+				584A07112021D85900C1245C /* NetworkService.m in Sources */,
+				584A07172021DADE00C1245C /* _NetworkServiceDelegate.m in Sources */,
+				584A07142021DACB00C1245C /* _NetworkServiceBlock.m in Sources */,
 				58F68CE42005B9F700D3B189 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

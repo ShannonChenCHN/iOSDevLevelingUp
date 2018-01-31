@@ -53,6 +53,8 @@
 1.AFNetworking 的作用是什么？不用 AFNetworking 直接用系统的不也可以吗？
 2.AFNetworking 框架的设计思路和原理是什么？
 3.AFNetworking 和 MKNetworkKit 以及 ASINetwork 有什么不同?
+6. AFNetworking 为什么要对 NSURLConnection/NSURLSession 进行封装？它是如何封装的？
+7. AFNetworking 2.x 和 AFNetworking 3.x 的区别是什么？
    
 知识点：  
  1. HTTP 请求中的 content-type   

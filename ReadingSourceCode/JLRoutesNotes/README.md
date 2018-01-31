@@ -44,7 +44,7 @@ NSURL *viewUserURL = [NSURL URLWithString:@"myapp://user/view/joeldev"];
 
 #### 1.注册流程
 
-调用 `addRoute:handler:` 方法注册 url scheme，保存/取出每个 scheme 对应的 routes controller 对象（以 key-value 形式保存的）；注册 url pattern，按优先级将每个 pattern 对应的 JLRRouteDefinition（封装 pattern、priority、回调 block 等数据）保存到数组中，这里一个 pattern 可能对应一个或者多个 JLRRouteDefinition。
+调用 `addRoute:handler:` 方法注册 url scheme，保存/取出每个 scheme 对应的 routes controller 对象（以 key-value 形式保存的）；注册 url pattern，按优先级将每个 pattern 对应的 JLRRouteDefinition（封装 pattern、priority、回调 block 等数据）通过*插入排序*的方式保存到数组中，这里一个 pattern 可能对应一个或者多个 JLRRouteDefinition。
 
 示意图：
 
@@ -92,5 +92,6 @@ NSURL *viewUserURL = [NSURL URLWithString:@"myapp://user/view/joeldev"];
 ### 参考：
 
 - [joeldev/JLRoutes](https://github.com/joeldev/JLRoutes)
+- [iOS——Scheme是什么、怎么自定义Scheme、JLRoutes的使用](http://zhoulingyu.com/2016/01/03/iOS%E2%80%94%E2%80%94Scheme%E6%98%AF%E4%BB%80%E4%B9%88%E3%80%81%E6%80%8E%E4%B9%88%E8%87%AA%E5%AE%9A%E4%B9%89Scheme%E3%80%81JLRoutes%E7%9A%84%E4%BD%BF%E7%94%A8/)
 - [JLRoutes源码分析](https://www.gfzj.us/series/读源代码学习ios开发/2015/07/14/JLRoutes.html)
 - [组件化初探 - JLRoutes源码分析](https://www.jianshu.com/p/d24e9a7c8d4e)

@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,7 +21,31 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yb8-uc-HgU">
+                                <rect key="frame" x="74.5" y="285" width="225" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.59643226476661482" blue="0.59798651647118639" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="  Send Request Using Delegate   "/>
+                                <connections>
+                                    <action selector="sendRequestUsingDelegate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DrX-Vr-F9o"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vRU-kc-W9x">
+                                <rect key="frame" x="87" y="352" width="201" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.5964322648" blue="0.59798651650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="  Send Request Using Block   "/>
+                                <connections>
+                                    <action selector="sendRequestUsingBlock:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TS9-ON-t4p"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="vRU-kc-W9x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="2si-RT-B1v"/>
+                            <constraint firstItem="Yb8-uc-HgU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="K07-lU-cbQ"/>
+                            <constraint firstItem="Yb8-uc-HgU" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" multiplier="0.9" id="OKg-08-7ZI"/>
+                            <constraint firstItem="vRU-kc-W9x" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" multiplier="1.1" id="ZbE-l6-b4S"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -10,24 +10,28 @@
 ##### Objective-C
 Repos|Version|Article|
 --|--|--|
-[AFNetworking](https://github.com/AFNetworking/AFNetworking)|3.1.0|TODO|
+[AFNetworking](https://github.com/AFNetworking/AFNetworking)|3.1.0|[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/AFNetworkingNotes)|
 [SDWebImage](https://github.com/rs/SDWebImage)|3.7.3|[SDWebImage 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes)|
-[YYWebImage](https://github.com/ibireme/YYWebImage)|1.0.4||
-[YYCache](https://github.com/ibireme/YYCache)||TODO|
-[Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary)|2.1.0|TODO|
-MJExtension|||
-YTKNetwork||TODO|
-JLRoutes||TODO|
+[WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)||[WebViewJavascriptBridge 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/WebViewJavascriptBridgeNotes)|
+[Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary)|2.1.0|[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/MantleNotes)|
+[JLRoutes](https://github.com/joeldev/JLRoutes/issues)|2.1|[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/JLRoutesNotes)|
 OHHTTOStubs||TODO|
-IGListKit||TODO|
-RTNetwork|||
+IGListKit||[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/IGListKitNotes)|
+MJExtension|||
+MBProgressHUD||TODO|
 MJRefresh|||
 EGOTableViewPullRefresh|N/A|[EGOTableViewPullRefresh 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/EGOTableViewPullRefresh.md)|
-MBProgressHUD||TODO|
-SVProgressHUD|||
+Masonry||[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/MasonryNotes)|
 Aspects|||
+YTKNetwork||TODO|
+[YYWebImage](https://github.com/ibireme/YYWebImage)|1.0.4||
+[YYCache](https://github.com/ibireme/YYCache)|||
+RTNetwork|||
+SVProgressHUD|||
 KSCrash|||
-[WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)||[WebViewJavascriptBridge 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/WebViewJavascriptBridgeNotes)|
+ReactiveCocoa|||
+UITableView+FDTemplateLayoutCell|||
+JSPatch|||
 
 ##### Swift
 

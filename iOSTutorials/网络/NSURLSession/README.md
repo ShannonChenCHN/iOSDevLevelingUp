@@ -14,7 +14,7 @@ NSURLConnection 作为 Core Foundation / CFNetwork 框架的 API 之上的一个
 
 
 
-### 三、NSURLSession 的使用
+### 二、NSURLSession 的使用
 NSURLSession 负责发送请求和接收响应，
 
 #### 1. NSURLSessionTask
@@ -28,17 +28,26 @@ NSURLSession 负责发送请求和接收响应，
 
 ### 四、NSURLSession 和 NSURLConnection 的对比，为什么 NSURLConnection 会被 NSURLSession 所替代？
 
-问题：
+### 五、问题
+
+1. 如何取消网络请求？
+
+可以通过调用 `NSURLSessionDataTask` 的 `cancel` 方法来取消已经启动的 task。
+
+调用 `NSURLSessionDataTask` 的 `cancel` 方法时，这个方法会立即返回，并且标记这个 task 已经被 cancell 掉了。一旦一个 task 被标记为 cancell 掉了，这个 task 的 delegate 就会收到 `URLSession:task:didCompleteWithError: ` 代理方法回调，其中的  `error` 参数中会有一个错误码 `NSURLErrorCancelled`。
+
+在某些情况下，可能在被 cancel 的 task 确认被 cancel 前，其 delegate 就已收到代理消息了。
+
+实际上，对于服务器来说，当客户端在请求一发出就取消了的时候，也就是说服务器还没有接收到，但是请求发出去了时，有些服务器会判断连接是否已断开。
+
+> 参考：
+> - [NSURLSessionTask - Apple Documentation](https://developer.apple.com/documentation/foundation/nsurlsessiontask/1411591-cancel)
+> - [iOS取消网络请求的正确姿势](https://www.jianshu.com/p/96272c18150e)
+
+2. 为什么 SDWebImage 早期版本中使用 NSURLConnection 异步下载时，需要手动启动 Runloop 来实现线程的保活，而现在版本中使用 NSURLSession 时，却不需要呢？
 
 
-5. 何时需要使用以及如何使用 NSURLProtocol？
-
-6. AFNetworking 为什么要对 NSURLConnection/NSURLSession 进行封装？它是如何封装的？
-
-7. AFNetworking 2.x 和 AFNetworking 3.x 的区别是什么？
-
-8. 为什么 SDWebImage 早期版本中使用 NSURLConnection 异步下载时，需要手动启动 Runloop 来实现线程的保活，而现在版本中使用 NSURLSession 时，却不需要呢？
-
+### 参考资料：
 - [NSURLSession and NSDefaultRunLoopMode](https://stackoverflow.com/questions/20098106/nsurlsession-and-nsdefaultrunloopmode)
 - [NSURLSession与NSURLConnection区别](http://www.guiyongdong.com/2016/11/18/NSURLSession与NSURLConnection区别/)
 - [NSURLSession VS. NSURLConnection](https://stackoverflow.com/questions/33919862/nsurlconnection-vs-nsurlsession)
