@@ -47,6 +47,11 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 #### 滚动视图
 - [WenchaoD/FSPagerView](https://github.com/WenchaoD/FSPagerView)：FSPagerView is an elegant Screen Slide Library. It is extremely helpful for making Banner View、Product Show、Welcome/Guide Pages、Screen/ViewController Sliders.
 
+#### 文本编辑
+
+- [SlackTextViewController](https://github.com/slackhq/SlackTextViewController)：一个发送聊天消息的 UIViewController 子类，主要功能是输入框会自动根据文字内容缩放。
+- [GitHawkApp/MessageViewController](https://github.com/GitHawkApp/MessageViewController)：SlackTextViewController 的 Swift 版本
+
 #### 其他
 - [LoveZYForever/HXWeiboPhotoPicker](https://github.com/LoveZYForever/HXWeiboPhotoPicker): 照片选择器
 - [CoderZhuXH/XHLaunchAd](https://github.com/CoderZhuXH/XHLaunchAd): 应用启动广告
