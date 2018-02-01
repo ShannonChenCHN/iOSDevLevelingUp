@@ -7,6 +7,8 @@
 
 NSURLConnection 作为 Core Foundation / CFNetwork 框架的 API 之上的一个抽象，在 2003 年第一版的 Safari 发布时就出世了。NSURLConnection 这个名字，实际上是指代的 Foundation 框架的 URL Loading System 中一系列有关联的组件：NSURLRequest、NSURLResponse、NSURLProtocol、 NSURLCache、 NSHTTPCookieStorage、NSURLCredentialStorage 以及同名类 NSURLConnection。
 
+
+
 #### 二、NSURLConnection 的工作流程
 
 首先 NSURLRequest 被传递给 NSURLConnection。被委托对象（遵守非正式协议 <NSURLConnectionDelegate> 和 <NSURLConnectionDataDelegate>）异步地返回一个 NSURLResponse 以及包含服务器返回信息的 NSData。
@@ -18,10 +20,16 @@ NSURLConnection 作为 Core Foundation / CFNetwork 框架的 API 之上的一个
 
 ### 三、使用 NSURLConnection 发起 HTTP 请求
 
+An NSURLConnection object lets you load the contents of a URL by providing a URL request object. The interface for NSURLConnection is sparse, providing only the controls to start and cancel asynchronous loads of a URL request. You perform most of your configuration on the URL request object itself.
+
+
+
 #### 1.相关类
 （1） NSURL：请求地址，定义一个网络资源路径；
 
 （2）NSURLRequest/NSMutableURLRequest：根据 NSURL 建立一个请求。
+
+NSURLConnection 提供的接口非常简洁，只提供了发送和取消请求的接口，所以我们一般是通过 NSURLRequest 对象进行请求配置的。
 
 NSMutableURLRequest 是 NSURLRequest 的子类，常用方法有：
 
@@ -32,7 +40,8 @@ NSMutableURLRequest 是 NSURLRequest 的子类，常用方法有：
 - `setValue:forHTTPHeaderField:`：设置请求头
 
 
-（3）NSURLConnection：用来管理 request 的对象，可以用来启动和停止 request
+（3）NSURLConnection：用来管理 request 的对象，可以用来启动和停止 request。
+
 （4）NSJSONSerialization：服务器返回 JSON 格式的消息时，因为 NSURLConnection 回调返回的数据是 NSData，所以需要通过 NSJSONSerialization 进行反序列化。
 
 #### 2. 使用 NSURLConnection 发起 HTTP 请求的步骤
