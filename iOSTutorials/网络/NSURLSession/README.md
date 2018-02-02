@@ -1,6 +1,6 @@
 # NSURLSession 
 
-[NSURLSession 相关的示例代码](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSTutorials/网络/NSURLSession)
+[NSURLSession 相关的完整示例代码](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSTutorials/网络/NSURLSession)
 
 ### 一、简介
 
@@ -25,6 +25,45 @@ NSURLSession 主要是用来处理 App 和服务器之间的网络数据的传�
 - Default sessions：跟 shared session 类似，系统会提供一些默认的共享配置，但是这种 session 可以设置 delegate 来进行断点下载等操作。这种 session 可以通过 `NSURLSessionConfiguration ` 的  `defaultSessionConfiguration` 方法来创建。 
 - Ephemeral sessions：跟 default sessions 类似，但是不会将缓存、cookie、凭证等保存到本地磁盘上。这种 session 可以通过 `NSURLSessionConfiguration ` 的 `ephemeralSessionConfiguration` 方法来创建。 
 - Background sessions：这种 session 能够让你的 APP 即便不再运行，也可以让后台驻留程序帮你上传、下载任务。可以通过 `NSURLSessionConfiguration ` 的 `backgroundSessionConfiguration: ` 方法来创建 background session。
+
+创建 NSURLSession 发起请求的步骤大致如下：
+
+1. 创建一个 NSURLSessionConfiguration 对象。
+2. 创建一个 NSURLSession 对象，可以指定 session configuration 和 delegate。
+3. 创建一个 NSURLRequest 对象，并使用创建好的 NSURLSession 对象获取一个代表请求的 session task 对象。这个 task 对象可能是 `NSURLSessionTask` 的三个子类之一——NSURLSessionDataTask， NSURLSessionUploadTask，或者 NSURLSessionDownloadTask。每个 task 在初始时是处于挂起状态的，当调用了 `resume` 方法后，它就真正开始发起请求了。
+4. 接下来，session 就会在合适的时机依次发送消息给它的代理。详见 [NSURLSession - Class API Reference](https://developer.apple.com/documentation/foundation/nsurlsession?language=objc)。
+
+示例代码：
+
+```
+    // 1.创建url
+    NSURL *url = [NSURL URLWithString:@"https://www.baidu.com"];
+    
+    // 2.创建 request，并设置缓存策略为每次都从网络加载，超时时间30秒
+    NSURLRequest *request = [NSURLRequest requestWithURL:url
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                         timeoutInterval:30];
+    
+    // 3.创建 NSURLSessionConfiguration
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    // 4. 创建 NSURLSession
+    NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:config delegate:nil delegateQueue:nil];
+    
+    // 5. 创建 NSURLSessionDataTask
+    NSURLSessionDataTask *dataTask = [sharedSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        // 网络请求完成之后就会执行，NSURLSession自动实现多线程
+        NSLog(@"%@",[NSThread currentThread]);
+        if (data && (error == nil)) {
+            // 网络访问成功
+            NSLog(@"data=%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        } else {
+            // 网络访问失败
+            NSLog(@"error=%@", error);
+        }
+    }];
+    [dataTask resume];
+```
 
 
 #### 1. NSURLSessionTask
@@ -103,7 +142,13 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;
  
 #### 3. NSURLSessionConfiguration
 
-NSURLSessionConfiguration 拥有 20 个配置属性。熟练掌握这些配置属性的用处，可以让应用程序充分地利用其网络环境。NSURLSessionConfiguration 提供的配置项包括基本网络配置、cookie 策略、安全策略、缓存策略、自定义协议类等等。
+NSURLSessionConfiguration 拥有 20 个配置属性。熟练掌握这些配置属性的用处，可以让应用程序充分地利用其网络环境。NSURLSessionConfiguration 提供的配置项包括基本网络配置、cookie 策略、安全策略、缓存策略、自定义协议类等等：
+
+- HTTPAdditionalHeaders
+- networkServiceType
+- allowsCellularAccess
+- timeoutIntervalForRequest
+- requestCachePolicy
 
 NSURLSessionConfiguration 有三个类工厂方法，这很好地说明了 NSURLSession 设计时所考虑的不同的使用场景：
 
@@ -126,6 +171,8 @@ NSURLSessionConfiguration 有三个类工厂方法，这很好地说明了 NSURL
 
 ### 四、NSURLSession 和 NSURLConnection 的对比，为什么 NSURLConnection 会被 NSURLSession 所替代？
 
+
+
 NSURLSession 的优势：
 
 - NSURLSession 支持 http2.0 协议
@@ -134,6 +181,57 @@ NSURLSession 的优势：
 - 同一个 session 发送多个请求，只需要建立一次连接（复用了TCP）
 - 提供了全局的 session 并且可以统一配置，使用更加方便
 - 下载的时候是多线程异步处理，效率更高
+
+#### 1. 请求任务
+
+NSURLConnection 只有一个 NSURLConnection 这一个类来进行网络请求。
+
+NSURLsessionTask 是一个抽象类，它有 3 个实体子类可以直接使用：NSURLSessionDataTask、NSURLSessionUploadTask、NSURLSessionDownloadTask。这 3 个子类分别封装了现代程序三个最基本的网络任务：获取数据（比如 JSON 或者 XML），上传文件和下载文件。借助这 3 个子类，我们可以很轻松地实现对应的请求任务。
+
+#### 2. 请求方法的控制
+NSURLConnection实例化对象，实例化开始，默认请求就发送(同步发送),不需要调用start方法。而cancel可以停止请求的发送，停止后不能继续访问，需要创建新的请求。
+
+NSURLSession有三个控制方法，取消(cancel)、暂停(suspend)、继续(resume)，暂停以后可以通过继续恢复当前的请求任务。
+
+#### 3. 请求的配置信息
+
+原来的 NSURLConnection 只能通过 NSMutableURLRequest 来设置网络请求层的设置选项。
+
+NSURLSession 的构造方法`sessionWithConfiguration:delegate:delegateQueue`中有一个NSURLSessionConfiguration 类的参数可以设置配置信息，其决定了cookie，安全和高速缓存策略，最大主机连接数，资源管理，网络超时等配置。
+
+#### 4. 代理
+
+NSURLConnection 有三种代理协议：
+
+- NSURLConnectionDelegate
+- NSURLConnectionDataDelegate
+- NSURLConnectionDownloadDelegate
+
+NSURLConnection 有四种代理协议：
+
+- NSURLSessionDelegate
+- NSURLSessionTaskDelegate
+- NSURLSessionDataDelegate
+- NSURLSessionDownloadDelegate
+
+更详细的内容可以看看 Mattt Thompson 整理的一个完整的[映射表](https://gist.github.com/floriankugler/6870499)。
+
+
+#### 5. 下载任务方式
+NSURLConnection下载文件时，先是将整个文件下载到内存，然后再写入到沙盒，如果文件比较大，就会出现内存暴涨的情况。
+
+而使用NSURLSessionUploadTask下载文件，会默认下载到沙盒中的tem文件中，不会出现内存暴涨的情况，但是在下载完成后会把tem中的临时文件删除，需要在初始化任务方法时，在completionHandler回调中增加保存文件的代码。
+
+
+
+#### 6. 断点续传的方式
+
+NSURLConnection进行断点下载，通过设置访问请求的HTTPHeaderField的Range属性，开启运行循环，NSURLConnection的代理方法作为运行循环的事件源，接收到下载数据时代理方法就会持续调用，并使用NSOutputStream管道流进行数据保存。
+
+NSURLSession进行断点下载，当暂停下载任务后，如果downloadTask（下载任务）为非空，调用cancelByProducingResumeData:(void (^)(NSData *resumeData))completionHandler这个方法，这个方法接收一个参数，完成处理代码块，这个代码块有一个NSData参数resumeData，如果resumeData非空，我们就保存这个对象到视图控制器的resumeData属性中，在点击再次下载时，通过调用[ [self.session downloadTaskWithResumeData:self.resumeData]resume]方法进行继续下载操作。
+
+
+
 
 ### 五、问题
 
@@ -159,8 +257,10 @@ NSURLSession 的优势：
 ### 参考资料：
 - [NSURLSession - Class Reference](https://developer.apple.com/documentation/foundation/nsurlsession?language=objc)
 - [URLSession - objc.io](https://objccn.io/issue-5-4/)
-- [NSURLSession and NSDefaultRunLoopMode](https://stackoverflow.com/questions/20098106/nsurlsession-and-nsdefaultrunloopmode)
+- [URLSession Tutorial: Getting Started - Ray Wenderlich](https://www.raywenderlich.com/158106/urlsession-tutorial-getting-started)
 - [NSURLSession与NSURLConnection区别](http://www.guiyongdong.com/2016/11/18/NSURLSession与NSURLConnection区别/)
 - [iOS网络基础——NSURLSession使用详解(一般访问、文件下载、上传)](https://www.jianshu.com/p/2bd9cb569fc2)
-- [WWDC Session 705: "What’s New in Foundation Networking"](http://asciiwwdc.com/2013/sessions/705)
 - [NSURLSessionDownloadTask的深度断点续传](http://www.cnblogs.com/itlover2013/p/5454179.html)
+- [浅析 iOS 应用开发中的断点续传](https://www.ibm.com/developerworks/cn/mobile/mo-cn-breakpoint/index.html)：这篇文章详细介绍了断点续传的原理，并通过代码示例演示了如何使用 AFNetworking 和 NSURLConnection 实现断点下载任务。
+- [WWDC Session 705: "What’s New in Foundation Networking"](http://asciiwwdc.com/2013/sessions/705)
+- [Apple WWDC 2015 - 711 - Networking with NSURLSession](https://developer.apple.com/videos/play/wwdc2015-711/)
