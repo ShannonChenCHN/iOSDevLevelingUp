@@ -8,7 +8,7 @@
 
 #import "_NetworkServiceDelegate.h"
 
-@interface _NetworkServiceDelegate () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
+@interface _NetworkServiceDelegate () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>
 
 @end
 
@@ -69,6 +69,19 @@
     completionHandler(proposedResponse);
 }
 
+#pragma mark - NSURLSessionDownloadDelegate （跟下载数据到本地的 task 相关的操作）
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location {
+    
+}
+
+/* Sent periodically to notify the delegate of download progress. */
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    
+}
 
 
 
