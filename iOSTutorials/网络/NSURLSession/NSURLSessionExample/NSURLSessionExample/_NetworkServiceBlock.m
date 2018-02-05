@@ -20,18 +20,21 @@
 - (void)fetchingContentAsData  {
     
     // 1.创建url
-    NSURL *url = [NSURL URLWithString:@"https://www.baidu.com"];
+    NSURL *url = [NSURL URLWithString:@"http://7vihfk.com1.z0.glb.clouddn.com/photo-1457369804613-52c61a468e7d.jpeg"];
     
     // 2.创建请求 并设置缓存策略为每次都从网络加载，超时时间30秒
-    NSURLRequest *request = [NSURLRequest requestWithURL:url
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
                                              cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
                                          timeoutInterval:30];
+//    request.cachePolicy = NSURLRequestReturnCacheDataDontLoad; // 支持离线缓存
+    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+    NSLog(@"%@, %@", cachedResponse.response, cachedResponse.data);
     
     // 3.创建 task
-    //    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    //    NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-    NSURLSession *sharedSession = [NSURLSession sharedSession];
-    NSURLSessionDataTask *dataTask = [sharedSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:nil delegateQueue:nil];
+//    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         // 网络请求完成之后就会执行，NSURLSession自动实现多线程
         NSLog(@"%@",[NSThread currentThread]);
         if (data && (error == nil)) {
