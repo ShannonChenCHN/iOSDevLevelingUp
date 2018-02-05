@@ -1,0 +1,645 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		20D2D9721D268808009E13A2 /* YTKAnimatingRequestAccessory.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D2D96B1D268808009E13A2 /* YTKAnimatingRequestAccessory.m */; };
+		20D2D9731D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D2D96D1D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.m */; };
+		20D2D9741D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D2D96F1D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.m */; };
+		20D2D9751D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D2D9711D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.m */; };
+		25F1A00B1066754A19C74116 /* libPods-YTKNetworkDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B54B27A99DEF03E2DBB02C /* libPods-YTKNetworkDemo.a */; };
+		45AB19C11A4656A600680858 /* YTKUrlArgumentsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 45AB19C01A4656A600680858 /* YTKUrlArgumentsFilter.m */; };
+		45BF1D401A0DC0A100DDB7E0 /* RegisterApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BF1D3F1A0DC0A100DDB7E0 /* RegisterApi.m */; };
+		45BF1D431A0DC40F00DDB7E0 /* GetUserInfoApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BF1D421A0DC40F00DDB7E0 /* GetUserInfoApi.m */; };
+		45BF1D461A0DC66E00DDB7E0 /* GetImageApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 45BF1D451A0DC66E00DDB7E0 /* GetImageApi.m */; };
+		45F710841A466D01001957BA /* UploadImageApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F710831A466D01001957BA /* UploadImageApi.m */; };
+		BF007FD919FF972C00816462 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BF007FD819FF972C00816462 /* main.m */; };
+		BF007FDC19FF972C00816462 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF007FDB19FF972C00816462 /* AppDelegate.m */; };
+		BF007FDF19FF972C00816462 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF007FDE19FF972C00816462 /* ViewController.m */; };
+		BF007FE219FF972C00816462 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF007FE019FF972C00816462 /* Main.storyboard */; };
+		BF007FE419FF972C00816462 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF007FE319FF972C00816462 /* Images.xcassets */; };
+		BF007FE719FF972C00816462 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF007FE519FF972C00816462 /* LaunchScreen.xib */; };
+		BF007FF319FF972C00816462 /* YTKNetworkDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BF007FF219FF972C00816462 /* YTKNetworkDemoTests.m */; };
+		EDD64A8FB57EEC11DE6CEB4E /* libPods-YTKNetworkDemoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 573535265CF5ECF05E1BBD90 /* libPods-YTKNetworkDemoTests.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BF007FED19FF972C00816462 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BF007FCB19FF972C00816462 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF007FD219FF972C00816462;
+			remoteInfo = YTKNetworkDemo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		20D2D96A1D268808009E13A2 /* YTKAnimatingRequestAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YTKAnimatingRequestAccessory.h; sourceTree = "<group>"; };
+		20D2D96B1D268808009E13A2 /* YTKAnimatingRequestAccessory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YTKAnimatingRequestAccessory.m; sourceTree = "<group>"; };
+		20D2D96C1D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YTKBaseRequest+AnimatingAccessory.h"; sourceTree = "<group>"; };
+		20D2D96D1D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YTKBaseRequest+AnimatingAccessory.m"; sourceTree = "<group>"; };
+		20D2D96E1D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YTKBatchRequest+AnimatingAccessory.h"; sourceTree = "<group>"; };
+		20D2D96F1D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YTKBatchRequest+AnimatingAccessory.m"; sourceTree = "<group>"; };
+		20D2D9701D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YTKChainRequest+AnimatingAccessory.h"; sourceTree = "<group>"; };
+		20D2D9711D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YTKChainRequest+AnimatingAccessory.m"; sourceTree = "<group>"; };
+		45AB19BF1A4656A600680858 /* YTKUrlArgumentsFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YTKUrlArgumentsFilter.h; sourceTree = "<group>"; };
+		45AB19C01A4656A600680858 /* YTKUrlArgumentsFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YTKUrlArgumentsFilter.m; sourceTree = "<group>"; };
+		45BF1D3E1A0DC0A100DDB7E0 /* RegisterApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterApi.h; sourceTree = "<group>"; };
+		45BF1D3F1A0DC0A100DDB7E0 /* RegisterApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterApi.m; sourceTree = "<group>"; };
+		45BF1D411A0DC40F00DDB7E0 /* GetUserInfoApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetUserInfoApi.h; sourceTree = "<group>"; };
+		45BF1D421A0DC40F00DDB7E0 /* GetUserInfoApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetUserInfoApi.m; sourceTree = "<group>"; };
+		45BF1D441A0DC66E00DDB7E0 /* GetImageApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetImageApi.h; sourceTree = "<group>"; };
+		45BF1D451A0DC66E00DDB7E0 /* GetImageApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetImageApi.m; sourceTree = "<group>"; };
+		45F710821A466D01001957BA /* UploadImageApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadImageApi.h; sourceTree = "<group>"; };
+		45F710831A466D01001957BA /* UploadImageApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadImageApi.m; sourceTree = "<group>"; };
+		573535265CF5ECF05E1BBD90 /* libPods-YTKNetworkDemoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YTKNetworkDemoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		65526970D9E7FB74931FF110 /* Pods-YTKNetworkDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YTKNetworkDemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-YTKNetworkDemoTests/Pods-YTKNetworkDemoTests.release.xcconfig"; sourceTree = "<group>"; };
+		BF007FD319FF972C00816462 /* YTKNetworkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YTKNetworkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF007FD719FF972C00816462 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF007FD819FF972C00816462 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BF007FDA19FF972C00816462 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		BF007FDB19FF972C00816462 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BF007FDD19FF972C00816462 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		BF007FDE19FF972C00816462 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		BF007FE119FF972C00816462 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BF007FE319FF972C00816462 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BF007FE619FF972C00816462 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		BF007FEC19FF972C00816462 /* YTKNetworkDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YTKNetworkDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF007FF119FF972C00816462 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF007FF219FF972C00816462 /* YTKNetworkDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YTKNetworkDemoTests.m; sourceTree = "<group>"; };
+		D30149728A908A3BBCCE924A /* Pods-YTKNetworkDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YTKNetworkDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-YTKNetworkDemo/Pods-YTKNetworkDemo.release.xcconfig"; sourceTree = "<group>"; };
+		F3A8BAC1ADCD712EF8786C33 /* Pods-YTKNetworkDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YTKNetworkDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YTKNetworkDemoTests/Pods-YTKNetworkDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F8B54B27A99DEF03E2DBB02C /* libPods-YTKNetworkDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YTKNetworkDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEC7AA40163426AAD453013 /* Pods-YTKNetworkDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YTKNetworkDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YTKNetworkDemo/Pods-YTKNetworkDemo.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BF007FD019FF972C00816462 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25F1A00B1066754A19C74116 /* libPods-YTKNetworkDemo.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF007FE919FF972C00816462 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDD64A8FB57EEC11DE6CEB4E /* libPods-YTKNetworkDemoTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20D2D9691D2687FA009E13A2 /* Accessory */ = {
+			isa = PBXGroup;
+			children = (
+				20D2D96A1D268808009E13A2 /* YTKAnimatingRequestAccessory.h */,
+				20D2D96B1D268808009E13A2 /* YTKAnimatingRequestAccessory.m */,
+				20D2D96C1D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.h */,
+				20D2D96D1D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.m */,
+				20D2D96E1D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.h */,
+				20D2D96F1D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.m */,
+				20D2D9701D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.h */,
+				20D2D9711D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.m */,
+			);
+			path = Accessory;
+			sourceTree = "<group>";
+		};
+		22ACBE3609D2A3A9B22717B4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FEEC7AA40163426AAD453013 /* Pods-YTKNetworkDemo.debug.xcconfig */,
+				D30149728A908A3BBCCE924A /* Pods-YTKNetworkDemo.release.xcconfig */,
+				F3A8BAC1ADCD712EF8786C33 /* Pods-YTKNetworkDemoTests.debug.xcconfig */,
+				65526970D9E7FB74931FF110 /* Pods-YTKNetworkDemoTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		BF007FCA19FF972C00816462 = {
+			isa = PBXGroup;
+			children = (
+				20D2D9691D2687FA009E13A2 /* Accessory */,
+				BF007FD519FF972C00816462 /* YTKNetworkDemo */,
+				BF007FEF19FF972C00816462 /* YTKNetworkDemoTests */,
+				BF007FD419FF972C00816462 /* Products */,
+				22ACBE3609D2A3A9B22717B4 /* Pods */,
+				F3D5E2006147748FD73B4DAE /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BF007FD419FF972C00816462 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF007FD319FF972C00816462 /* YTKNetworkDemo.app */,
+				BF007FEC19FF972C00816462 /* YTKNetworkDemoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF007FD519FF972C00816462 /* YTKNetworkDemo */ = {
+			isa = PBXGroup;
+			children = (
+				45F710821A466D01001957BA /* UploadImageApi.h */,
+				45F710831A466D01001957BA /* UploadImageApi.m */,
+				45AB19BF1A4656A600680858 /* YTKUrlArgumentsFilter.h */,
+				45AB19C01A4656A600680858 /* YTKUrlArgumentsFilter.m */,
+				45BF1D3E1A0DC0A100DDB7E0 /* RegisterApi.h */,
+				45BF1D3F1A0DC0A100DDB7E0 /* RegisterApi.m */,
+				45BF1D411A0DC40F00DDB7E0 /* GetUserInfoApi.h */,
+				45BF1D421A0DC40F00DDB7E0 /* GetUserInfoApi.m */,
+				45BF1D441A0DC66E00DDB7E0 /* GetImageApi.h */,
+				45BF1D451A0DC66E00DDB7E0 /* GetImageApi.m */,
+				BF007FDA19FF972C00816462 /* AppDelegate.h */,
+				BF007FDB19FF972C00816462 /* AppDelegate.m */,
+				BF007FDD19FF972C00816462 /* ViewController.h */,
+				BF007FDE19FF972C00816462 /* ViewController.m */,
+				BF007FE019FF972C00816462 /* Main.storyboard */,
+				BF007FE319FF972C00816462 /* Images.xcassets */,
+				BF007FE519FF972C00816462 /* LaunchScreen.xib */,
+				BF007FD619FF972C00816462 /* Supporting Files */,
+			);
+			path = YTKNetworkDemo;
+			sourceTree = "<group>";
+		};
+		BF007FD619FF972C00816462 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BF007FD719FF972C00816462 /* Info.plist */,
+				BF007FD819FF972C00816462 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BF007FEF19FF972C00816462 /* YTKNetworkDemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				BF007FF219FF972C00816462 /* YTKNetworkDemoTests.m */,
+				BF007FF019FF972C00816462 /* Supporting Files */,
+			);
+			path = YTKNetworkDemoTests;
+			sourceTree = "<group>";
+		};
+		BF007FF019FF972C00816462 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BF007FF119FF972C00816462 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F3D5E2006147748FD73B4DAE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8B54B27A99DEF03E2DBB02C /* libPods-YTKNetworkDemo.a */,
+				573535265CF5ECF05E1BBD90 /* libPods-YTKNetworkDemoTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BF007FD219FF972C00816462 /* YTKNetworkDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF007FF619FF972C00816462 /* Build configuration list for PBXNativeTarget "YTKNetworkDemo" */;
+			buildPhases = (
+				609DD632ED1E07363BD48FB2 /* [CP] Check Pods Manifest.lock */,
+				BF007FCF19FF972C00816462 /* Sources */,
+				BF007FD019FF972C00816462 /* Frameworks */,
+				BF007FD119FF972C00816462 /* Resources */,
+				446BEB38D2E9356D5931A463 /* [CP] Embed Pods Frameworks */,
+				DE3E65FF40BD9A908E26EF96 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = YTKNetworkDemo;
+			productName = YTKNetworkDemo;
+			productReference = BF007FD319FF972C00816462 /* YTKNetworkDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BF007FEB19FF972C00816462 /* YTKNetworkDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF007FF919FF972C00816462 /* Build configuration list for PBXNativeTarget "YTKNetworkDemoTests" */;
+			buildPhases = (
+				530C2FC27E9D057DF8080989 /* [CP] Check Pods Manifest.lock */,
+				BF007FE819FF972C00816462 /* Sources */,
+				BF007FE919FF972C00816462 /* Frameworks */,
+				BF007FEA19FF972C00816462 /* Resources */,
+				35388473680756633E871C75 /* [CP] Embed Pods Frameworks */,
+				9D8FC356690477282DCB85ED /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BF007FEE19FF972C00816462 /* PBXTargetDependency */,
+			);
+			name = YTKNetworkDemoTests;
+			productName = YTKNetworkDemoTests;
+			productReference = BF007FEC19FF972C00816462 /* YTKNetworkDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF007FCB19FF972C00816462 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = yuantiku.com;
+				TargetAttributes = {
+					BF007FD219FF972C00816462 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					BF007FEB19FF972C00816462 = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = BF007FD219FF972C00816462;
+					};
+				};
+			};
+			buildConfigurationList = BF007FCE19FF972C00816462 /* Build configuration list for PBXProject "YTKNetworkDemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BF007FCA19FF972C00816462;
+			productRefGroup = BF007FD419FF972C00816462 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF007FD219FF972C00816462 /* YTKNetworkDemo */,
+				BF007FEB19FF972C00816462 /* YTKNetworkDemoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BF007FD119FF972C00816462 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF007FE219FF972C00816462 /* Main.storyboard in Resources */,
+				BF007FE719FF972C00816462 /* LaunchScreen.xib in Resources */,
+				BF007FE419FF972C00816462 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF007FEA19FF972C00816462 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		35388473680756633E871C75 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YTKNetworkDemoTests/Pods-YTKNetworkDemoTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		446BEB38D2E9356D5931A463 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YTKNetworkDemo/Pods-YTKNetworkDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		530C2FC27E9D057DF8080989 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-YTKNetworkDemoTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		609DD632ED1E07363BD48FB2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-YTKNetworkDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9D8FC356690477282DCB85ED /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YTKNetworkDemoTests/Pods-YTKNetworkDemoTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE3E65FF40BD9A908E26EF96 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YTKNetworkDemo/Pods-YTKNetworkDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BF007FCF19FF972C00816462 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45BF1D461A0DC66E00DDB7E0 /* GetImageApi.m in Sources */,
+				BF007FDF19FF972C00816462 /* ViewController.m in Sources */,
+				20D2D9721D268808009E13A2 /* YTKAnimatingRequestAccessory.m in Sources */,
+				45AB19C11A4656A600680858 /* YTKUrlArgumentsFilter.m in Sources */,
+				45BF1D431A0DC40F00DDB7E0 /* GetUserInfoApi.m in Sources */,
+				BF007FDC19FF972C00816462 /* AppDelegate.m in Sources */,
+				45F710841A466D01001957BA /* UploadImageApi.m in Sources */,
+				BF007FD919FF972C00816462 /* main.m in Sources */,
+				20D2D9751D268808009E13A2 /* YTKChainRequest+AnimatingAccessory.m in Sources */,
+				20D2D9731D268808009E13A2 /* YTKBaseRequest+AnimatingAccessory.m in Sources */,
+				45BF1D401A0DC0A100DDB7E0 /* RegisterApi.m in Sources */,
+				20D2D9741D268808009E13A2 /* YTKBatchRequest+AnimatingAccessory.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF007FE819FF972C00816462 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF007FF319FF972C00816462 /* YTKNetworkDemoTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BF007FEE19FF972C00816462 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF007FD219FF972C00816462 /* YTKNetworkDemo */;
+			targetProxy = BF007FED19FF972C00816462 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BF007FE019FF972C00816462 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF007FE119FF972C00816462 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BF007FE519FF972C00816462 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF007FE619FF972C00816462 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BF007FF419FF972C00816462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF007FF519FF972C00816462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BF007FF719FF972C00816462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FEEC7AA40163426AAD453013 /* Pods-YTKNetworkDemo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = YTKNetworkDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yuantiku.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BF007FF819FF972C00816462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D30149728A908A3BBCCE924A /* Pods-YTKNetworkDemo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = YTKNetworkDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yuantiku.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		BF007FFA19FF972C00816462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3A8BAC1ADCD712EF8786C33 /* Pods-YTKNetworkDemoTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = YTKNetworkDemoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yuantiku.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/YTKNetworkDemo.app/YTKNetworkDemo";
+			};
+			name = Debug;
+		};
+		BF007FFB19FF972C00816462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65526970D9E7FB74931FF110 /* Pods-YTKNetworkDemoTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = YTKNetworkDemoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yuantiku.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/YTKNetworkDemo.app/YTKNetworkDemo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BF007FCE19FF972C00816462 /* Build configuration list for PBXProject "YTKNetworkDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF007FF419FF972C00816462 /* Debug */,
+				BF007FF519FF972C00816462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF007FF619FF972C00816462 /* Build configuration list for PBXNativeTarget "YTKNetworkDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF007FF719FF972C00816462 /* Debug */,
+				BF007FF819FF972C00816462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF007FF919FF972C00816462 /* Build configuration list for PBXNativeTarget "YTKNetworkDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF007FFA19FF972C00816462 /* Debug */,
+				BF007FFB19FF972C00816462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BF007FCB19FF972C00816462 /* Project object */;
+}
