@@ -94,6 +94,10 @@ static NSSet *RNCachingSupportedSchemes;
   return request;
 }
 
+- (instancetype)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
+    return [super initWithRequest:request cachedResponse:cachedResponse client:client];
+}
+    
 - (NSString *)cachePathForRequest:(NSURLRequest *)aRequest
 {
   // This stores in the Caches directory, which can be deleted when space is low, but we only use it for offline access
