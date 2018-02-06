@@ -1,0 +1,5 @@
+*.xcodeproj/*.xcworkspace
+*.xcodeproj/xcuserdata
+
+.bundle
+Gemfile.lock

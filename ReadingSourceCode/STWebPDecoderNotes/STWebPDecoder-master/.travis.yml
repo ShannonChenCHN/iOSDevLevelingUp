@@ -1,0 +1,10 @@
+language: objective-c
+branches:
+    only:
+        - master
+before_script:
+    - bundle exec rake -s analyze:${CI_PLATFORM}
+script: bundle exec rake -s test:${CI_PLATFORM}
+env:
+    - CI_PLATFORM=ios
+    - CI_PLATFORM=mac
