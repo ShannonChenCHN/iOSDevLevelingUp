@@ -71,7 +71,7 @@ client 属性是 NSURLProtocol 对象跟 URL Loading System 打交道的桥梁�
 
 ### 二、注意点
 
-- 如果你在 `-startLoading` 中将请求交给 NSURLConnection 或者 NSURLSession 来处理，因为 NSURLConnection 和 NSURLSession 也是 URL Loading System 的一部分，其发起的请求也会被 NSURLProtocol 拦截。所以就会出现递归调用造成死循环。为了防止递归调用造成死循环，我们可以参考苹果官方的做法，在通过 NSURLConnection 或者 NSURLSession 发起请求前，在 HTTP header 中添加一个字段作为标记，然后在 `-canInitWithRequest` 方法中通过判断 HTTP header 是否有相关标记，来决定是否处理该请求。
+- 如果你在 `-startLoading` 中将请求交给 NSURLConnection 或者 NSURLSession 来处理，因为 NSURLConnection 和 NSURLSession 也是 URL Loading System 的一部分，其发起的请求也会被 NSURLProtocol 拦截。所以就会出现递归调用造成死循环。为了防止递归调用造成死循环，我们可以参考苹果官方的做法，在通过 NSURLConnection 或者 NSURLSession 发起请求前，为当前的请求添加一个属性作为标记，然后在 `-canInitWithRequest` 方法中通过判断该请求是否有相关标记，来决定是否处理该请求。
 
 ```
 /*! Used to mark our recursive requests so that we don't try to handle them (and thereby 
@@ -99,6 +99,18 @@ static NSString * kOurRecursiveRequestFlagProperty = @"com.apple.dts.CustomHTTPP
     
     return shouldAccept;
 }
+
+
+- (void)startLoading
+{
+	// 省略了一部分代码 ...
+	
+	[[self class] setProperty:@YES forKey:kOurRecursiveRequestFlagProperty inRequest:recursiveRequest];
+	
+	// 省略了一部分代码 ...
+
+}
+
 ```
 
 - 要注意的是 NSURLProtocol 只能拦截 UIURLConnection、NSURLSession 和 UIWebView 中的请求，但是因为 WKWebView 是基于独立的 WebKit 进程，所以无法拦截 WKWebView 中发出的网络请求，后来也有开发者发现 WebKit 中有些私有 API 可以实现。
