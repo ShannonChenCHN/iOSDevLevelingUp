@@ -55,17 +55,20 @@ static NSDictionary *gSTWebPURLProtocolOptions = nil;
 }
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
+	// 先判断是不是内部的请求，防止出现递归死循坏
 	if ([self propertyForKey:STWebPURLRequestHandledKey inRequest:request] == STWebPURLRequestHandledValue) {
 		return NO;
 	}
 
 	NSString * const requestURLScheme = request.URL.scheme.lowercaseString;
 
+	// scheme 是否有 stwebp- 前缀，是否是 HTTP 请求
 	BOOL canProbablyInit = NO;
 	if ([requestURLScheme hasPrefix:STWebPURLProtocolSchemePrefix]) {
 		NSString * const deprefixedScheme = [requestURLScheme substringFromIndex:STWebPURLProtocolSchemePrefixLength];
 		canProbablyInit = [deprefixedScheme hasPrefix:@"http"];
 	}
+	// 是不是 webp 图片，是否是 HTTP 请求
 	if (!canProbablyInit && [gSTWebPURLProtocolOptions[STWebPURLProtocolOptionClaimWebPExtension] boolValue]) {
 		NSString * const requestURLPathExtension = request.URL.pathExtension.lowercaseString;
 		if ([@"webp" isEqualToString:requestURLPathExtension]) {
@@ -83,6 +86,10 @@ static NSDictionary *gSTWebPURLProtocolOptions = nil;
 	return [self st_canonicalRequestForRequest:request];
 }
 
+// 做了三件事情：
+// 1. 去掉 URL 前缀 stwebp-；
+// 2. 设置 HTTP header 的 Accept 类型为 image/webp；
+// 3. 设置内部请求标记 STWebPURLRequestHandledKey
 + (NSURLRequest *)st_canonicalRequestForRequest:(NSURLRequest *)request {
 	NSURL *url = request.URL;
 	NSString * const absoluteURLString = [url absoluteString];
@@ -100,7 +107,7 @@ static NSDictionary *gSTWebPURLProtocolOptions = nil;
 	if ((self = [super initWithRequest:request cachedResponse:cachedResponse client:client])) {
 		request = [self.class canonicalRequestForRequest:request];
 		_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-		[_connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+		[_connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes]; // 确保 NSURLConnection 在 mainRunLoop 中 的NSRunLoopCommonModes 模式下回调
 	}
 	return self;
 }
