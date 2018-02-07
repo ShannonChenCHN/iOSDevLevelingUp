@@ -1,7 +1,7 @@
 # RNCachingURLProtocol
 
 
-这个框架通过[自定义 NSURLProtocol 子类](见 [](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/iOSTutorials/网络/NSURLProtocol.md))的方式，为 UIWebView 提供了一个简单的离线缓存机制：
+这个框架通过[自定义 NSURLProtocol 子类](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSTutorials/网络/NSURLProtocol)的方式，为 UIWebView 提供了一个简单的离线缓存机制：
 
 - 你有一个 UIWebView 加载了有图片的网站
 - 当处于联网状态下，执行正常的缓存逻辑
