@@ -81,8 +81,8 @@ client 属性是 NSURLProtocol 对象跟 URL Loading System 打交道的桥梁�
 
 ### 启发
 
-NSURLProtocol 的设计思想跟依赖注入的原理有些相似，开发者可以通过注册的方式，注入一个或多个自定义 NSURLProtocol 子类，
-当 URL Loading System 发起请求时， client（也就是请求的管理者，实际上是一个内部的类）会在内部调用注入的 NSURLProtocol 子类的方法。我们可以感受一下 NSURLProtocol 的这种设计模式，详见[示例代码]()。
+NSURLProtocol 的设计思想跟[依赖注入](https://github.com/ShannonChenCHN/iOS-App-Architecture/issues/10#issuecomment-346219049)的原理有些相似，开发者可以通过注册的方式，注入一个或多个自定义 NSURLProtocol 子类，
+当 URL Loading System 发起请求时， client（也就是请求的管理者，实际上是一个内部的类）会在内部调用注入的 NSURLProtocol 子类的方法。我们可以感受一下 NSURLProtocol 的这种设计模式，详见[示例代码](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/iOSTutorials/网络/NSURLProtocol/DesignPattern)。
 ```
 NSURLConnection/NSURLSession --> client --> 一个或多个 NSURLProtocol 拦截请求 --> 发出请求
 ```
