@@ -1,5 +1,16 @@
 # NSURLProtocol
 
+URL Loading System 本身只支持 http、https、file、ftp 和 data 协议。`NSURLProtocol` 是一个抽象类，提供了处理 URL 加载的基础设施。通过实现自定义的 `NSURLProtocol` 子类，可以让我们的 app 支持自定义的数据传输协议。
+
+另外，对于 `NSURLProtocol` 核心功能，官方文档中并没有着重提到，但是却是最重要的一点：**借助它，你不必改动应用在网络调用上的其他部分，就可以改变 URL 加载行为的全部细节**。运用这一点，我们可以自由发挥，做很多想做的事情，比如：
+
+- [拦截图片加载请求，转为从本地文件加载](http://stackoverflow.com/questions/5572258/ios-webview-remote-html-with-local-image-files)
+- [在 UIWebView 中加载 webp 图片](https://github.com/cysp/STWebPDecoder)
+- [通过缓存静态资源实现 UIWebView 的预加载优化](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/55#issuecomment-300365305)
+- [UIWebView 离线缓存](https://github.com/rnapier/RNCachingURLProtocol)
+- [为了测试对HTTP返回内容进行mock和stub](https://draveness.me/%5Bhttps://github.com/AliSoftware/OHHTTPStubs%5D)
+- [实现 HTTP 请求 Mock](https://github.com/Flipboard/FLEX/tree/master/Classes/Network)
+
 
 #### 一、主要原理
 
@@ -58,14 +69,15 @@ client 属性是 NSURLProtocol 对象跟 URL Loading System 打交道的桥梁�
 ```
 
 
-#### 2.注意点：
+### 二、注意点
 
-- 在有网的情况下，RNCachingURLProtocol 会将请求交给 NSURLConnection 来处理，NSURLConnection 也是 URL Loading System 的一部分，其发起的请求也会被 NSURLProtocol 拦截。所以为了防止递归调用造成死循环，RNCachingURLProtocol 在通过 NSURLConnection 发起请求前，在 HTTP header 中添加了 X-RNCache 字段作为标记，然后在 `canInitWithRequest` 方法中通过判断 HTTP header 是否有相关标记，来决定是否处理该请求。
+- 在有网的情况下，RNCachingURLProtocol 会将请求交给 NSURLConnection 来处理，NSURLConnection 也是 URL Loading System 的一部分，其发起的请求也会被 NSURLProtocol 拦截。所以为了防止递归调用造成死循环，RNCachingURLProtocol 在通过 NSURLConnection 发起请求前，在 HTTP header 中添加了 `X-RNCache` 字段作为标记，然后在 `canInitWithRequest` 方法中通过判断 HTTP header 是否有相关标记，来决定是否处理该请求。
 
 
 - 要注意的是 NSURLProtocol 只能拦截 UIURLConnection、NSURLSession 和 UIWebView 中的请求，但是因为 WKWebView 是基于独立的 WebKit 进程，所以无法拦截 WKWebView 中发出的网络请求，后来也有开发者发现 WebKit 中有些私有 API 可以实现。
 
 - 针对 HTTP 请求重定向，也要记得回调 client 的相应代理方法。
+
 
 ### 启发
 
@@ -79,4 +91,3 @@ client 属性是 NSURLProtocol 对象跟 URL Loading System 打交道的桥梁�
 - [CustomHTTPProtocol - Guides and Sample Code](https://developer.apple.com/library/content/samplecode/CustomHTTPProtocol/Introduction/Intro.html)
 - [URL Session Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/URLLoadingSystem/CookiesandCustomProtocols/CookiesandCustomProtocols.html#//apple_ref/doc/uid/10000165i-CH10-SW3)
 - [Drop-in Offline Caching for UIWebView (and NSURLProtocol)](http://robnapier.net/offline-uiwebview-nsurlprotocol)
-- [rnapier/RNCachingURLProtocol](https://github.com/rnapier/RNCachingURLProtocol)
