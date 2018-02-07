@@ -30,6 +30,7 @@ Matt Gallagher 是通过自定义 NSURLCache 来[实现离线缓存](http://coco
 
 #### 几点说明：
 
+- 在有网的情况下，RNCachingURLProtocol 会将请求交给 NSURLConnection 来处理，NSURLConnection 也是 URL Loading System 的一部分，其发起的请求也会被 NSURLProtocol 拦截。所以为了防止递归调用造成死循环，RNCachingURLProtocol 在通过 NSURLConnection 发起请求前，在 HTTP header 中添加了 `X-RNCache` 字段作为标记，然后在 `canInitWithRequest` 方法中通过判断 HTTP header 是否有相关标记，来决定是否处理该请求。
 - 所有的缓存都保存到沙盒中的 `Library/Caches` 目录下，当缓存空间不足时，会自动被系统清除掉（注：我在项目中使用该库时，曾有用户反应我们的 app 占用空间非常大，所以后来改为 SDWebImage 进行缓存）。
 - 因为 NSURLProtocol 会缓存所有拦截到的 HTTP 请求，所以并不适合有大量网络请求的 APP。
 - 作者在一开始是使用 URL 的 hash 值来作为缓存路径，但是这样会导致很多相似的 URL 的 hash 值是重复的，所以后来[改成了 MD5/SHA1 的算法](https://github.com/rnapier/RNCachingURLProtocol/pull/15)。
