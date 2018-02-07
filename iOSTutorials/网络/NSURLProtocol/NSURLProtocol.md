@@ -14,7 +14,7 @@ URL Loading System 本身只支持 http、https、file、ftp 和 data 协议。`
 
 #### 一、主要原理
 
-在 URL Loading System 中，一个 NSURLProtocol 相当于一个请求拦截器，所有通过 NSURLConnection 和 NSURLSession 发起的请求都会经过所有注册过的 NSURLProtocol 子类。这些 NSURLProtocol 子类是按照注册的时间逆序来拦截请求的，最晚注册的 NSURLProtocol 类，最先拥有处理这个请求的权利。所以当在 `-application:didFinishLoadingWithOptions:` 方法中调用 `[NSURLProtocol registerClass:[MyURLProtocol class]];` 时，你自己写的 protocol 比其他内建的 protocol 拥有更高的优先级。
+在 URL Loading System 中，一个 NSURLProtocol 相当于一个请求拦截器，所有通过 NSURLConnection 和 NSURLSession 发起的请求都会经过~~所有~~注册过的 NSURLProtocol 子类（注：官方文档中说并不能保证所有注册过的 protocol 类都会被访问）。这些 NSURLProtocol 子类是按照注册的时间逆序来拦截请求的，最晚注册的 NSURLProtocol 类，最先拥有处理这个请求的权利。所以当在 `-application:didFinishLoadingWithOptions:` 方法中调用 `[NSURLProtocol registerClass:[MyURLProtocol class]];` 时，你自己写的 protocol 比其他内建的 protocol 拥有更高的优先级。
 
 当一个网络请求被发起时，系统（内部有一个 `_NSURLSessionLocal` 类）会依次询问每一个注册过的 NSURLProtocol 子类（按照注册时间逆序），“是否可以处理这个请求？”：
 
@@ -81,8 +81,11 @@ client 属性是 NSURLProtocol 对象跟 URL Loading System 打交道的桥梁�
 
 ### 启发
 
-- NSURLProtocol 的设计理念
-
+NSURLProtocol 的设计思想跟依赖注入的原理有些相似，开发者可以通过注册的方式，注入一个或多个自定义 NSURLProtocol 子类，
+当 URL Loading System 发起请求时， client（也就是请求的管理者，实际上是一个内部的类）会在内部调用注入的 NSURLProtocol 子类的方法。我们可以感受一下 NSURLProtocol 的这种设计模式，详见[示例代码]()。
+```
+NSURLConnection/NSURLSession --> client --> 一个或多个 NSURLProtocol 拦截请求 --> 发出请求
+```
 
 ### 参考
 - [iOS 开发中使用 NSURLProtocol 拦截 HTTP 请求](https://draveness.me/intercept)
