@@ -264,3 +264,4 @@ NSURLSession进行断点下载，当暂停下载任务后，如果downloadTask�
 - [浅析 iOS 应用开发中的断点续传](https://www.ibm.com/developerworks/cn/mobile/mo-cn-breakpoint/index.html)：这篇文章详细介绍了断点续传的原理，并通过代码示例演示了如何使用 AFNetworking 和 NSURLConnection 实现断点下载任务。
 - [WWDC Session 705: "What’s New in Foundation Networking"](http://asciiwwdc.com/2013/sessions/705)
 - [Apple WWDC 2015 - 711 - Networking with NSURLSession](https://developer.apple.com/videos/play/wwdc2015-711/)
+- [URLSession Waiting For Connectivity](https://useyourloaf.com/blog/urlsession-waiting-for-connectivity/)：iOS 新推出的 API，可以设置在使用 NSURLSession 发起请求前先检查网络是否可用，不可用就等待
