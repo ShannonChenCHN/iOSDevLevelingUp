@@ -9,7 +9,8 @@ URL Loading System 本身只支持 http、https、file、ftp 和 data 协议。`
 - [通过缓存静态资源实现 UIWebView 的预加载优化](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/55#issuecomment-300365305)
 - [UIWebView 离线缓存](https://github.com/rnapier/RNCachingURLProtocol)
 - [为了测试对HTTP返回内容进行mock和stub](https://github.com/AliSoftware/OHHTTPStubs)
-- [实现一个 In-App 网络抓包工具](https://github.com/Flipboard/FLEX/tree/master/Classes/Network)
+- [实现一个 In-App 网络抓包工具](https://github.com/coderyi/NetworkEye)
+- 实现自定义网络协议（[Twitter 团队曾经通过 NSURLProtocol 在 iOS 上实现了自定义的 SPDY 协议](https://blog.twitter.com/2013/cocoaspdy-spdy-for-ios-os-x)）
 
 
 #### 一、主要原理
@@ -61,6 +62,10 @@ client 属性是 NSURLProtocol 对象跟 URL Loading System 打交道的桥梁�
 - `- URLProtocol:didReceiveResponse:cacheStoragePolicy:`
 - `- URLProtocol:wasRedirectedToRequest:redirectResponse:`
 - `- URLProtocolDidFinishLoading:`
+
+
+在一个网络请求完全结束以后，NSURLProtocol 会回调 `-stopLoading` 方法。
+
 
 最后，为了使用 NSURLProtocol 子类，需要向 URL Loading System 进行注册。
 
@@ -116,6 +121,8 @@ static NSString * kOurRecursiveRequestFlagProperty = @"com.apple.dts.CustomHTTPP
 - 要注意的是 NSURLProtocol 只能拦截 UIURLConnection、NSURLSession 和 UIWebView 中的请求，但是因为 WKWebView 是基于独立的 WebKit 进程，所以无法拦截 WKWebView 中发出的网络请求，后来也有开发者发现 WebKit 中有些私有 API 可以实现。
 
 - 针对 HTTP 请求重定向，也要记得回调 client 的相应代理方法。
+- NSURLProtocol 在拦截 NSURLSession 的 POST 请求时，不能获取 Request 中的 HTTPBody。
+- NSURLProtocol 虽然可以拦截到 UIWebView 的请求，但是不能拦截到 AFNetworking、SDWebImage 等第三方库的请求，因为 UIWebView 使用的是 NSURLConnection，而 AFNetWorking、SDWebImage 等第三方库使用的 NSURLSession。根据 NSURLSessionConfiguration 的[官方文档]((https://developer.apple.com/documentation/foundation/nsurlsessionconfiguration/1411050-protocolclasses?language=objc))中的描述，如果需要 NSURLProtocol 来截获 NSURLSession 发出的请求，需要在创建每一个 NSURLSession 时，将自定义的 NSURLProtocol 类添加到 NSURLSessionConfiguration 类的 protocolClasses 属性中。
 
 
 ### 启发
@@ -128,8 +135,13 @@ NSURLConnection/NSURLSession --> client --> 一个或多个 NSURLProtocol 拦截
 
 ### 参考
 - [iOS 开发中使用 NSURLProtocol 拦截 HTTP 请求](https://draveness.me/intercept)
+- [NSURLProtocol Tutorial - Ray Wenderlich](https://www.raywenderlich.com/59982/nsurlprotocol-tutorial)
 - [NSURLProtocol - NSHipster](http://nshipster.cn/nsurlprotocol/)
 - [NSURLProtocol Class Reference](https://developer.apple.com/documentation/foundation/nsurlprotocol)
 - [CustomHTTPProtocol - Guides and Sample Code](https://developer.apple.com/library/content/samplecode/CustomHTTPProtocol/Introduction/Intro.html)
 - [URL Session Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/URLLoadingSystem/CookiesandCustomProtocols/CookiesandCustomProtocols.html#//apple_ref/doc/uid/10000165i-CH10-SW3)
 - [Drop-in Offline Caching for UIWebView (and NSURLProtocol)](http://robnapier.net/offline-uiwebview-nsurlprotocol)
+- [coderyi/NetworkEye: startLoading中NSURLConnection的问题](https://github.com/coderyi/NetworkEye/issues/38)
+- [如何进行 HTTP Mock（iOS）](https://github.com/Draveness/analyze/blob/master/contents/OHHTTPStubs/如何进行%20HTTP%20Mock（iOS）.md)
+- [NSURLProtocol 全攻略 - 网易乐得技术团队](http://tech.lede.com/2017/02/15/rd/iOS/iOS_NSURLProtocol/)
+- [NSURLProtocol无法截获NSURLSession解决方案](https://zhongwuzw.github.io/2016/08/31/NSURLProtocol无法截获NSURLSession解决方案/)
