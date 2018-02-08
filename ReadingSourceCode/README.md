@@ -13,33 +13,33 @@ Repos|Version|Article|
 [AFNetworking](https://github.com/AFNetworking/AFNetworking)|3.1.0|[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/AFNetworkingNotes)|
 [SDWebImage](https://github.com/rs/SDWebImage)|3.7.3|[SDWebImage 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/SDWebImageNotes)|
 [WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)||[WebViewJavascriptBridge 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/WebViewJavascriptBridgeNotes)|
-[Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary)|2.1.0|[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/MantleNotes)|
 [JLRoutes](https://github.com/joeldev/JLRoutes/issues)|2.1|[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/JLRoutesNotes)|
-OHHTTOStubs||TODO|
 IGListKit||[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/IGListKitNotes)|
-MJExtension|||
-MBProgressHUD||TODO|
-MJRefresh|||
 EGOTableViewPullRefresh|N/A|[EGOTableViewPullRefresh 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/EGOTableViewPullRefresh.md)|
-Masonry ||[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/MasonryNotes)|
-Aspects |||
-YTKNetwork ||TODO|
-BlocksKit| | |
+RNCachingURLProtocol | |[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/RNCachingURLProtocolNotes)|
+STWebPDecoder | | [笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/STWebPDecoderNotes) |
+[Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary) | 2.1.0 |  **TODO**  |
+MBProgressHUD| | **TODO** |
+YTKNetwork || **TODO** |
+Texture（原 AsyncDisplayKit）|  |TODO|
+Aspects | | TODO |
+BlocksKit| | TODO |
+Masonry | | TODO |
+ReactiveCocoa | | TODO |
+MJRefresh| | TODO |
+JSPatch |   | TODO |
+IQKeyboardManager |  | TODO |
+DZNEmptyDataSet | | TODO |
+YYText | | |
+OHHTTOStubs| | |
+MJExtension| | |
 [KVOController](https://github.com/facebook/KVOController) | | |
-[YYWebImage](https://github.com/ibireme/YYWebImage) |1.0.4||
-[YYCache](https://github.com/ibireme/YYCache) |||
-RTNetwork |||
-SVProgressHUD |||
-KSCrash |||
-ReactiveCocoa |||
-UITableView+FDTemplateLayoutCell |||
-JSPatch |||
-Texture（原 AsyncDisplayKit）|||
-IQKeyboardManager |||
-MTMigration |||
-DZNEmptyDataSet | | |
-RNCachingURLProtocol | | |
-STWebPDecoder | | |
+[YYWebImage](https://github.com/ibireme/YYWebImage) | 1.0.4 | |
+[YYCache](https://github.com/ibireme/YYCache) |  |  |
+RTNetwork | | |
+KSCrash |  |  |
+UITableView+FDTemplateLayoutCell |  |  |
+MTMigration |  |  |
 
 
 ##### Swift
