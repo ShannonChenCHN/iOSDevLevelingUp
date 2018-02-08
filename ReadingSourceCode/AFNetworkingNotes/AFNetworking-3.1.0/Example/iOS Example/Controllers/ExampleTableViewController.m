@@ -265,6 +265,7 @@ static NSString * const kTableCellSelectionSelectorKey = @"kTableCellSelectionSe
 
 
 - (void)createAGetRequestThroughAFHTTPSessionManager {
+    
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.baidu.com"]];
     // response 解析设置
     AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];

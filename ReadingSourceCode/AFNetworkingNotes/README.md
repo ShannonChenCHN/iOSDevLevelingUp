@@ -1,6 +1,6 @@
 #[AFNetworking](https://github.com/AFNetworking/AFNetworking)(v3.1.0) 源码学习
 
-核心目标：AFNetworking 框架是如何实现的，如何在日常中实现 HTTP 请求、构建网络层
+
 
 1. README，Quick start
 2. Architecture
@@ -49,33 +49,15 @@
 - URLSession: task: didCompleteWithError: （AFHTTPSessionManager）
    
    
-问题：
-1.AFNetworking 的作用是什么？不用 AFNetworking 直接用系统的不也可以吗？
+### 问题：
+1.AFNetworking 的作用是什么？不用 AFNetworking 直接用系统的不也可以吗？AFNetworking 为什么要对 NSURLConnection/NSURLSession 进行封装？它是如何封装的？
 2.AFNetworking 框架的设计思路和原理是什么？
 3.AFNetworking 和 MKNetworkKit 以及 ASINetwork 有什么不同?
-6. AFNetworking 为什么要对 NSURLConnection/NSURLSession 进行封装？它是如何封装的？
-7. AFNetworking 2.x 和 AFNetworking 3.x 的区别是什么？
+4. AFNetworking 2.x 和 AFNetworking 3.x 的区别是什么？
    
-知识点：  
- 1. HTTP 请求中的 content-type   
+RLCache](http://nshipster.cn/nsurlcache/)
 
- - [Wikipedia - Media type](https://en.wikipedia.org/wiki/Media_type) 
- - [HTTP content-type 参照表](http://www.runoob.com/http/http-content-type.html)  
- - [HTTP协议探索之Content-Type(MIME)](http://www.tuicool.com/articles/vYnuM3)
-
-2.[What is http multipart request?](http://stackoverflow.com/questions/16958448/what-is-http-multipart-request)
-
-3.NSProgress
-
-4.[URL Session Programming Guide](https://developer.apple.com/library/prerelease/content/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html#//apple_ref/doc/uid/10000165i)
-5.[Wikipedia-HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
-6.[Mozilla-HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
-7.[objc.io - IP, TCP, and HTTP](https://www.objc.io/issues/10-syncing-data/ip-tcp-http/)
-8.[从 NSURLConnection 到 NSURLSession](https://objccn.io/issue-5-4/)
-9.[百分号编码](https://zh.wikipedia.org/wiki/百分号编码)
-10.[NSURLCache](http://nshipster.cn/nsurlcache/)
-
-延伸阅读
+### 延伸阅读
 - [AFNetworking 源码解读系列](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（Draveness） 
 - [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
 - [AFNetworking2.0源码解析系列](http://blog.cnbang.net/tech/2320/)（bang's blog）
