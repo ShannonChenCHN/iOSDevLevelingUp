@@ -62,4 +62,4 @@ RLCache](http://nshipster.cn/nsurlcache/)
 - [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
 - [AFNetworking2.0源码解析系列](http://blog.cnbang.net/tech/2320/)（bang's blog）
 - [NSHipster: AFNetworking 2.0](http://nshipster.cn/afnetworking-2/)
-
+- [HTTP Content-type 与 AFNetworking](http://www.isaced.com/post-254.html)
