@@ -54,10 +54,6 @@ Repos|Version|Article|
 
 ##### 延伸阅读
 
-- AFNetworking
-  - [iOS AFNetWorking源码详解（一）](http://www.jianshu.com/p/b98cf91b9ce2)
-  - [AFNetworking源码分析](http://www.jianshu.com/p/8eac5b1975de)
-  - [AFNetworking到底做了什么？](http://www.jianshu.com/p/856f0e26279d)
 - Mantle
   - [《iOS进阶指南》试读之《Mantle解析》](http://www.jianshu.com/p/f49ddbf8a2ea)
   - [iOS模型框架- Mantle 解读](http://www.jianshu.com/p/d9e66beedb8f)
