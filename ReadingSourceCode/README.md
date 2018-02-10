@@ -85,6 +85,7 @@ Repos|Version|Article|
   - [VVeboTableView源码解析](https://www.jianshu.com/p/78027a3a2c41)
   - [MJRefresh源码解析](https://www.jianshu.com/p/89ca6437c5e9)
   - [YTKNetwork源码解析](https://www.jianshu.com/p/89dd444399ce)
-  - [Alamofire 的设计之道](https://juejin.im/entry/5947ae51a0bb9f006bdd3241)
+  - [Alamofire 的设计之道](https://juejin.im/entry/5947ae51a0bb9f006bdd3241)（推荐）
   - [深入理解Moya设计](https://juejin.im/post/5a69e9f9f265da3e290c6782)
   - [AsyncDisplayKit 介绍系列](https://draveness.me/tag/ASDK/)
+  - [消息转发机制与Aspects源码解析](http://blog.csdn.net/hello_hwc/article/details/72632075)
