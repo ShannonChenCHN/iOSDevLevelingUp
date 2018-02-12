@@ -119,12 +119,38 @@ NSString * AFPercentEscapedStringFromString(NSString *string) {
 FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
+
+/*
+ 示例
+  @{
+    @"name"     : @"bang",
+    @"phone"    : @{@"mobile" : @"xx", @"home" : @"xx"},
+    @"families" : @[@"father", @"mother"],
+    @"nums"     : [NSSet setWithObjects:@"1", @"2", nil]
+    }
+            ||
+            \/
+  @[
+    field: @"name",          value: @"bang",
+    field: @"phone[mobile]", value: @"xx",
+    field: @"phone[home]",   value: @"xx",
+    field: @"families[]",    value: @"father",
+    field: @"families[]",    value: @"mother",
+    field: @"nums",          value: @"1",
+    field: @"nums",          value: @"2",
+    ]
+             ||
+             \/
+name=bang&phone[mobile]=xx&phone[home]=xx&families[]=father&families[]=mother&nums=1&num=2
+*/
 NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
     NSMutableArray *mutablePairs = [NSMutableArray array];
+    // 取出数组中的 AFQueryStringPair 对象，转成 NSString 的形式
     for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
         [mutablePairs addObject:[pair URLEncodedStringValue]];
     }
 
+    // 拼接参数
     return [mutablePairs componentsJoinedByString:@"&"];
 }
 
@@ -132,6 +158,7 @@ NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
     return AFQueryStringPairsFromKeyAndValue(nil, dictionary);
 }
 
+// 将每组 key-value 转成 AFQueryStringPair 对象的形式，保存到数组中
 NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
 
@@ -356,15 +383,19 @@ forHTTPHeaderField:(NSString *)field
 
     NSParameterAssert(url);
 
+    // 创建请求
     NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
-    mutableRequest.HTTPMethod = method;
+    mutableRequest.HTTPMethod = method; // 设置 Method
 
+    // 因为初始默认情况下，当前类与 NSURLRequest 相关的那些属性值为 0，所以通过对这些属性添加了 KVO 监听判断是否有值来解决这个传值的有效性问题
+    // 详见 https://github.com/AFNetworking/AFNetworking/commit/49f2f8c9a907977ec1b3afb182404ae0a6bce883
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
         if ([self.mutableObservedChangedKeyPaths containsObject:keyPath]) {
             [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];
         }
     }
 
+    //
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
 	return mutableRequest;
@@ -471,12 +502,14 @@ forHTTPHeaderField:(NSString *)field
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
+    // 设置 header field
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
         if (![request valueForHTTPHeaderField:field]) {
             [mutableRequest setValue:value forHTTPHeaderField:field];
         }
     }];
 
+    // 将 parameters 转成 NSString 的形式
     NSString *query = nil;
     if (parameters) {
         if (self.queryStringSerialization) {
@@ -499,6 +532,8 @@ forHTTPHeaderField:(NSString *)field
         }
     }
 
+    // 如果是 `GET`, `HEAD`, `DELETE`，就把 query 拼到 URL 后面
+    // 如果是 POST、PUT，就把 query 拼接到 http body 中
     if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
         if (query && query.length > 0) {
             mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];

@@ -144,9 +144,11 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 #pragma mark - NSProgress Tracking
 
+// 借助 NSProgress 来管理进度的监听、回调
 - (void)setupProgressForTask:(NSURLSessionTask *)task {
     __weak __typeof__(task) weakTask = task;
 
+    // 将上传与下载进度和 task 绑定在一起
     self.uploadProgress.totalUnitCount = task.countOfBytesExpectedToSend;
     self.downloadProgress.totalUnitCount = task.countOfBytesExpectedToReceive;
     [self.uploadProgress setCancellable:YES];
@@ -222,6 +224,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    // NSURLSessionDownloadTask 是 NSURLSessionTask 的子类，那为什么还要两个判断呢？
+    // https://github.com/AFNetworking/AFNetworking/issues/3354#event-588876022
     if ([object isKindOfClass:[NSURLSessionTask class]] || [object isKindOfClass:[NSURLSessionDownloadTask class]]) {
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesReceived))]) {
             self.downloadProgress.completedUnitCount = [change[NSKeyValueChangeNewKey] longLongValue];
@@ -508,6 +512,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     return [self initWithSessionConfiguration:nil];
 }
 
+// 指定初始化方法
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
     self = [super init];
     if (!self) {
@@ -523,6 +528,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.operationQueue.maxConcurrentOperationCount = 1;
 
+    // 初始化 NSURLSession 对象
     self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
 
     self.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -533,11 +539,16 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
 #endif
 
+    // 初始化一个用来存储 AFURLSessionManagerTaskDelegate 的类，taskIdentifier 作为 key
+    // 每一个 task 都会被匹配一个 AFURLSessionManagerTaskDelegate 来做 task 的 delegate 事件处理
     self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
 
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
 
+    // 这个方法是用来异步的获取当前 session 所有未完成的 task，正常来讲，在首次创建 session 对象时，是不会有 task 的。
+    // 只在一种情况下会出现已初始化就有 task 的情况，那就是 background session， 为了防止后台回来重新初始化这个 session，一些之前的后台请求任务，导致程序的 crash。
+    // https://github.com/AFNetworking/AFNetworking/issues/3499
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         for (NSURLSessionDataTask *task in dataTasks) {
             [self addDelegateForDataTask:task uploadProgress:nil downloadProgress:nil completionHandler:nil];
@@ -607,8 +618,8 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     NSParameterAssert(delegate);
 
     [self.lock lock];
-    self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
-    [delegate setupProgressForTask:task];
+    self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate; // 保存 delegate
+    [delegate setupProgressForTask:task];           // 设置监听进度逻辑
     [self addNotificationObserverForTask:task];
     [self.lock unlock];
 }
@@ -619,11 +630,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
              completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
     AFURLSessionManagerTaskDelegate *delegate = [[AFURLSessionManagerTaskDelegate alloc] init];
-    delegate.manager = self;
+    delegate.manager = self;            // 将 manager 和 AFURLSessionManagerTaskDelegate 绑定起来
     delegate.completionHandler = completionHandler;
 
     dataTask.taskDescription = self.taskDescriptionForSessionTasks;
-    [self setDelegate:delegate forTask:dataTask];
+    [self setDelegate:delegate forTask:dataTask]; // 给 delegate 设置一些与 task 相关的逻辑
 
     delegate.uploadProgressBlock = uploadProgressBlock;
     delegate.downloadProgressBlock = downloadProgressBlock;
@@ -766,6 +777,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
         dataTask = [self.session dataTaskWithRequest:request];
     });
 
+    // 为每个 task 绑定一个 AFURLSessionManagerTaskDelegate 对象
     [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];
 
     return dataTask;
@@ -938,6 +950,8 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
 }
 
+// 重写了 respondsToSelector 的方法，这几个代理方法是在本类有实现的，
+// 但是如果外面的 Block 没赋值的话，则返回 NO，相当于没有实现
 - (BOOL)respondsToSelector:(SEL)selector {
     if (selector == @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:)) {
         return self.taskWillPerformHTTPRedirection != nil;
@@ -951,6 +965,13 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     return [[self class] instancesRespondToSelector:selector];
 }
+
+// 1. AFURLSessionManager 中实现的代理方法都只是做一些公共的处理，
+// 在这些代理方法里，我们做的处理都是相对于这个 sessionManager 所有的 request 的。
+// 2. 每个代理方法对应一个我们自定义的 Block,如果 Block 被赋值了，那么就调用它。
+// 3. 更具体的代理方法处理在 AFURLSessionManagerTaskDelegate 类中实现了，
+// AFURLSessionManager 转发了 3 个代理方法到 AFURLSessionManagerTaskDelegate 中去了，AFURLSessionManagerTaskDelegate 是需要根据对应的 task 去处理的。
+
 
 #pragma mark - NSURLSessionDelegate
 
@@ -1174,6 +1195,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
+    
+    // 调用自定义的 block，拿到文件存储的地址，将下载好的文件从临时的下载路径移动至我们指定的路径
     if (self.downloadTaskDidFinishDownloading) {
         NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
         if (fileURL) {

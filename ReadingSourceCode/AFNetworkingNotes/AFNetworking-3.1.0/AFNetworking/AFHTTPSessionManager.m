@@ -63,9 +63,11 @@
     return [self initWithBaseURL:nil sessionConfiguration:configuration];
 }
 
+// 指定初始化方法
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
 {
+    // 调用父类的初始化方法进行初始化
     self = [super initWithSessionConfiguration:configuration];
     if (!self) {
         return nil;
@@ -76,8 +78,10 @@
         url = [url URLByAppendingPathComponent:@""];
     }
 
+    // 设置 base URL
     self.baseURL = url;
 
+    // 初始化请求序列化的类和响应序列化的类
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
@@ -258,6 +262,7 @@
                                          success:(void (^)(NSURLSessionDataTask *, id))success
                                          failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
 {
+    // 创建请求，请求序列化
     NSError *serializationError = nil;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
     if (serializationError) {
@@ -273,6 +278,7 @@
         return nil;
     }
 
+    // 创建 NSURLSessionDataTask
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self dataTaskWithRequest:request
                           uploadProgress:uploadProgress

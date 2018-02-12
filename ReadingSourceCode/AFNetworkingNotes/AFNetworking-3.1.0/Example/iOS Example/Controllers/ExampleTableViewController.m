@@ -228,7 +228,8 @@ static NSString * const kTableCellSelectionSelectorKey = @"kTableCellSelectionSe
     /**
      GET http://example.com?foo=bar&baz[]=1&baz[]=2&baz[]=3
      */
-    request = [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters error:nil];
+//    request = [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters error:nil];
+    
     
     // 2. URL Form Parameter Encoding
     /**
@@ -237,7 +238,10 @@ static NSString * const kTableCellSelectionSelectorKey = @"kTableCellSelectionSe
      
      foo=bar&baz[]=1&baz[]=2&baz[]=3
      */
-    request = [[AFHTTPRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters error:nil];
+    AFHTTPRequestSerializer *HTTPSerializer = [AFHTTPRequestSerializer serializer];
+    HTTPSerializer.HTTPShouldHandleCookies = YES;
+    request = [HTTPSerializer requestWithMethod:@"POST" URLString:URLString parameters:parameters error:nil];
+    
     
     // 3. JSON Parameter Encoding
     /**
@@ -246,7 +250,7 @@ static NSString * const kTableCellSelectionSelectorKey = @"kTableCellSelectionSe
      
      {"foo": "bar", "baz": [1,2,3]}
      */
-    request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters error:nil];
+//    request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:URLString parameters:parameters error:nil];
     
     
     
