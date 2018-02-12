@@ -54,8 +54,8 @@
 2.AFNetworking 框架的设计思路和原理是什么？
 3.AFNetworking 和 MKNetworkKit 以及 ASINetwork 有什么不同?
 4. AFNetworking 2.x 和 AFNetworking 3.x 的区别是什么？
-   
-RLCache](http://nshipster.cn/nsurlcache/)
+
+
 
 ### 延伸阅读
 - [AFNetworking 源码解读系列](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（Draveness） 
@@ -63,7 +63,3 @@ RLCache](http://nshipster.cn/nsurlcache/)
 - [AFNetworking2.0源码解析系列](http://blog.cnbang.net/tech/2320/)（bang's blog）
 - [NSHipster: AFNetworking 2.0](http://nshipster.cn/afnetworking-2/)
 - [HTTP Content-type 与 AFNetworking](http://www.isaced.com/post-254.html)
-- [iOS AFNetWorking源码详解（一）](http://www.jianshu.com/p/b98cf91b9ce2)
-- [AFNetworking源码分析](http://www.jianshu.com/p/8eac5b1975de)
-- [AFNetworking到底做了什么？](http://www.jianshu.com/p/856f0e26279d)
-

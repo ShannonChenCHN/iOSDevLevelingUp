@@ -22,7 +22,7 @@
 ### 几点说明
 - 在 NSURLRequestUseProtocolCachePolicy 模式下，即便有了 NSURLCache 缓存，但是如果处于网络离线状态下，依然会返回请求错误的信息。只有在设置 NSURLRequest 的策略模式为 NSURLRequestReturnCacheDataDontLoad 策略时，才支持离线缓存。
 - NSURLCache 只会对 GET 请求进行缓存（待验证）。
-- 不管 header 里面的 Cache-Control 是什么，NSURLCache 其实都会一直缓存，但是我们并没有感受到。所以 header 里面的 no-cache 应该表示不使用缓存，但是会缓存，`no-store` 表示是不进行缓存。
+- 不管 header 里面的 Cache-Control 是什么，NSURLCache 其实都会一直缓存，但是我们并没有感受到。所以 header 里面的 Cache-Control 为 `no-cache` 时应该指的是不使用缓存，但是会缓存，`no-store` 表示是不进行缓存。
 - 如果这个请求的响应头中有 Transfer-Encoding: Chunked, 那他也不会缓存。
 - 如果一个请求的响应内容的大小超过了 NSURLCache 中对应磁盘大小的 5%, 他就不会被缓存。详见[官方文档](https://developer.apple.com/documentation/foundation/nsurlsessiondatadelegate/1411612-urlsession?language=objc)。
    > The response size is small enough to reasonably fit within the cache. (For example, if you provide a disk cache, the response must be no larger than about 5% of the disk cache size.)
@@ -60,3 +60,4 @@ Etag 由服务器发送，告之当资源在服务器上的一个唯一标识符
 - [NSURLCache 网络请求缓存指南](https://segmentfault.com/a/1190000005833523)
 - [How to cache using NSURLSession and NSURLCache. Not working](https://stackoverflow.com/questions/21957378/how-to-cache-using-nsurlsession-and-nsurlcache-not-working)
 - [`URLSession:dataTask:willCacheResponse:completionHandler:` - API Reference](https://developer.apple.com/documentation/foundation/nsurlsessiondatadelegate/1411612-urlsession?language=objc)
+- [Does AFNetworking have any caching mechanisms built-in?](https://github.com/AFNetworking/AFNetworking/wiki/AFNetworking-FAQ#does-afnetworking-have-any-caching-mechanisms-built-in)

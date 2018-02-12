@@ -15,7 +15,7 @@
 - 内存管理（访问已经释放掉的对象）
 - CPU 暴增
 - 未知选择器
-- API 不兼容
+- API 不兼容，比如在 iOS 8 的系统上使用了 iOS 9 的 API
 - 处理字符串时索引越界
 - 传空值，比如往 NSDictionary 或者 NSArray 中插入 nil
 - 解析服务端返回的 JSON 数据后，出现 NSNull，间接引起的崩溃
@@ -47,13 +47,15 @@
 
 ### 5.如何减少崩溃 bug
 
+- 自测/测试流程：不同机型、系统、流程逻辑
 - 对于每次出现的崩溃做记录、避免重复错误
 - 记录并上传崩溃日志（比如 bugly）
 - 代码健壮性
   - 逻辑正确
   - 内存、性能
-  - 代码中对于异常的保护判断
+  - 预防式编码，代码中对于异常的保护判断
 - 补救机制
+  - 定期查看日志
 
 ## 延伸阅读
 - [Creating an issue template for your repository](https://help.github.com/articles/creating-an-issue-template-for-your-repository/)
