@@ -55,6 +55,8 @@ A curated list of awesome iOS Projects, Library and Frameworks written in Object
 #### 其他
 - [LoveZYForever/HXWeiboPhotoPicker](https://github.com/LoveZYForever/HXWeiboPhotoPicker): 照片选择器
 - [CoderZhuXH/XHLaunchAd](https://github.com/CoderZhuXH/XHLaunchAd): 应用启动广告
+- [atuooo/PacmanPageControl](https://github.com/atuooo/PacmanPageControl)：带有 Pac-Man 动效的 page control
+- [plangrid / ReactiveLists](https://github.com/plangrid/ReactiveLists)：React-like API for UITableView & UICollectionView
 
 #### 辅助视图
 - [HamzaGhazouani/HGPlaceholders](https://github.com/HamzaGhazouani/HGPlaceholders)（Swift）：为 UItableView 和 UICollectionView 展示空态页的 UI 控件
