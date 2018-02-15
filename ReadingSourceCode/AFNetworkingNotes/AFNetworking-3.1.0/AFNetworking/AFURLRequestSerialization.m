@@ -145,12 +145,14 @@ name=bang&phone[mobile]=xx&phone[home]=xx&families[]=father&families[]=mother&nu
 */
 NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
     NSMutableArray *mutablePairs = [NSMutableArray array];
-    // 取出数组中的 AFQueryStringPair 对象，转成 NSString 的形式
+    
+    // 先将每组 key-value 转成 AFQueryStringPair 对象的形式，保存到数组中
+    // 然后取出数组中的 AFQueryStringPair 对象，转成 NSString 的形式
     for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
         [mutablePairs addObject:[pair URLEncodedStringValue]];
     }
 
-    // 拼接参数
+    // 将数组中保存的字符串参数拼接起来
     return [mutablePairs componentsJoinedByString:@"&"];
 }
 
@@ -159,6 +161,7 @@ NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
 }
 
 // 将每组 key-value 转成 AFQueryStringPair 对象的形式，保存到数组中
+// 参数可以是 NSString 普通对象类型，也可以是 NSDictionary, NSArray, NSSet 等集合类型
 NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
 
@@ -387,7 +390,9 @@ forHTTPHeaderField:(NSString *)field
     NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];
     mutableRequest.HTTPMethod = method; // 设置 Method
 
-    // 因为初始默认情况下，当前类与 NSURLRequest 相关的那些属性值为 0，所以通过对这些属性添加了 KVO 监听判断是否有值来解决这个传值的有效性问题
+    // 这里本来是直接把 self 的一些属性值直接传给 request 的，但是因为初始默认情况下，
+    // 当前类中与 NSURLRequest 相关的那些属性值为 0，而导致外面业务方使用 NSURLSessionConfiguration 设置属性时失效，
+    // 所以通过对这些属性添加了 KVO 监听判断是否有值来解决这个传值的有效性问题
     // 详见 https://github.com/AFNetworking/AFNetworking/commit/49f2f8c9a907977ec1b3afb182404ae0a6bce883
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
         if ([self.mutableObservedChangedKeyPaths containsObject:keyPath]) {
@@ -395,7 +400,7 @@ forHTTPHeaderField:(NSString *)field
         }
     }
 
-    //
+    // 请求参数序列化
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
 	return mutableRequest;
@@ -502,17 +507,18 @@ forHTTPHeaderField:(NSString *)field
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
-    // 设置 header field
+    // 1. 设置 header field
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
         if (![request valueForHTTPHeaderField:field]) {
             [mutableRequest setValue:value forHTTPHeaderField:field];
         }
     }];
 
-    // 将 parameters 转成 NSString 的形式
+    // 2. 将 parameters 转成 NSString 的形式
     NSString *query = nil;
     if (parameters) {
         if (self.queryStringSerialization) {
+            // 自定义的转换
             NSError *serializationError;
             query = self.queryStringSerialization(request, parameters, &serializationError);
 
@@ -526,13 +532,14 @@ forHTTPHeaderField:(NSString *)field
         } else {
             switch (self.queryStringSerializationStyle) {
                 case AFHTTPRequestQueryStringDefaultStyle:
+                    // 默认的序列化转换方式
                     query = AFQueryStringFromParameters(parameters);
                     break;
             }
         }
     }
 
-    // 如果是 `GET`, `HEAD`, `DELETE`，就把 query 拼到 URL 后面
+    // 3. 如果是 `GET`, `HEAD`, `DELETE`，就把 query 拼到 URL 后面
     // 如果是 POST、PUT，就把 query 拼接到 http body 中
     if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
         if (query && query.length > 0) {
@@ -543,6 +550,9 @@ forHTTPHeaderField:(NSString *)field
         if (!query) {
             query = @"";
         }
+        
+        // 指定 POST 请求的 content 类型为 application/x-www-form-urlencoded
+        // 服务端通常是根据请求头（headers）中的 Content-Type 字段来获知请求中的消息主体是用何种方式编码，再对主体进行解析。
         if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
             [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
         }

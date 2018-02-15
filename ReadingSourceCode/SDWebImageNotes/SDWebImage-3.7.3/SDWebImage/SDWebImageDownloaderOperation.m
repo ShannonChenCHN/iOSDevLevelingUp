@@ -102,6 +102,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
         self.executing = YES;
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
         self.thread = [NSThread currentThread];
+        self.thread.name = self.thread.description;
     }
 
     // 4.开启 connection，开始下载请求
