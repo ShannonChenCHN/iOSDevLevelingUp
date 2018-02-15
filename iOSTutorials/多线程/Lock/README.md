@@ -127,7 +127,7 @@ NSConditionLock 是一种条件锁，NSConditionLock 和 NSLock 一样，都遵�
 - `unlockWithCondition:`
 
 #### 6. NSRecursiveLock
-NSRecursiveLock 是递归锁，他和 NSLock 的区别在于，NSRecursiveLock 可以在一个线程中重复加锁（反正单线程内任务是按顺序执行的，不会出现资源竞争问题），NSRecursiveLock 会记录上锁和解锁的次数，当二者平衡的时候，才会释放锁，其它线程才可以上锁成功。
+NSRecursiveLock 是递归锁，他和 NSLock 的区别在于，NSRecursiveLock 可以在同一个线程中重复加锁而不阻塞线程（反正单线程内任务是按顺序执行的，不会出现资源竞争问题），NSRecursiveLock 会记录上锁和解锁的次数，当二者平衡的时候，才会释放锁，其它线程才可以上锁成功。
 
 ```
 NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];

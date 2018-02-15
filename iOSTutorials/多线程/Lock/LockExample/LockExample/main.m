@@ -200,6 +200,7 @@ void testNSRecursiveLock() {
     /*
      如果用 NSLock 的话，lock 先锁上了，但未执行解锁的时候，就会进入递归的下一层，而再次请求上锁，阻塞了该线程，线程被阻塞了，自然后面的解锁代码不会执行，而形成了死锁。而 NSRecursiveLock 递归锁就是为了解决这个问题。
      */
+//    NSLock *lock = [[NSLock alloc] init];
     NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
