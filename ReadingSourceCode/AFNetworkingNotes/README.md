@@ -1,10 +1,12 @@
-#[AFNetworking](https://github.com/AFNetworking/AFNetworking)(v3.1.0) 源码解析
+# [AFNetworking](https://github.com/AFNetworking/AFNetworking)(v3.1.0) 源码解析
 
 AFNetworking 作为我们最基础的网络框架，目前在 GitHub 上 Objective-C 语言类排名第一，几乎每个涉及到网络请求的 APP 都会用到，其重要性可见一斑。再者，作为 iOS 开发领域最受欢迎的开源项目，其中凝聚了众多大神的智慧，无论是在技术点上，还是架构设计上、问题处理方式上，都具有很高的学习价值。
 
-所以，正好趁着假期有空，可以跟着前人总结的一些精华，学习一下这个优秀的网络框架的实现。站在巨人的肩膀上，才能看得远。
+这两天正好趁着假期有空，可以跟着前人总结的一些精华，仔细研读一下这个优秀的网络框架的实现。站在巨人的肩膀上，才能看得远。
 
-这篇文章先从整体架构开始，再从实际使用案例入手，梳理一下核心逻辑，然后再依次了解下各个具体模块哦实现，最后再回顾一下 2.x 版本的实现，总结一下 AFNetworking 的价值。
+这篇文章先从整体架构开始，再从实际使用案例入手，梳理一下核心逻辑，然后再依次了解下各个具体模块的实现，最后再回顾一下 2.x 版本的实现，总结一下 AFNetworking 的价值。
+
+具体代码注释见 [这里](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/AFNetworkingNotes/AFNetworking-3.1.0)。
 
 ### 一、架构
 AFNetworking 一共分为 5 个模块，2 个核心模块和 3 个辅助模块：
@@ -169,9 +171,9 @@ AFNetworking 在架构上采用了模块化的设计，各模块的职责是明�
 - 多线程编程时，脑海中要有清晰的线程调度图
 
 ### 延伸阅读
-- [AFNetworking到底做了什么？（一）](https://www.jianshu.com/p/856f0e26279d)（是一个系列的文章，写的非常详细，非常推荐）
-- [bang：AFNetworking2.0 源码解析（一）](http://blog.cnbang.net/tech/2320/)（是一个系列的文章，bang 神出品的，非常推荐）
-- [Draveness ：AFNetworking 源码解析（一）](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（是一个系列的文章）
+- [AFNetworking到底做了什么？（一）](https://www.jianshu.com/p/856f0e26279d)（系列文章，写的非常详细，非常推荐）
+- [bang：AFNetworking2.0 源码解析（一）](http://blog.cnbang.net/tech/2320/)（系列文章，bang 神出品，非常推荐）
+- [Draveness ：AFNetworking 源码解析（一）](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（系列文章）
 - [NSHipster: AFNetworking 2.0](http://nshipster.cn/afnetworking-2/)
 - [HTTP Content-type 与 AFNetworking](http://www.isaced.com/post-254.html)
 - [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
