@@ -400,7 +400,7 @@ forHTTPHeaderField:(NSString *)field
         }
     }
 
-    // 请求参数序列化
+    // 设置 HTTP header；请求参数序列化，再添加到 query string 或者 body 中
     mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
 	return mutableRequest;

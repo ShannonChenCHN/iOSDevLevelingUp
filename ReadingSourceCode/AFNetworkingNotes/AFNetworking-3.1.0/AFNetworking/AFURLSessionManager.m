@@ -430,23 +430,36 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
             7) If the current class implementation of `resume` is not equal to the super class implementation of `resume` AND the current implementation of `resume` is not equal to the original implementation of `af_resume`, THEN swizzle the methods
             8) Set the current class to the super class, and repeat steps 3-8
          */
+        
+        // 1. 创建一个 NSURLSessionDataTask 对象，实际上就得到了一个 __NSCFLocalDataTask 实例
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
         NSURLSession * session = [NSURLSession sessionWithConfiguration:configuration];
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnonnull"
         NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:nil];
 #pragma clang diagnostic pop
+        
+        // 2. 获取 _AFURLSessionTaskSwizzling 类中 af_resume 方法的实现
         IMP originalAFResumeIMP = method_getImplementation(class_getInstanceMethod([self class], @selector(af_resume)));
         Class currentClass = [localDataTask class];
         
+        // 3. 检查当前的 task 类及其父类是否有 resume 方法的实现
         while (class_getInstanceMethod(currentClass, @selector(resume))) {
+            // 4. 拿到当前 task 类的父类
             Class superClass = [currentClass superclass];
+            
+            // 5. 获取当前 task 类和父类的 resume 方法的实现
             IMP classResumeIMP = method_getImplementation(class_getInstanceMethod(currentClass, @selector(resume)));
             IMP superclassResumeIMP = method_getImplementation(class_getInstanceMethod(superClass, @selector(resume)));
+            
+            // 6. 如果当前的 task 类的 resume 实现跟父类的实现不同，而且跟 _AFURLSessionTaskSwizzling 类中 af_resume 方法的实现也不同
             if (classResumeIMP != superclassResumeIMP &&
                 originalAFResumeIMP != classResumeIMP) {
+                // 将当前的 task 类的 resume 实现跟_AFURLSessionTaskSwizzling 类中 af_resume 方法实现进行交换
                 [self swizzleResumeAndSuspendMethodForClass:currentClass];
             }
+            
+            // 7. 将当前的 task 类的父类设置为当前的 task 类
             currentClass = [currentClass superclass];
         }
         
@@ -985,8 +998,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 
 // 代理方法的说明：
-// 1. AFURLSessionManager 中实现的代理方法都只是做一些公共的处理，
-// 在这些代理方法里，我们做的处理都是相对于这个 sessionManager 所有的 request 的。
+// 1. AFURLSessionManager 中实现的代理方法都只是做一些非核心逻辑的处理。
 // 2. 每个代理方法对应一个我们自定义的 Block,如果 Block 被赋值了，那么就调用它。
 // 3. 更具体的代理方法处理在 AFURLSessionManagerTaskDelegate 类中实现了，
 // AFURLSessionManager 转发了 3 个代理方法到 AFURLSessionManagerTaskDelegate 中去了，AFURLSessionManagerTaskDelegate 是需要根据对应的 task 去处理的。
