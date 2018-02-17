@@ -320,6 +320,7 @@ didCompleteWithError:(NSError *)error
                 userInfo[AFNetworkingTaskDidCompleteErrorKey] = serializationError;
             }
 
+            // 解析完数据后再回到主队列或者自定义队列进行回调
             dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
                 if (self.completionHandler) {
                     self.completionHandler(task.response, responseObject, serializationError);

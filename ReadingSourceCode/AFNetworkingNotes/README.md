@@ -33,6 +33,10 @@ AFNetworking 一共分为 5 个模块，2 个核心模块和 3 个辅助模块�
 	- Reachability（网络状态监听模块）
 	- UIKit（对 iOS 系统 UI 控件的扩展）
 
+	
+![](./resources/af_3.x_architecture.png)
+<div align="center">图 1 AFNetworking 整体架构</div>
+
 ### 二、核心逻辑
 
 先来看一下如何使用 AFNetworking 发送一个 GET 请求：
@@ -172,13 +176,11 @@ didCompleteWithError:(NSError *)error
 
 
 ![](./resources/af_3.x_multithread.png)
-<div align="center">图 1 AFNetworking 中的线程调度</div>
+<div align="center">图 2 AFNetworking 中的线程调度</div>
 
 
 #### 2. AFURLSessionManagerTaskDelegate
 
-![](./resources/af_3.x_callback.png)
-<div align="center">图 2 AFNetworking 中的代理回调逻辑</div>
 
 AFURLSessionManager 中几乎实现了所有的 NSURLSession 相关的协议方法：
 
@@ -198,6 +200,9 @@ AFURLSessionManager 把最核心的代理回调处理交给 AFURLSessionManagerT
 ```
 
 AFURLSessionManager 通过属性 `mutableTaskDelegatesKeyedByTaskIdentifier` （一个 NSDictionary 对象）来存储并管理每一个 NSURLSessionTask 所对应的 AFURLSessionManagerTaskDelegate，它以 taskIdentifier 为键存储 task。在请求最终完成后，又将 AFURLSessionManagerTaskDelegate 移除。
+
+![](./resources/af_3.x_callback.png)
+<div align="center">图 3 AFNetworking 中的代理回调逻辑</div>
 
 #### 3. NSProgress
 
@@ -236,7 +241,8 @@ AFURLRequestSerialization 是一个抽象的协议，用于构建一个规范的
 - AFJSONRequestSerializer：参数格式是 json
 - AFPropertyListRequestSerializer：参数格式是苹果的 plist 格式
 
-![](./resources/AFURLRequestSerialization.png)
+![](./resources/af_3.x_requestserialization.png)
+<div align="center">图 4 AFURLRequestSerialization 类图</div>
 
 AFHTTPRequestSerializer 主要实现了两个功能：     
 
@@ -305,6 +311,31 @@ AFNetworking 帮我们组装好了一些 HTTP 请求头，包括：
 - 先将每组 key-value 转成 AFQueryStringPair 对象的形式，保存到数组中（这样做的目的是因为最后可以根据不同的字符串编码生成对应的 key=value 字符串）
 - 然后取出数组中的 AFQueryStringPair 对象，转成一个个 NSString 对象再保存到新数组中
 - 最后再将这些 `key=value` 的字符串用 `&` 符号拼接起来
+
+```
+@{
+     @"name"    : @"bang",
+     @"phone"   : @{@"mobile": @"xx", @"home": @"xx"},
+     @"families": @[@"father", @"mother"],
+     @"nums"    : [NSSet setWithObjects:@"1", @"2", nil]
+}
+					||
+					\/
+@[
+     field: @"name",          value: @"bang",
+     field: @"phone[mobile]", value: @"xx",
+     field: @"phone[home]",   value: @"xx",
+     field: @"families[]",    value: @"father",
+     field: @"families[]",    value: @"mother",
+     field: @"nums",          value: @"1",
+     field: @"nums",          value: @"2",
+]
+					||
+					\/
+name=bang&phone[mobile]=xx&phone[home]=xx&families[]=father&families[]=mother&nums=1&nums=2
+
+```
+
 
 请求参数序列化完成后，再根据不同的 HTTP 请求方法分别处理，对于 GET/HEAD/DELETE 方法，把参数直接加到 URL 后面，对于其他如 POST/PUT 等方法，把数据加到 body 上，并设好 HTTP 头中的 `Content-Type` 为 `application/x-www-form-urlencoded`，告诉服务端字符串的编码是什么。 
 
