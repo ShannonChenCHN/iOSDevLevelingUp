@@ -1284,5 +1284,5 @@ http://stackoverflow.com/questions/7542480/what-are-the-common-use-cases-for-iph
 - [使用SDWebImage和YYImage下载高分辨率图，导致内存暴增的解决办法](http://www.jianshu.com/p/1c9de8dea3ea)
 - [SDWebImage 源码阅读笔记](http://itangqi.me/2016/03/19/the-notes-of-learning-sdwebimage-one/)
 - [SDWebImage源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785704.html)
- 
+- [AFNetworking2.0源码解析<四>——图片解压](http://blog.cnbang.net/tech/2456/) 
 

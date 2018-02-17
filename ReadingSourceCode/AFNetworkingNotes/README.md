@@ -314,7 +314,7 @@ AFNetworking 帮我们组装好了一些 HTTP 请求头，包括：
 
 ```
 @{
-     @"name"    : @"bang",
+     @"name"    : @"steve",
      @"phone"   : @{@"mobile": @"xx", @"home": @"xx"},
      @"families": @[@"father", @"mother"],
      @"nums"    : [NSSet setWithObjects:@"1", @"2", nil]
@@ -322,7 +322,7 @@ AFNetworking 帮我们组装好了一些 HTTP 请求头，包括：
 					||
 					\/
 @[
-     field: @"name",          value: @"bang",
+     field: @"name",          value: @"steve",
      field: @"phone[mobile]", value: @"xx",
      field: @"phone[home]",   value: @"xx",
      field: @"families[]",    value: @"father",
@@ -332,7 +332,20 @@ AFNetworking 帮我们组装好了一些 HTTP 请求头，包括：
 ]
 					||
 					\/
-name=bang&phone[mobile]=xx&phone[home]=xx&families[]=father&families[]=mother&nums=1&nums=2
+					
+@[
+	@"name=steve", 		  // 注：实际代码中这里的 “=” 会被编码
+	@"phone[mobile]=xx",
+	@"phone[home]=xx",
+	@"families[]=father",
+	@"families[]=mother",
+	@"nums=1",
+	@"nums=2"
+]
+					||
+					\/
+					
+@"name=steve&phone[mobile]=xx&phone[home]=xx&families[]=father&families[]=mother&nums=1&nums=2"
 
 ```
 
@@ -345,15 +358,83 @@ name=bang&phone[mobile]=xx&phone[home]=xx&families[]=father&families[]=mother&nu
 
 ### 五、AFURLResponseSerialization
 
+AFURLResponseSerialization 模块负责解析网络返回数据，检查数据是否合法，把服务器返回的 NSData 数据转成相应的对象。
+AFURLResponseSerialization 模块包括一个协议、一个基类和多个解析特定格式数据的子类，用户可以很方便地继承基类 AFHTTPResponseSerializer 去解析更多的数据格式：
+
+- AFURLResponseSerialization 协议，定义了解析响应数据的接口
+- AFHTTPResponseSerializer， HTTP 请求响应数据解析器的基类
+- AFJSONResponseSerializer，专门解析 JSON 数据的解析器
+- 其他数据格式（XML、image、plist等）的响应解析器
+- AFCompoundResponseSerializer，组合解析器，可以将多个解析器组合起来，以同时支持多种格式的数据解析
+
+![](./resources/af_3.x_responseserialization.png)
+<div align="center">图 5 AFURLResponseSerialization 类图</div>
+
+AFURLResponseSerialization 模块响应解析机制主要涉及到两个核心方法：
+
+- AFHTTPResponseSerializer 中定义、实现的 `-validateResponse:data:error:` 方法
+- AFURLResponseSerialization 协议定义的 `-responseObjectForResponse:data:error:` 方法
+
+#### 1. `-validateResponse:data:error:` 方法
+
+AFHTTPResponseSerializer 作为解析器基类，提供了 `acceptableContentTypes` 和 `acceptableStatusCodes` 两个属性，并提供了 `acceptableStatusCodes` 的默认值，子类可以通过设置这两个属性的值来进行自定义配置。AFHTTPResponseSerializer 中的 `-validateResponse:data:error:` 方法会根据这两个属性值来判断响应的文件类型 `MIMEType` 和状态码 `statusCode` 是否合法。
+
+比如 AFJSONResponseSerializer 中设置了 `acceptableContentTypes` 的值为 `[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", nil]`，如果服务器返回的 `Content-Type` 不是这三者之一，`-validateResponse:data:error:` 方法就会返回解析失败的错误信息。
+
+> 案例：在网上看到有开发者就曾经遇到过[相关的问题](http://www.isaced.com/post-254.html)
+——服务器返回的数据是 JSON 数据，但是 `Content-Type` 却不符合要求，结果导致解析失败。
+
+#### 2. `-responseObjectForResponse:data:error:` 方法
+
+AFJSONResponseSerializer 等子类中实现的 `-responseObjectForResponse:data:error:` 方法会先调用 `-validateResponse:data:error:` 方法验证数据是否合法，拿到验证结果后，接着这里有个补充判断条件——如果是 content type 的错误就直接返回 nil，因为数据类型不符合要求，就没必要再继续解析数据了，如果是 status code 的错误就继续解析，因为数据本身没问题，而错误信息有可能就在返回的数据中，所以这种情况下会将 status code 产生的错误信息和解析后的数据一起“打包”返回。
+
+AFJSONResponseSerializer 在解析数据后还提供了移除 NSNull 的功能，主要是为了防止服务端返回 null 时导致解析后的数据中有了脆弱的 NSNull，这样很容易导致崩溃（但是之前一直没发现这个功能[捂脸]）。
+
+``` Objective-C
+- (id)responseObjectForResponse:(NSURLResponse *)response
+                           data:(NSData *)data
+                          error:(NSError *__autoreleasing *)error
+{
+    if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        
+        // 如果是 content type 的错误就直接返回，因为数据类型不符合要求
+        // 如果是 status code 的错误就继续解析，因为错误信息有可能就在返回的数据中
+        if (!error || AFErrorOrUnderlyingErrorHasCodeInDomain(*error, NSURLErrorCannotDecodeContentData, AFURLResponseSerializationErrorDomain)) {
+            return nil;
+        }
+    }
+
+    NSError *serializationError = nil;
+    id responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
+
+    ...
+
+    // 移除 NSNull（如果需要的话），默认是 NO
+    if (self.removesKeysWithNullValues && responseObject) {
+        responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
+    }
+    
+    ...
+
+    return responseObject;
+}
+```
+
 ### 六、AFSecurityPolicy
 
-### 七、UIKit 扩展
+
+### 七、AFNetworkReachabilityManager
 
 
-### 八、AFNetworking 2.x 
+
+### 八、UIKit 扩展
+
+暂时还没看
+
+### 九、AFNetworking 2.x 
 
 
-### 九、AFNetworking 的价值
+### 十、AFNetworking 的价值
 
 #### 1. 请求调度：NSURLConnection + NSOperation
 
@@ -386,7 +467,7 @@ AFNetworking 在架构上采用了模块化的设计，各模块的职责是明�
 - UIKit 扩展
 
    
-### 十、问题：
+### 十一、问题：
 1.AFNetworking 的作用是什么？不用 AFNetworking 直接用系统的 NSURLSession 不可以吗？AFNetworking 为什么要对 NSURLConnection/NSURLSession 进行封装？它是如何封装的？
 
 2.AFNetworking 框架的设计思路和原理是什么？
@@ -395,7 +476,7 @@ AFNetworking 在架构上采用了模块化的设计，各模块的职责是明�
 
 4.AFNetworking 2.x 和 AFNetworking 3.x 的区别是什么？
 
-### 十一、收获
+### 十二、收获
 
 - 开源项目、专业素养、规范
 - 完善的注释、文档 
@@ -404,13 +485,14 @@ AFNetworking 在架构上采用了模块化的设计，各模块的职责是明�
 - 规范，通过断言检测参数的合法性
 - 逻辑严谨、完善，扩展性好，比如针对用户可能需要的各种自定义处理提供了 block 回调，基于协议的 serialization 设计
 - 万物皆对象，比如请求 url 参数的解析时，使用了 AFQueryStringPair 对象来表征一个 Query 参数；还有 NSProgress 的使用
+- 面向协议编程，提高程序的可扩展性
 - 多线程编程时，脑海中要有清晰的线程调度图
+- Unit Test，看到 GitHub 上有个 pr 的讨论中多次提到了 Unit Test，原来 Unit Test 对于保证修改后的代码功能有很大用处，另外就是，有些使用的示例也可以从 test case 中找到
 
 ### 延伸阅读
 - [AFNetworking到底做了什么？（一）](https://www.jianshu.com/p/856f0e26279d)（系列文章，写的非常详细，非常推荐）
-- [bang：AFNetworking2.0 源码解析（一）](http://blog.cnbang.net/tech/2320/)（系列文章，bang 神出品，非常推荐）
+- [bang：AFNetworking2.0 源码解析（一）](http://blog.cnbang.net/tech/2320/)（系列文章，bang 神出品，有些技术点挖得很深，非常推荐）
 - [Draveness ：AFNetworking 源码解析（一）](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（系列文章）
 - [NSHipster: AFNetworking 2.0](http://nshipster.cn/afnetworking-2/)
-- [HTTP Content-type 与 AFNetworking](http://www.isaced.com/post-254.html)
 - [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
 - [四种常见的 POST 提交数据方式](https://imququ.com/post/four-ways-to-post-data-in-http.html)

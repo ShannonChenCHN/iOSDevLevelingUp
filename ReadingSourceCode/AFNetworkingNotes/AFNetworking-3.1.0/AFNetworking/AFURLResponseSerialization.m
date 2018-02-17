@@ -133,6 +133,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
                 }
 
                 // 包装错误信息
+                // 如果是 content type 的错误就将 error code 设置为 NSURLErrorCannotDecodeContentData，因为数据类型不符合要求
                 validationError = AFErrorWithUnderlyingError([NSError errorWithDomain:AFURLResponseSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:mutableUserInfo], validationError);
             }
 
@@ -151,6 +152,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
                 mutableUserInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] = data;
             }
 
+            // 如果是 status code 的错误就将 error code 设置为 NSURLErrorBadServerResponse，因为错误信息有可能就在返回的数据中
             validationError = AFErrorWithUnderlyingError([NSError errorWithDomain:AFURLResponseSerializationErrorDomain code:NSURLErrorBadServerResponse userInfo:mutableUserInfo], validationError);
 
             responseIsValid = NO;
@@ -243,6 +245,9 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
                           error:(NSError *__autoreleasing *)error
 {
     if (![self validateResponse:(NSHTTPURLResponse *)response data:data error:error]) {
+        
+        // 如果是 content type 的错误就直接返回，因为数据类型不符合要求
+        // 如果是 status code 的错误就继续解析，因为错误信息有可能就在返回的数据中
         if (!error || AFErrorOrUnderlyingErrorHasCodeInDomain(*error, NSURLErrorCannotDecodeContentData, AFURLResponseSerializationErrorDomain)) {
             return nil;
         }
@@ -259,7 +264,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return nil;
     }
 
-    // 移除 NSNull
+    // 移除 NSNull（如果需要的话），默认是 NO
     if (self.removesKeysWithNullValues && responseObject) {
         responseObject = AFJSONObjectByRemovingKeysWithNullValues(responseObject, self.readingOptions);
     }
