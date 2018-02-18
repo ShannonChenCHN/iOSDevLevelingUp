@@ -369,6 +369,7 @@ AFURLResponseSerialization 模块包括一个协议、一个基类和多个解�
 
 ![](./resources/af_3.x_responseserialization.png)
 <div align="center">图 5 AFURLResponseSerialization 类图</div>
+<br>
 
 AFURLResponseSerialization 模块响应解析机制主要涉及到两个核心方法：
 
@@ -421,6 +422,72 @@ AFJSONResponseSerializer 在解析数据后还提供了移除 NSNull 的功能�
 ```
 
 ### 六、AFSecurityPolicy
+
+几个关键字：HTTPS，TSL，SSL，SSL Pinning，非对称加密算法
+
+#### 1. HTTPS
+
+#### 1.1 什么是 HTTPS？
+HTTPS 是在 HTTP 请求的基础上多加了一个证书认证的流程。认证通过之后，数据传输都是加密进行的。
+
+#### 1.2 HTTPS 与 HTTP 的区别是什么？
+
+/   |   HTTP                 |   HTTPS
+----|------------------------|--------
+URL |由 `http://` 起始且默认使用端口 80 | 由 `https://`起始且默认使用端口 443
+安全性 | 不安全，因为是明文传输，攻击者通过监听和中间人攻击等手段，可以获取网站帐户和敏感信息等 | 加密传输，可防止监听和中间人攻击
+
+HTTP协议和安全协议（SSL/TLS）同属于应用层（OSI模型的最高层），具体来讲，安全协议SSL/TLS）工作在 HTTP 之下，传输层之上：安全协议向运行 HTTP 的进程提供一个类似于 TCP 的套接字，供进程向其中注入报文，安全协议将报文加密并注入运输层套接字；或是从运输层获取加密报文，解密后交给对应的进程。严格地讲，HTTPS 并不是一个单独的协议，而是对工作在一加密连接（TLS或SSL）上的常规 HTTP 协议的称呼。
+
+![](./resources/https_layer.png)
+<div align="center">图 6 协议层</div>
+
+HTTPS 报文中的任何东西都被加密，包括所有报头和荷载（payload）。除了可能的选择密文攻击之外，一个攻击者所能知道的只有在两者之间有一连接这件事。
+
+#### 1.3 HTTPS 连接的建立过程
+
+HTTPS 的认证有单向认证和双向认证，这里简单说一下单向认证的流程：
+
+（1）用户发起请求，服务器响应后返回一个证书，证书中包含一些基本信息和公钥。
+（2）用户拿到证书后，去验证这个证书是否合法，不合法，则请求终止。
+（3）合法则生成一个随机数，作为对称加密的密钥，用服务器返回的公钥对这个随机数加密。然后返回给服务器。
+（4）服务器拿到加密后的随机数，利用私钥解密，然后再用解密后的随机数（对称密钥），把需要返回的数据加密，加密完成后数据传输给用户。
+（5）最后用户拿到加密的数据，用一开始的那个随机数（对称密钥），进行数据解密。整个过程完成。
+
+![](./resources/https_process.png)
+<div align="center">图 7 HTTPS 连接的建立过程（单向认证）</div>
+
+#### 1.4 为什么说 HTTP 传输不安全，HTTPS 的作用在哪里？
+
+#### 1.5 HTTPS 传输时是如何验证证书的？怎样应对中间人伪造证书？
+
+#### 1.6 SSL Pinning 是什么？
+
+#### 2. AFSecurityPolicy 的实现
+
+#### 2.1 AFSecurityPolicy 的作用
+
+
+#### 2.2 AFSecurityPolicy 做了什么
+
+
+#### 2.3 AFSecurityPolicy 怎么用 
+
+#### 2.4 Tricks 
+
+- 宏、do-while
+- Core Foundation
+
+
+
+> **延伸阅读：**
+> 
+> - 关于非对称加密算法的原理：RSA算法原理[（一）](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html) [（二）](http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html)
+> - 关于 HTTPS 请求流程：HTTPS那些事[（一）](http://www.guokr.com/post/114121/)[（二）](http://www.guokr.com/post/116169/)[（三）](http://www.guokr.com/blog/148613/)
+> - 关于数字证书：[浅析数字证书](http://www.cnblogs.com/hyddd/archive/2009/01/07/1371292.html)
+> - [超文本传输安全协议 - 维基百科](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE)
+> - [Https单向认证和双向认证](http://blog.csdn.net/duanbokan/article/details/50847612)
+> - [AFNetworking 3.0与服务端 自签名证书 https双向认证](https://www.jianshu.com/p/9e573607be13#)
 
 
 ### 七、AFNetworkReachabilityManager
@@ -491,8 +558,7 @@ AFNetworking 在架构上采用了模块化的设计，各模块的职责是明�
 
 ### 延伸阅读
 - [AFNetworking到底做了什么？（一）](https://www.jianshu.com/p/856f0e26279d)（系列文章，写的非常详细，非常推荐）
-- [bang：AFNetworking2.0 源码解析（一）](http://blog.cnbang.net/tech/2320/)（系列文章，bang 神出品，有些技术点挖得很深，非常推荐）
-- [Draveness ：AFNetworking 源码解析（一）](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)（系列文章）
+- bang：AFNetworking2.0 源码解析[（一）](http://blog.cnbang.net/tech/2320/)[（二）](http://blog.cnbang.net/tech/2371/)[（三）](http://blog.cnbang.net/tech/2416/)[（四）](http://blog.cnbang.net/tech/2456/)
+- Draveness ：AFNetworking 源码解析[（一）](https://github.com/Draveness/Analyze/tree/master/contents/AFNetworking)
 - [NSHipster: AFNetworking 2.0](http://nshipster.cn/afnetworking-2/)
-- [AFNetworking 源码阅读系列](http://www.cnblogs.com/polobymulberry/category/785705.html)
 - [四种常见的 POST 提交数据方式](https://imququ.com/post/four-ways-to-post-data-in-http.html)
