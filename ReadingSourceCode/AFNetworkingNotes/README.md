@@ -425,17 +425,25 @@ AFJSONResponseSerializer 在解析数据后还提供了移除 NSNull 的功能�
 
 几个关键字：HTTPS，TSL，SSL，SSL Pinning，非对称加密算法
 
-#### 1. HTTPS
+#### 1. 预备知识点
 
-#### 1.1 什么是 HTTPS？
+#### 1.1 HTTP 所存在的安全问题
+
+#### 1.2 HTTPS 的出现
 HTTPS 是在 HTTP 请求的基础上多加了一个证书认证的流程。认证通过之后，数据传输都是加密进行的。
 
-#### 1.2 HTTPS 与 HTTP 的区别是什么？
+#### 1.3 SSL/TLS 协议
+
+SSL（Secure Sockets Layer）：SSL 协议是一种数据加密协议，为了保证网络数据传输的安全性，网景公司设计了 SSL 协议用于对 HTTP 协议传输的数据进行加密，从而就诞生了 HTTPS。
+
+TLS（Transport Layer Security）：TLS 协议是 SSL 协议的升级版。1999年，互联网标准化组织 ISOC 接替 NetScape 公司，发布了 SSL 的升级版 TLS 1.0版。
+
+#### 1.4 HTTPS 与 HTTP 的区别是什么？
 
 /   |   HTTP                 |   HTTPS
 ----|------------------------|--------
-URL |由 `http://` 起始且默认使用端口 80 | 由 `https://`起始且默认使用端口 443
-安全性 | 不安全，因为是明文传输，攻击者通过监听和中间人攻击等手段，可以获取网站帐户和敏感信息等 | 加密传输，可防止监听和中间人攻击
+URL | `http://` 开头，并且默认使用端口 80 | `https://` 开头，并且默认使用端口 443
+安全性 | 不安全，因为是明文传输，也就是说传输的数据都是未加密的，攻击者通过监听和中间人攻击等手段，可以获取网站帐户和敏感信息等 | 加密传输，可防止监听和中间人攻击
 
 HTTP协议和安全协议（SSL/TLS）同属于应用层（OSI模型的最高层），具体来讲，安全协议SSL/TLS）工作在 HTTP 之下，传输层之上：安全协议向运行 HTTP 的进程提供一个类似于 TCP 的套接字，供进程向其中注入报文，安全协议将报文加密并注入运输层套接字；或是从运输层获取加密报文，解密后交给对应的进程。严格地讲，HTTPS 并不是一个单独的协议，而是对工作在一加密连接（TLS或SSL）上的常规 HTTP 协议的称呼。
 
@@ -444,24 +452,29 @@ HTTP协议和安全协议（SSL/TLS）同属于应用层（OSI模型的最高层
 
 HTTPS 报文中的任何东西都被加密，包括所有报头和荷载（payload）。除了可能的选择密文攻击之外，一个攻击者所能知道的只有在两者之间有一连接这件事。
 
-#### 1.3 HTTPS 连接的建立过程
+#### 1.5 HTTPS 连接的建立过程
 
-HTTPS 的认证有单向认证和双向认证，这里简单说一下单向认证的流程：
+HTTPS在传输数据之前需要客户端与服务端之间进行一次握手，在握手过程中将确立双方加密传输数据的密码信息。
 
-（1）用户发起请求，服务器响应后返回一个证书，证书中包含一些基本信息和公钥。
-（2）用户拿到证书后，去验证这个证书是否合法，不合法，则请求终止。
-（3）合法则生成一个随机数，作为对称加密的密钥，用服务器返回的公钥对这个随机数加密。然后返回给服务器。
-（4）服务器拿到加密后的随机数，利用私钥解密，然后再用解密后的随机数（对称密钥），把需要返回的数据加密，加密完成后数据传输给用户。
-（5）最后用户拿到加密的数据，用一开始的那个随机数（对称密钥），进行数据解密。整个过程完成。
+HTTPS 的认证有单向认证和双向认证，这里简单梳理一下单向认证的握手流程：
+
+（1）客户端发起一个请求，服务端响应后返回一个证书，证书中包含一些基本信息和公钥。   
+（2）客户端里存有各个受信任的证书机构根证书，用这些根证书对服务端返回的证书进行验证，如果不可信任，则请求终止。    
+（3）如果证书受信任，或者是用户接受了不受信的证书，客户端会生成一串随机数的密码 random key，并用证书中提供的公钥加密，再返回给服务器。    
+（4）服务器拿到加密后的随机数，利用私钥解密，然后再用解密后的随机数 random key，对需要返回的数据加密，加密完成后将数据返回给客户端。   
+（5）最后用户拿到被加密过的数据，用客户端一开始生成的那个随机数 random key，进行数据解密。整个 HTTPS 握手过程完成。   
 
 ![](./resources/https_process.png)
-<div align="center">图 7 HTTPS 连接的建立过程（单向认证）</div>
+<div align="center">图 7 HTTPS 连接的握手过程（单向认证）</div>
 
-#### 1.4 为什么说 HTTP 传输不安全，HTTPS 的作用在哪里？
 
-#### 1.5 HTTPS 传输时是如何验证证书的？怎样应对中间人伪造证书？
 
-#### 1.6 SSL Pinning 是什么？
+
+#### 1.6 HTTPS 传输时是如何验证证书的？怎样应对中间人伪造证书？
+
+#### 1.7 SSL Pinning 是什么？
+
+
 
 #### 2. AFSecurityPolicy 的实现
 
@@ -473,21 +486,37 @@ HTTPS 的认证有单向认证和双向认证，这里简单说一下单向认�
 
 #### 2.3 AFSecurityPolicy 怎么用 
 
-#### 2.4 Tricks 
+#### 2.4 Tips 
 
 - 宏、do-while
+
+[宏定义的黑魔法 - 宏菜鸟起飞手册](https://onevcat.com/2014/01/black-magic-in-macro/)
+
 - Core Foundation
 
 
 
 > **延伸阅读：**
+>      
+> - 关于 HTTPS 请求流程
+>    - HTTPS那些事[（一）](http://www.guokr.com/post/114121/)[（二）](http://www.guokr.com/post/116169/)[（三）](http://www.guokr.com/blog/148613/)    
+>    - [一文完全理解HTTPS](https://juejin.im/entry/5a644a61f265da3e4c07e334)    
+>    - [详解 HTTPS、TLS、SSL、HTTP区别和关系](https://www.wosign.com/info/https_tls_ssl_http.htm)
+>    - [超文本传输安全协议（HTTPS） - 维基百科](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE) 
+> - TLS/SSL
+>    - [SSL/TLS协议运行机制的概述](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)  
+>    - [图解SSL/TLS协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html) 
+>    - [SSL/TLS原理详解](https://segmentfault.com/a/1190000002554673)
+> - 关于数字证书
+>    - [浅析数字证书](http://www.cnblogs.com/hyddd/archive/2009/01/07/1371292.html)        
+> - 加密算法
+>    - [白话解释 对称加密算法 VS 非对称加密算法](https://segmentfault.com/a/1190000004461428)       
+>    - 关于非对称加密算法的原理：RSA算法原理[（一）](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html) [（二）](http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html)  
+> - 认证流程 
+>    - [Https单向认证和双向认证](http://blog.csdn.net/duanbokan/article/details/50847612)      
+>    - [AFNetworking 3.0与服务端 自签名证书 https双向认证](https://www.jianshu.com/p/9e573607be13#)  
 > 
-> - 关于非对称加密算法的原理：RSA算法原理[（一）](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html) [（二）](http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html)
-> - 关于 HTTPS 请求流程：HTTPS那些事[（一）](http://www.guokr.com/post/114121/)[（二）](http://www.guokr.com/post/116169/)[（三）](http://www.guokr.com/blog/148613/)
-> - 关于数字证书：[浅析数字证书](http://www.cnblogs.com/hyddd/archive/2009/01/07/1371292.html)
-> - [超文本传输安全协议 - 维基百科](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE)
-> - [Https单向认证和双向认证](http://blog.csdn.net/duanbokan/article/details/50847612)
-> - [AFNetworking 3.0与服务端 自签名证书 https双向认证](https://www.jianshu.com/p/9e573607be13#)
+> 
 
 
 ### 七、AFNetworkReachabilityManager
