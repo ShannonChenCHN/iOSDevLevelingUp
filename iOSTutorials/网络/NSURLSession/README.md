@@ -178,7 +178,7 @@ NSURLSession 的优势：
 - NSURLSession 支持 [HTTP/2.0 协议](https://zh.wikipedia.org/wiki/HTTP/2#HTTP/2%E4%B8%8EHTTP/1.1%E6%AF%94%E8%BE%83)
 - 在处理下载任务的时候可以直接把数据下载到磁盘
 - 支持后台下载、上传
-- 同一个 session 发送多个请求，只需要建立一次连接（复用了 TCP 连接）
+- 同一个 session 发送多个请求，只需要建立一次连接（HTTP 1.1 的 pipeline 和 HTTP 2.0 的多路复用）
 - 提供了全局的 session 并且可以统一配置，使用更加方便
 - 内部实现了多线程异步请求，效率更高，使用更简单
 
@@ -267,3 +267,6 @@ NSURLSession进行断点下载，当暂停下载任务后，如果downloadTask�
 - [URLSession Waiting For Connectivity](https://useyourloaf.com/blog/urlsession-waiting-for-connectivity/)：iOS 新推出的 API，可以设置在使用 NSURLSession 发起请求前先检查网络是否可用，不可用就等待
 - [别说你会AFNetworking3.0/NSURLSession](https://www.jianshu.com/p/5969bbb4af9f)：作者是饿了么移动架构师王朝成（圣迪）
 - [HTTP,HTTP2.0,SPDY,HTTPS你应该知道的一些事](http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/)
+- [移动 APP 网络优化概述](http://blog.cnbang.net/tech/3531/)
+- [NSURLSession之使用Keep-Alive长连接](https://zhongwuzw.github.io/2016/11/12/NSURLSession之使用keep-alive长连接/)
+- [HTTP 中的 Keep-Alive，pipelining 和多路复用](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37#issuecomment-367964439)
