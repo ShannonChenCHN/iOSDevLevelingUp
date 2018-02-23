@@ -319,7 +319,7 @@ A resources list for leveling up iOS dev knowledge and skills.
 
 ### Blogs
 - [ibireme's blog](http://blog.ibireme.com)
-- [戴铭的博客](https://github.com/ming1016/study/wiki)
+- [戴铭的博客](https://ming1016.github.io)（[GitHub](https://github.com/ming1016/study/wiki)）
 - [王垠的博客](http://www.yinwang.org)
 - [喵神王巍的博客](https://onevcat.com)
 - [唐巧的博客](http://blog.devtang.com)
