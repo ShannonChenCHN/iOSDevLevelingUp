@@ -451,7 +451,7 @@ TLS（Transport Layer Security）：TLS 协议是 SSL 协议的升级版。1999�
 
 #### 1.4 HTTPS 与 HTTP 的区别是什么？
 
-/   |   HTTP                 |   HTTPS
+` ` |   HTTP                 |   HTTPS
 ----|------------------------|--------
 URL | `http://` 开头，并且默认使用端口 80 | `https://` 开头，并且默认使用端口 443
 数据隐私性 | 明文传输，不加密传输数据 | 基于 TLS 的加密传输
@@ -482,9 +482,10 @@ HTTPS 的认证有单向认证和双向认证，这里简单梳理一下客户�
 
 
 完整的 HTTPS 连接的建立过程，包括下面三个步骤：
-（1）TCP 协议的三次握手；
-（2）TLS/SSL 协议的握手、密钥协商；
-（3）使用共同约定的密钥开始通信。
+
+（1）TCP 协议的三次握手；   
+（2）TLS/SSL 协议的握手、密钥协商；       
+（3）使用共同约定的密钥开始通信。        
 
 ![](./resources/https_establish.png)
 <div align="center">图 8 完整的 HTTPS 连接的建立过程</div>
@@ -518,23 +519,23 @@ CA 机构颁发的证书 Cer 里包含有证书内容 Content，以及证书加�
 建立 HTTPS 连接时，服务端会把证书 Cer 返回给客户端，客户端系统里的 CA 机构根证书有这个 CA 机构的公钥，用这个公钥对证书 Cer 的加密内容 Crypted Content 解密得到 Content，跟证书 Cer 里的内容 Content 对比，若相等就通过验证。大概的流程如下：
 
 ```
-		+-----------------------------------------------------+
-		|           crypt with private key                    |
-		|  Content ------------------------> Crypted Content  |
-Server	|                                                     |
-		|                     证书 Cer                  　     |
-		+-----------------------------------------------------+
+       +-----------------------------------------------------+
+       |           crypt with private key                    |
+       |  Content ------------------------> Crypted Content  |
+Server |                                                     |
+       |                     证书 Cer                  　     |
+       +-----------------------------------------------------+
 
-								  ||		
-								  ||
-								  \/
+						  ||		
+						  ||
+						  \/
 						
-		+-----------------------------------------------------+
-		|                                                     |
-		|               Content  &  Crypted Content           |
-Client	|                  |               |                  |
-		|                  |  证书 Cer    　|            　    |
-		+------------------|---------------|------------------+ 
+       +-----------------------------------------------------+
+       |                                                     |
+       |               Content  &  Crypted Content           |
+Client |                  |               |                  |
+       |                  |  证书 Cer    　|            　    |
+       +------------------|---------------|------------------+ 
 		　　　　　　　　　　　 |　　　　　　　　　| 
 		　　　　　　　　　　　 |　　　　　　　　　| derypt with public key 　　
 		　　　　　　　　　　　 |　　　　　　　　　| 
@@ -571,15 +572,18 @@ Client	|                  |               |                  |
 
 #### 2. AFSecurityPolicy 的实现
 
+
 #### 2.1 AFSecurityPolicy 的作用
+
+NSURLConnection 和 NSURLSession 已经封装了 HTTPS 连接的建立、数据的加密解密功能，我们直接使用 NSURLConnection 或者 NSURLSession 也是可以访问 HTTPS 网站的，但 NSURLConnection 和 NSURLSession 并没有验证证书是否合法，无法避免中间人攻击。要做到真正安全通讯，需要我们手动去验证服务端返回的证书（系统提供了 `SecTrustEvaluate`函数供我们验证证书使用）。
+
+AFSecurityPolicy 帮我们封装了证书验证的逻辑，让用户可以轻易使用，除了去系统信任 CA 机构列表验证，还支持SSL Pinning方式的验证。
 
 
 #### 2.2 AFSecurityPolicy 做了什么
 
 
-#### 2.3 AFSecurityPolicy 怎么用 
-
-#### 2.4 Tips 
+#### 2.3 Tips 
 
 - 宏、do-while
 
