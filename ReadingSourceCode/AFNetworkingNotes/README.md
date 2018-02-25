@@ -577,19 +577,252 @@ Client |                  |               |                  |
 
 NSURLConnection 和 NSURLSession 已经封装了 HTTPS 连接的建立、数据的加密解密功能，我们直接使用 NSURLConnection 或者 NSURLSession 也是可以访问 HTTPS 网站的，但 NSURLConnection 和 NSURLSession 并没有验证证书是否合法，无法避免中间人攻击。要做到真正安全通讯，需要我们手动去验证服务端返回的证书（系统提供了 `SecTrustEvaluate`函数供我们验证证书使用）。
 
-AFSecurityPolicy 帮我们封装了证书验证的逻辑，让用户可以轻易使用，除了去系统信任 CA 机构列表验证，还支持SSL Pinning方式的验证。
+AFSecurityPolicy 帮我们封装了证书验证的逻辑，让用户可以轻易使用，除了在系统的信任机构列表里验证，还支持 SSL Pinning 方式的验证。
+
+#### 2.2 使用方法
+
+如果是权威机构颁发的证书，不需要任何设置。
+
+如果是自签名证书，但是不做证书绑定，直接按照下面的代码实现即可：
+
+``` Objective-C
+AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+// 允许无效证书（包括自签名证书），必须的
+policy.allowInvalidCertificates = YES;
+// 是否验证域名的CN字段
+// 不是必须的，但是如果写YES，则必须导入证书。
+policy.validatesDomainName = NO;
+
+AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:<#MyAPIBaseURLString#>]];
+manager.securityPolicy = securityPolicy;
+
+```
+
+如果是自签名证书，而且还要做证书绑定，就需要把自签的服务端证书，或者自签的CA根证书导入到项目中（把 cer 格式的服务端证书放到 APP 项目资源里，AFSecurityPolicy 会自动寻找根目录下所有 cer 文件，当然你也可以自己读取），然后再选择验证证书或者公钥。
+
+``` Objective-C
+
+AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+// 允许无效证书（包括自签名证书），必须的
+policy.allowInvalidCertificates = YES;
+// 是否验证域名的CN字段，不是必须的
+policy.validatesDomainName = NO;
+
+AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:<#MyAPIBaseURLString#>]];
+manager.securityPolicy = securityPolicy;
+
+```
+
+#### 2.3 AFSecurityPolicy 的实现
+
+> 详细说明见[源码](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/AFNetworkingNotes/AFNetworking-3.1.0/AFNetworking/AFSecurityPolicy.m)注释。
+
+在 AFURLSessionManager 中实现的 `-URLSession:didReceiveChallenge:completionHandler:` 方法中，根据 NSURLAuthenticationChallenge 对象中的 authenticationMethod，来决定是否需要验证服务器证书，如果需要验证，则借助 AFSecurityPolicy 来验证证书，验证通过则创建 NSURLCredential，并回调 handler：
+
+``` Objective-C
+- (void)URLSession:(NSURLSession *)session
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
+{
+    /*
+     NSURLSessionAuthChallengeUseCredential：使用指定的证书
+     NSURLSessionAuthChallengePerformDefaultHandling：默认方式处理
+     NSURLSessionAuthChallengeCancelAuthenticationChallenge：取消整个请求
+     NSURLSessionAuthChallengeRejectProtectionSpace：
+     */
+    
+    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+    __block NSURLCredential *credential = nil;
+
+    if (self.sessionDidReceiveAuthenticationChallenge) {
+        disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
+    } else {
+        
+        // 此处服务器要求客户端的接收认证挑战方法是 NSURLAuthenticationMethodServerTrust，也就是说服务器端需要客户端验证服务器返回的证书信息
+        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            
+            // 客户端根据安全策略验证服务器返回的证书
+            // AFSecurityPolicy 在这里的作用就是，使得在系统底层自己去验证之前，AF可以先去验证服务端的证书。如果通不过，则直接越过系统的验证，取消https的网络请求。否则，继续去走系统根证书的验证（？？）。
+            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+                // 信任的话，就创建验证凭证去做系统根证书验证
+                
+                // 创建 NSURLCredential 前需要调用 SecTrustEvaluate 方法来验证证书，这件事情其实 AFSecurityPolicy 已经帮我们做了
+                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                if (credential) {
+                    disposition = NSURLSessionAuthChallengeUseCredential;
+                } else {
+                    disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+                }
+            } else {
+                // 不信任的话，就直接取消整个请求
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+            }
+        } else {
+            disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+        }
+    }
+
+    if (completionHandler) {
+        // 疑问：这个 completionHandler 是用来干什么的呢？credential 又是用来干什么的呢？
+        completionHandler(disposition, credential);
+    }
+}
+```
+
+而 AFSecurityPolicy 的核心就在于 `-evaluateServerTrust:forDomain:` 方法，该方法中主要做了四件事：
+
+- 设置验证标准（`SecTrustSetPolicies`），为认证做准备
+- 处理 SSLPinningMode 为 `AFSSLPinningModeNone` 的情况——如果允许无效的证书（包括自签名证书）就直接返回 YES，不允许的话就在系统的信任机构列表里验证服务端证书。
+- 处理 SSLPinningMode 为 `AFSSLPinningModeCertificate` 的情况，认证证书——设置证书锚点->验证服务端证书->匹配服务端证书链
+- 处理 SSLPinningMode 为 `AFSSLPinningModePublicKey` 的情况，认证公钥——匹配服务端证书公钥
 
 
-#### 2.2 AFSecurityPolicy 做了什么
+
+``` Objective-C
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
+                  forDomain:(NSString *)domain
+{
+    /*
+     AFSecurityPolicy 的四个主要属性：
+     SSLPinningMode - 证书认证模式
+     pinnedCertificates - 用来匹配服务端证书信息的证书，这些证书保存在客户端
+     allowInvalidCertificates - 是否支持无效的证书（包括自签名证书）
+     validatesDomainName - 是否去验证证书域名是否匹配
+     
+     
+     SSLPinningMode 提供的三种证书认证模式：
+     AFSSLPinningModeNone - 没有 SSL pinning
+     AFSSLPinningModePublicKey - 用证书绑定方式验证，客户端要有服务端的证书拷贝，只是验证时只验证证书里的公钥，不验证证书的有效期等信息
+     AFSSLPinningModeCertificate - 用证书绑定方式验证证书，需要客户端保存有服务端的证书拷贝，这里验证分两步，第一步验证证书的域名/有效期等信息，第二步是对比服务端返回的证书跟客户端返回的是否一致。
+     
+     */
+    
+    
+    // 判断互相矛盾的情况：
+    // 如果有域名，而且还要允许自签证书，同时还要验证域名的话，就一定要验证服务器返回的证书是否匹配客户端本地的证书了
+    // 所以必须满足两个条件：A验证模式不能为 FSSLPinningModeNone；添加到项目里的证书至少 1 个。
+    if (domain && self.allowInvalidCertificates && self.validatesDomainName && (self.SSLPinningMode == AFSSLPinningModeNone || [self.pinnedCertificates count] == 0)) {
+        
+        NSLog(@"In order to validate a domain name for self signed certificates, you MUST use pinning.");
+        return NO;
+    }
+
+    // 为 serverTrust 设置 policy，也就是告诉客户端如何验证 serverTrust
+    // 如果要验证域名的话，就以域名为参数创建一个 SecPolicyRef，否则会创建一个符合 X509 标准的默认 SecPolicyRef 对象
+    NSMutableArray *policies = [NSMutableArray array];
+    if (self.validatesDomainName) {
+        [policies addObject:(__bridge_transfer id)SecPolicyCreateSSL(true, (__bridge CFStringRef)domain)];
+    } else {
+        [policies addObject:(__bridge_transfer id)SecPolicyCreateBasicX509()];
+    }
+
+    SecTrustSetPolicies(serverTrust, (__bridge CFArrayRef)policies);
+
+    // 验证证书是否有效
+    if (self.SSLPinningMode == AFSSLPinningModeNone) {
+        // 如果不做证书绑定，就会跟浏览器一样在系统的信任机构列表里验证服务端返回的证书（如果是自己买的证书，就不需要绑定证书了，可以直接在系统的信任机构列表里验证就行了）
+        // 如果允许无效的证书（包括自签名证书）就会直接返回 YES，不允许的话就会对服务端证书在系统的信任机构列表里验证。如果服务器证书无效，并且不允许无效证书，就会返回 NO
+        
+        return self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust);
+        
+    } else if (!AFServerTrustIsValid(serverTrust) && !self.allowInvalidCertificates) {
+        // 如果不是 AFSSLPinningModeNone，而且证书在系统的信任机构列表里验证失败，同时不允许无效的证书（包括自签名证书）时，直接返回评估失败
+        // （如果是自签名的证书，验证时就需要做证书绑定，或者直接在系统的信任机构列表里中添加根证书）
+        
+        return NO;
+    }
+
+    // 根据 SSLPinningMode 对服务端返回的证书进行 SSL Pinning 验证，也就是说拿本地的证书和服务端证书进行匹配
+    switch (self.SSLPinningMode) {
+        case AFSSLPinningModeNone:
+        default:
+            return NO;
+        case AFSSLPinningModeCertificate: {
+            
+            // 把证书 data 转成 SecCertificateRef 类型的数据，保证返回的证书都是 DER 编码的 X.509 证书
+            NSMutableArray *pinnedCertificates = [NSMutableArray array];
+            for (NSData *certificateData in self.pinnedCertificates) {
+                [pinnedCertificates addObject:(__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData)];
+            }
+            
+            // 1.
+            // 将 pinnedCertificates 设置成需要参与验证的 Anchor Certificate（锚点证书，嵌入到操作系统中的根证书，也就是权威证书颁发机构颁发的自签名证书），通过 SecTrustSetAnchorCertificates 设置了参与校验锚点证书之后，假如验证的数字证书是这个锚点证书的子节点，即验证的数字证书是由锚点证书对应CA或子CA签发的，或是该证书本身，则信任该证书，具体就是调用 SecTrustEvaluate 来验证。
+            SecTrustSetAnchorCertificates(serverTrust, (__bridge CFArrayRef)pinnedCertificates);
+
+            // 自签证书在之前是验证通过不了的，在这一步，把我们自己设置的证书加进去之后，就能验证成功了。
+            // 再去调用之前的 serverTrust 去验证该证书是否有效，有可能经过这个方法过滤后，serverTrust 里面的 pinnedCertificates 被筛选到只有信任的那一个证书
+            if (!AFServerTrustIsValid(serverTrust)) {
+                return NO;
+            }
+
+            // 注意，这个方法和我们之前的锚点证书没关系了，是去从我们需要被验证的服务端证书，去拿证书链。
+            // 服务器端的证书链，注意此处返回的证书链顺序是从叶节点到根节点
+            // obtain the chain after being validated, which *should* contain the pinned certificate in the last position (if it's the Root CA)
+            NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);
+            
+            for (NSData *trustChainCertificate in [serverCertificates reverseObjectEnumerator]) {
+                // 如果我们的证书中，有一个和它证书链中的证书匹配的，就返回 YES
+                if ([self.pinnedCertificates containsObject:trustChainCertificate]) {
+                    return YES;
+                }
+            }
+            
+            return NO;
+        }
+        case AFSSLPinningModePublicKey: {
+            NSUInteger trustedPublicKeyCount = 0;
+            
+            // 获取服务器证书公钥
+            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);
+
+            // 判断自己本地的证书的公钥是否存在与服务器证书公钥一样的情况，只要有一组符合就为真
+            for (id trustChainPublicKey in publicKeys) {
+                for (id pinnedPublicKey in self.pinnedPublicKeys) {
+                    if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) {
+                        trustedPublicKeyCount += 1;
+                    }
+                }
+            }
+            return trustedPublicKeyCount > 0;
+        }
+    }
+    
+    return NO;
+}
+```
+
+#### 2.4 技术点 
+
+（1） `__Require_Quiet` 宏中 do-while 的特殊使用
 
 
-#### 2.3 Tips 
+``` C
+#ifndef __Require_Quiet
+	#define __Require_Quiet(assertion, exceptionLabel)                            \
+	  do                                                                          \
+	  {                                                                           \
+		  if ( __builtin_expect(!(assertion), 0) )                                \
+		  {                                                                       \
+			  goto exceptionLabel;                                                \
+		  }                                                                       \
+	  } while ( 0 )
+#endif
+```
 
-- 宏、do-while
+`__Require_Quiet` 宏中使用了一个 `do...while(0)` 的循环语句，从逻辑上看这个 do-while 语句完全可以不需要，但是实际上是不能去掉的，原因是为了防止在某种情况下使用该宏时出现语法错误。比如，在下面这种情况下，如果没有 `do...while(0)` 就在编译时报错：
 
-[宏定义的黑魔法 - 宏菜鸟起飞手册](https://onevcat.com/2014/01/black-magic-in-macro/)
+``` C
+if (xxx) 
+	__Require_Quiet();
+else 
+    NSLog("This is else");
+```
 
-- Core Foundation
+
+
+参考：[宏定义的黑魔法 - 宏菜鸟起飞手册](https://onevcat.com/2014/01/black-magic-in-macro/)
+
+（2） Core Foundation 和 Security 框架的 API 的使用
 
 
 
@@ -605,7 +838,8 @@ AFSecurityPolicy 帮我们封装了证书验证的逻辑，让用户可以轻易
 >    - [图解SSL/TLS协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html) 
 >    - [SSL/TLS原理详解](https://segmentfault.com/a/1190000002554673)
 > - 关于数字证书
->    - [浅析数字证书](http://www.cnblogs.com/hyddd/archive/2009/01/07/1371292.html)        
+>    - [浅析数字证书](http://www.cnblogs.com/hyddd/archive/2009/01/07/1371292.html) 
+>    - [iOS 中 HTTPS 证书验证浅析 - 腾讯 Bugly](https://mp.weixin.qq.com/s/-fLLTtip509K6pNOTkflPQ)（推荐阅读）       
 > - 加密算法
 >    - [白话解释 对称加密算法 VS 非对称加密算法](https://segmentfault.com/a/1190000004461428)       
 >    - 关于非对称加密算法的原理：RSA算法原理[（一）](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html) [（二）](http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html)  

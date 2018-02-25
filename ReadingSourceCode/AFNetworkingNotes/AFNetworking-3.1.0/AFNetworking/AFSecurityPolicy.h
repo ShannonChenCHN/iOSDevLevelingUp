@@ -23,9 +23,9 @@
 #import <Security/Security.h>
 
 typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
-    AFSSLPinningModeNone,              ///< 没有 SSL pinning
-    AFSSLPinningModePublicKey,         ///< 用证书绑定方式验证，客户端要有服务端的证书拷贝，只是验证时只验证证书里的公钥，不验证证书的有效期等信息
-    AFSSLPinningModeCertificate,       ///< 用证书绑定方式验证证书，需要客户端保存有服务端的证书拷贝，这里验证分两步，第一步验证证书的域名/有效期等信息，第二步是对比服务端返回的证书跟客户端返回的是否一致。
+    AFSSLPinningModeNone,
+    AFSSLPinningModePublicKey,
+    AFSSLPinningModeCertificate,
 };
 
 /**

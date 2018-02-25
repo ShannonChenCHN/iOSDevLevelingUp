@@ -1024,22 +1024,42 @@ didBecomeInvalidWithError:(NSError *)error
     [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDidInvalidateNotification object:session];
 }
 
-
 /**
  session 级别的 https 认证
+
+ @param session
+ @param challenge 表示一个认证的挑战，提供了关于这次认证的全部信息。它有一个非常重要的属性 protectionSpace，这里保存了需要认证的保护空间, 每一个 NSURLProtectionSpace 对象都保存了主机地址，端口和认证方法等重要信息。
+ @param completionHandler 代理方法必须要调用的 handler，它有两个参数：
+                        - disposition 描述挑战处理方式的常量
+                        - credential 如果 disposition 的值是 NSURLSessionAuthChallengeUseCredential，就需要用这个 credential 来验证，否则，credential 就为 NULL
  */
 - (void)URLSession:(NSURLSession *)session
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
+    /*
+     NSURLSessionAuthChallengeUseCredential：使用指定的证书
+     NSURLSessionAuthChallengePerformDefaultHandling：默认方式处理
+     NSURLSessionAuthChallengeCancelAuthenticationChallenge：取消整个请求
+     NSURLSessionAuthChallengeRejectProtectionSpace：
+     */
+    
     NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
     __block NSURLCredential *credential = nil;
 
     if (self.sessionDidReceiveAuthenticationChallenge) {
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
+        
+        // 此处服务器要求客户端的接收认证挑战方法是 NSURLAuthenticationMethodServerTrust，也就是说服务器端需要客户端验证服务器返回的证书信息
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            
+            // 客户端根据安全策略验证服务器返回的证书
+            // AFSecurityPolicy 在这里的作用就是，使得在系统底层自己去验证之前，AF可以先去验证服务端的证书。如果通不过，则直接越过系统的验证，取消https的网络请求。否则，继续去走系统根证书的验证（？？）。
             if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+                // 信任的话，就创建验证凭证去做系统根证书验证
+                
+                // 创建 NSURLCredential 前需要调用 SecTrustEvaluate 方法来验证证书，这件事情其实 AFSecurityPolicy 已经帮我们做了
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
                 if (credential) {
                     disposition = NSURLSessionAuthChallengeUseCredential;
@@ -1047,6 +1067,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                     disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                 }
             } else {
+                // 不信任的话，就直接取消整个请求
                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
         } else {
@@ -1055,6 +1076,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 
     if (completionHandler) {
+        // 疑问：这个 completionHandler 是用来干什么的呢？credential 又是用来干什么的呢？
         completionHandler(disposition, credential);
     }
 }
