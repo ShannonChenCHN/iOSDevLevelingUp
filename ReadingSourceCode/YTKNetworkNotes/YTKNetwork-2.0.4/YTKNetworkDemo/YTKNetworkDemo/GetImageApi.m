@@ -20,6 +20,11 @@
     return self;
 }
 
+/// 定制网络请求的 Header Field
+- (NSDictionary<NSString *,NSString *> *)requestHeaderFieldValueDictionary {
+    return @{@"Accept" : @"image/*"};
+}
+
 - (NSString *)requestUrl {
     return [NSString stringWithFormat:@"/iphone/images/%@", _imageId];
 }

@@ -12,6 +12,7 @@
 #import "GetImageApi.h"
 #import "GetUserInfoApi.h"
 #import "RegisterApi.h"
+#import "UploadImageApi.h"
 #import "YTKBaseRequest+AnimatingAccessory.h"
 
 @interface ViewController ()<YTKChainRequestDelegate>
@@ -20,7 +21,13 @@
 
 @implementation ViewController
 
-/// Send batch request
+/*
+ 基础功能使用说明：https://github.com/yuantiku/YTKNetwork/blob/master/Docs/BasicGuide_cn.md
+ 高级功能使用说明：https://github.com/yuantiku/YTKNetwork/blob/master/Docs/ProGuide_cn.md
+ 
+ */
+
+/// 批量请求
 - (void)sendBatchRequest {
     GetImageApi *a = [[GetImageApi alloc] initWithImageId:@"1.jpg"];
     GetImageApi *b = [[GetImageApi alloc] initWithImageId:@"2.jpg"];
@@ -41,6 +48,7 @@
     }];
 }
 
+/// 链式请求：发送有相互依赖的多个网络请求
 - (void)sendChainRequest {
     RegisterApi *reg = [[RegisterApi alloc] initWithUsername:@"username" password:@"password"];
     YTKChainRequest *chainReq = [[YTKChainRequest alloc] init];
@@ -65,9 +73,13 @@
     // some one of request is failed
 }
 
+/// 正式请求前，显示上次缓存的内容
 - (void)loadCacheData {
+    // 1. 创建 api request
     NSString *userId = @"1";
     GetUserInfoApi *api = [[GetUserInfoApi alloc] initWithUserId:userId];
+    
+    // 2. 加载缓存
     if ([api loadCacheWithError:nil]) {
         NSDictionary *json = [api responseJSONObject];
         NSLog(@"json = %@", json);
@@ -77,10 +89,21 @@
     api.animatingText = @"正在加载";
     api.animatingView = self.view;
 
+    // 3. 发起请求
     [api startWithCompletionBlockWithSuccess:^(YTKBaseRequest *request) {
         NSLog(@"update ui");
     } failure:^(YTKBaseRequest *request) {
         NSLog(@"failed");
+    }];
+}
+
+/// 上传图片
+- (void)uploadImage {
+    UploadImageApi *api = [[UploadImageApi alloc] initWithImage:nil];
+    [api startWithCompletionBlockWithSuccess:^(__kindof YTKBaseRequest * _Nonnull request) {
+        NSLog(@"upload succeeded!");
+    } failure:^(__kindof YTKBaseRequest * _Nonnull request) {
+        NSLog(@"upload failed!");
     }];
 }
 

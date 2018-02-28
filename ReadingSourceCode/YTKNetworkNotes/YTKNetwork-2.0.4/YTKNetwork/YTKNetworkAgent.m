@@ -101,24 +101,30 @@
 
     NSString *detailUrl = [request requestUrl];
     NSURL *temp = [NSURL URLWithString:detailUrl];
+    
     // If detailUrl is valid URL
+    // 如果 YTKBaseRequest 的子类中 requestUrl 方法返回的本身就是一个完整的 URL，就直接返回
     if (temp && temp.host && temp.scheme) {
         return detailUrl;
     }
     // Filter URL if needed
+    // URL 链接加工
     NSArray *filters = [_config urlFilters];
     for (id<YTKUrlFilterProtocol> f in filters) {
         detailUrl = [f filterUrl:detailUrl withRequest:request];
     }
 
+    // baseUrl
     NSString *baseUrl;
     if ([request useCDN]) {
+        // 如果使用 CDN
         if ([request cdnUrl].length > 0) {
             baseUrl = [request cdnUrl];
         } else {
             baseUrl = [_config cdnUrl];
         }
     } else {
+        // 如果使不用 CDN
         if ([request baseUrl].length > 0) {
             baseUrl = [request baseUrl];
         } else {
@@ -126,6 +132,8 @@
         }
     }
     // URL slash compability
+    // base URL 最后加一个斜杠，因为最后的斜杠“/”会影响后面使用 -URLWithString:relativeToURL: 方法拼接时的结果，具体可以参考 AFNetworking 的做法
+    // 具体说明示例：https://github.com/ShannonChenCHN/Playground/tree/master/NSURLExample
     NSURL *url = [NSURL URLWithString:baseUrl];
 
     if (baseUrl.length > 0 && ![baseUrl hasSuffix:@"/"]) {
@@ -165,12 +173,15 @@
 }
 
 - (NSURLSessionTask *)sessionTaskForRequest:(YTKBaseRequest *)request error:(NSError * _Nullable __autoreleasing *)error {
+    
+    // 构建 requestSerializer
     YTKRequestMethod method = [request requestMethod];
     NSString *url = [self buildRequestUrl:request];
     id param = request.requestArgument;
     AFConstructingBlock constructingBlock = [request constructingBodyBlock];
     AFHTTPRequestSerializer *requestSerializer = [self requestSerializerForRequest:request];
 
+    // 根据不同的 method 创建 dataTask
     switch (method) {
         case YTKRequestMethodGET:
             if (request.resumableDownloadPath) {
@@ -198,15 +209,18 @@
 
     NSURLRequest *customUrlRequest= [request buildCustomUrlRequest];
     if (customUrlRequest) {
+        // 如果是自定义的 NSURLRequest，就直接调用 AFURLSessionManager 的 dataTaskWithRequest: 方法
         __block NSURLSessionDataTask *dataTask = nil;
         dataTask = [_manager dataTaskWithRequest:customUrlRequest completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
             [self handleRequestResult:dataTask responseObject:responseObject error:error];
         }];
         request.requestTask = dataTask;
     } else {
+        // 如果不是，则自己构建 request，创建 dataTask
         request.requestTask = [self sessionTaskForRequest:request error:&requestSerializationError];
     }
 
+    // 请求序列化出错
     if (requestSerializationError) {
         [self requestDidFailWithRequest:request error:requestSerializationError];
         return;
@@ -233,8 +247,11 @@
     }
 
     // Retain request
+    // 保存 request，taskIdentifier 作为 key
     YTKLog(@"Add request: %@", NSStringFromClass([request class]));
     [self addRequestToRecord:request];
+    
+    // 启动 task
     [request.requestTask resume];
 }
 
@@ -273,6 +290,8 @@
 }
 
 - (BOOL)validateResult:(YTKBaseRequest *)request error:(NSError * _Nullable __autoreleasing *)error {
+    
+    // 验证状态码
     BOOL result = [request statusCodeValidator];
     if (!result) {
         if (error) {
@@ -280,6 +299,8 @@
         }
         return result;
     }
+    
+    // 验证 JSON 对象
     id json = [request responseJSONObject];
     id validator = [request jsonValidator];
     if (json && validator) {
@@ -316,11 +337,13 @@
     NSError *requestError = nil;
     BOOL succeed = NO;
 
+    // 如果返回结果有数据，就处理数据
     request.responseObject = responseObject;
     if ([request.responseObject isKindOfClass:[NSData class]]) {
         request.responseData = responseObject;
         request.responseString = [[NSString alloc] initWithData:responseObject encoding:[YTKNetworkUtils stringEncodingWithRequest:request]];
 
+        // 解析数据
         switch (request.responseSerializerType) {
             case YTKResponseSerializerTypeHTTP:
                 // Default serializer. Do nothing.
@@ -335,22 +358,29 @@
         }
     }
     if (error) {
+        // 请求失败
+        
         succeed = NO;
         requestError = error;
     } else if (serializationError) {
+        // 数据解析失败
+        
         succeed = NO;
         requestError = serializationError;
     } else {
+        // 验证解析后的结果
         succeed = [self validateResult:request error:&validationError];
         requestError = validationError;
     }
 
+    // 回调处理
     if (succeed) {
         [self requestDidSucceedWithRequest:request];
     } else {
         [self requestDidFailWithRequest:request error:requestError];
     }
 
+    // 结束时的清理
     dispatch_async(dispatch_get_main_queue(), ^{
         [self removeRequestFromRecord:request];
         [request clearCompletionBlock];
@@ -358,20 +388,22 @@
 }
 
 - (void)requestDidSucceedWithRequest:(YTKBaseRequest *)request {
+    // MARK: 为什么用 @autoreleasepool ？
     @autoreleasepool {
         [request requestCompletePreprocessor];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [request toggleAccessoriesWillStopCallBack];
-        [request requestCompleteFilter];
+        [request toggleAccessoriesWillStopCallBack];   // 通知插件请求即将回调
+        [request requestCompleteFilter];               // 请求成功时的自定义处理，可重写该方法
 
+        // 回调
         if (request.delegate != nil) {
             [request.delegate requestFinished:request];
         }
         if (request.successCompletionBlock) {
             request.successCompletionBlock(request);
         }
-        [request toggleAccessoriesDidStopCallBack];
+        [request toggleAccessoriesDidStopCallBack]; // 通知插件请求完成回调
     });
 }
 
@@ -381,12 +413,14 @@
            NSStringFromClass([request class]), (long)request.responseStatusCode, error.localizedDescription);
 
     // Save incomplete download data.
+    // 保存未完成下载的数据，可用于断点续传
     NSData *incompleteDownloadData = error.userInfo[NSURLSessionDownloadTaskResumeData];
     if (incompleteDownloadData) {
         [incompleteDownloadData writeToURL:[self incompleteDownloadTempPathForDownloadPath:request.resumableDownloadPath] atomically:YES];
     }
 
     // Load response from file and clean up if download task failed.
+    // 下载失败的话，就清除掉已经下载的文件
     if ([request.responseObject isKindOfClass:[NSURL class]]) {
         NSURL *url = request.responseObject;
         if (url.isFileURL && [[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
@@ -399,19 +433,20 @@
     }
 
     @autoreleasepool {
-        [request requestFailedPreprocessor];
+        [request requestFailedPreprocessor];  // 请求失败时的预处理，YTKRequest 子类可重写该方法
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [request toggleAccessoriesWillStopCallBack];
-        [request requestFailedFilter];
+        [request toggleAccessoriesWillStopCallBack];    // 通知插件请求即将回调
+        [request requestFailedFilter];                  // 请求完成时的自定义处理，可重写该方法
 
+        // 回调
         if (request.delegate != nil) {
             [request.delegate requestFailed:request];
         }
         if (request.failureCompletionBlock) {
             request.failureCompletionBlock(request);
         }
-        [request toggleAccessoriesDidStopCallBack];
+        [request toggleAccessoriesDidStopCallBack];  // 通知插件请求完成回调
     });
 }
 

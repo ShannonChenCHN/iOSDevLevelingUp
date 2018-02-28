@@ -106,7 +106,10 @@ NSString *const YTKRequestValidationErrorDomain = @"com.yuantiku.request.validat
 #pragma mark - Request Action
 
 - (void)start {
+    // AOP 通知“插件”请求开始
     [self toggleAccessoriesWillStartCallBack];
+    
+    // 交给 YTKNetworkAgent 去发起请求
     [[YTKNetworkAgent sharedAgent] addRequest:self];
 }
 

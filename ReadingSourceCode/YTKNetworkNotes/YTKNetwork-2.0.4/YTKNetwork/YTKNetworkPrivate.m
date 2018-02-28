@@ -47,6 +47,8 @@ void YTKLog(NSString *format, ...) {
 + (BOOL)validateJSON:(id)json withValidator:(id)jsonValidator {
     if ([json isKindOfClass:[NSDictionary class]] &&
         [jsonValidator isKindOfClass:[NSDictionary class]]) {
+        // 字典
+        
         NSDictionary * dict = json;
         NSDictionary * validator = jsonValidator;
         BOOL result = YES;
@@ -72,6 +74,8 @@ void YTKLog(NSString *format, ...) {
         return result;
     } else if ([json isKindOfClass:[NSArray class]] &&
                [jsonValidator isKindOfClass:[NSArray class]]) {
+        // 数组
+        
         NSArray * validatorArray = (NSArray *)jsonValidator;
         if (validatorArray.count > 0) {
             NSArray * array = json;
@@ -85,6 +89,8 @@ void YTKLog(NSString *format, ...) {
         }
         return YES;
     } else if ([json isKindOfClass:jsonValidator]) {
+        // 其他非容器类型
+        
         return YES;
     } else {
         return NO;
