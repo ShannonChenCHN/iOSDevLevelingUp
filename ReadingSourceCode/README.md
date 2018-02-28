@@ -18,7 +18,7 @@ IGListKit||[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/
 EGOTableViewPullRefresh|N/A|[EGOTableViewPullRefresh 学习笔记.md](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/EGOTableViewPullRefresh.md)
 RNCachingURLProtocol | |[笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/RNCachingURLProtocolNotes)
 STWebPDecoder | | [笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/STWebPDecoderNotes) 
-[YTKNetwork](https://github.com/yuantiku/YTKNetwork) || [笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/YTKNetworkNotes) 
+[YTKNetwork](https://github.com/yuantiku/YTKNetwork) | 2.0.4 | [笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/YTKNetworkNotes) 
 [RTNetworking](https://github.com/casatwy/RTNetworking) | | **TODO** 
 [Mantle](https://github.com/Mantle/Mantle#classforparsingjsondictionary) | 2.1.0 |  [笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/MantleNotes)  
 YYModel | | 
@@ -62,9 +62,7 @@ Repos|Version|Article
 
 ##### 延伸阅读
 
-- Mantle
-  - [《iOS进阶指南》试读之《Mantle解析》](http://www.jianshu.com/p/f49ddbf8a2ea)
-  - [iOS模型框架- Mantle 解读](http://www.jianshu.com/p/d9e66beedb8f)
+
 - YYModel
   - [YYModel源代码分析（一）整体介绍](http://www.jianshu.com/p/5428552be6ce)
   - [YYModel源代码分析（二）YYClassInfo](http://www.jianshu.com/p/012dbce17a50)
