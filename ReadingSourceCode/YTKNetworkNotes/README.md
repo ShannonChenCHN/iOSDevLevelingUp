@@ -75,13 +75,33 @@ YTKRequest 的 `- startWithCompletionBlockWithSuccess:failure:` 方法调用栈�
   - 缓存跟网络请求是分离的，如果需要在首次打开页面时展示上次请求缓存下来的数据，可以先直接调用 `-loadCacheWithError` 直接读取数据，解析后并显示，然后再调用 `-startWith...` 方法正常发起请求。而不是一次请求做两件事，杂糅在一起。
   - `cacheTimeInSeconds` 控制是否缓存接口数据，以及缓存的有效性，`ignoreCache` 决定是否读取缓存。
 
+- 数据存储
+  - Archive
+  - NSData
+
 3. 线程
 
-4. 翻页
+4. 内存管理
 
-5. 命令模式
+- 回调 block 置为 nil
+
+5. 设计模式
+
+- 命令模式
 
 6. 网络层的设计
+
+- 统一配置
+- 翻页
+- 缓存
+
+7. 数据结构和算法
+
+- 拓扑排序
+
+8. 网络
+
+- CDN
 
 
 ### 参考资料
