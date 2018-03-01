@@ -74,7 +74,9 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 #pragma mark Convenience methods
 
 + (id)modelOfClass:(Class)modelClass fromJSONDictionary:(NSDictionary *)JSONDictionary error:(NSError **)error {
-	MTLJSONAdapter *adapter = [[self alloc] initWithModelClass:modelClass];
+	
+    // 创建 adapter 类
+    MTLJSONAdapter *adapter = [[self alloc] initWithModelClass:modelClass];
 
 	return [adapter modelFromJSONDictionary:JSONDictionary error:error];
 }
@@ -140,8 +142,10 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 	_modelClass = modelClass;
 
+    // 属性名和字段名的映射
 	_JSONKeyPathsByPropertyKey = [modelClass JSONKeyPathsByPropertyKey];
 
+    // 获取所有属性
 	NSSet *propertyKeys = [self.modelClass propertyKeys];
 
 	for (NSString *mappedPropertyKey in _JSONKeyPathsByPropertyKey) {

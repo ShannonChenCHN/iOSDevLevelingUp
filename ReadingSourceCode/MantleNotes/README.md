@@ -1,4 +1,4 @@
-[Mantle](https://github.com/Mantle/Mantle)(v 2.1.0)
+# [Mantle](https://github.com/Mantle/Mantle)(v 2.1.0)
 -------
 
 ### 主要逻辑
@@ -9,14 +9,23 @@
 	- [MTLJSONAdapter modelFromJSONDictionary:error:]   // 返回 model 结果
 ```
 
+### 设计思路：从 JSON 映射到 Model 的原理
+
+
+### 代码结构
+
+### 细节
+#### 1. NSParameterAssert()
+
+
+### 性能
 
 ### 延伸阅读
-- [《iOS进阶指南》试读之《Mantle解析》](http://www.jianshu.com/p/f49ddbf8a2ea)
+- [Objective-C Runtime - 玉令天下](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/)
+- [Mantle实现分析 - 南峰子的技术博客](http://southpeak.github.io/2015/01/11/sourcecode-mantle/)
 - [iOS模型框架- Mantle 解读](http://www.jianshu.com/p/d9e66beedb8f)
-- YYModel 相关
-   - [YYModel源代码分析（一）整体介绍](http://www.jianshu.com/p/5428552be6ce)
-   - [YYModel源代码分析（二）YYClassInfo](http://www.jianshu.com/p/012dbce17a50)
-   - [YYModel源代码分析（三）NSObject+YYModel](http://www.jianshu.com/p/7cf8b43f5d88)
-   - [一篇文章全吃透—史上最全YYModel的使用详解](http://www.jianshu.com/p/25e678fa43d3)
-   - [手把手带你撸一个 YYModel 的精简版](http://www.jianshu.com/p/b822285f73ac)
-   - [揭秘 YYModel 的魔法](https://lision.me/yymodel_x01/)
+- [iOS JSON 模型转换库评测 - ibireme](https://blog.ibireme.com/2015/10/23/ios_model_framework_benchmark/)
+- [Mantle 源码分析](https://zhuanlan.zhihu.com/p/27381020)
+- [《iOS进阶指南》试读之《Mantle解析》](http://ios.jobbole.com/86119/)
+- [iOS开源库源码解析之Mantle](http://blog.csdn.net/hello_hwc/article/details/51548128)
+- [Mantle源代码阅读笔记](http://blog.csdn.net/colorapp/article/details/50277317)

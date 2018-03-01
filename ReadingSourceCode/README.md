@@ -87,6 +87,7 @@ Repos|Version|Article
   - [bang：React Native通信机制详解](http://blog.cnbang.net/tech/2698/)
   - [iOS 动态更新方案对比:JSPatch vs React Native](https://blog.cnbang.net/tech/3237/)
   - [bestswifter：React Native 从入门到原理](http://www.jianshu.com/p/978c4bd3a759)
+  - [折腾范儿の味精：ReactNative iOS源码解析（一）](http://awhisper.github.io/2016/06/24/ReactNative%E6%B5%81%E7%A8%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/)
 - 其他
   - [MBProgressHUD源码解析](https://www.jianshu.com/p/6a5bd5fd8124)
   - [VVeboTableView源码解析](https://www.jianshu.com/p/78027a3a2c41)
@@ -97,3 +98,6 @@ Repos|Version|Article
   - [AsyncDisplayKit 介绍系列](https://draveness.me/tag/ASDK/)
   - [消息转发机制与Aspects源码解析](http://blog.csdn.net/hello_hwc/article/details/72632075)
   - [说一些你也许不知道的DZNEmptyDataSet细节](http://www.jianshu.com/p/8b2db71db449)
+  - [iOS开源库源码解析之AsyncDispalyKit](http://blog.csdn.net/hello_hwc/article/details/51383470)
+  - [苹果核 - Tangram iOS版本框架结构解析](http://pingguohe.net/2017/04/24/tangram-ios-structure.html)
+  - [Sonic iOS 源码分析](http://beelearning.cn/2017/12/Sonic-iOS/)
