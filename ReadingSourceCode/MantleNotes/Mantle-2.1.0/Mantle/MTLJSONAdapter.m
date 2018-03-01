@@ -78,6 +78,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
     // 创建 adapter 类
     MTLJSONAdapter *adapter = [[self alloc] initWithModelClass:modelClass];
 
+    // 创建 model
 	return [adapter modelFromJSONDictionary:JSONDictionary error:error];
 }
 
@@ -142,21 +143,27 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 	_modelClass = modelClass;
 
-    // 属性名和字段名的映射
+    // 属性名和 keypath 的映射
 	_JSONKeyPathsByPropertyKey = [modelClass JSONKeyPathsByPropertyKey];
 
-    // 获取所有属性
+    // 获取所有属性名
 	NSSet *propertyKeys = [self.modelClass propertyKeys];
 
+    
+    // 检查 _JSONKeyPathsByPropertyKey 中的 key 和 value 是否都合法
 	for (NSString *mappedPropertyKey in _JSONKeyPathsByPropertyKey) {
+        // 检查 _JSONKeyPathsByPropertyKey 中的 key 都是 model 的属性名
 		if (![propertyKeys containsObject:mappedPropertyKey]) {
 			NSAssert(NO, @"%@ is not a property of %@.", mappedPropertyKey, modelClass);
 			return nil;
 		}
 
+        // 取出属性对应的字段名，判断 keypath 类型是否都符合要求
 		id value = _JSONKeyPathsByPropertyKey[mappedPropertyKey];
 
 		if ([value isKindOfClass:NSArray.class]) {
+            // keypath 是数组？
+            
 			for (NSString *keyPath in value) {
 				if ([keyPath isKindOfClass:NSString.class]) continue;
 
@@ -169,8 +176,10 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		}
 	}
 
+    // 解析各属性时的 transformer
 	_valueTransformersByPropertyKey = [self.class valueTransformersForModelClass:modelClass];
 
+    // 缓存 -JSONAdapterForModelClass:error: 中创建的 MTLJSONAdapter，只在解析的 model 类不是 self.class 时用到
 	_JSONAdaptersByModelClass = [NSMapTable strongToStrongObjectsMapTable];
 
 	return self;
@@ -261,8 +270,12 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 }
 
 - (id)modelFromJSONDictionary:(NSDictionary *)JSONDictionary error:(NSError **)error {
+    
+    // 如果指定了要解析的目标 model class，为什么是直接取 self.class 呢？因为有可能是 class cluster
 	if ([self.modelClass respondsToSelector:@selector(classForParsingJSONDictionary:)]) {
 		Class class = [self.modelClass classForParsingJSONDictionary:JSONDictionary];
+        
+        // class 为空的情况
 		if (class == nil) {
 			if (error != NULL) {
 				NSDictionary *userInfo = @{
@@ -276,27 +289,36 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 			return nil;
 		}
 
+        // 如果不是 self.class
 		if (class != self.modelClass) {
 			NSAssert([class conformsToProtocol:@protocol(MTLJSONSerializing)], @"Class %@ returned from +classForParsingJSONDictionary: does not conform to <MTLJSONSerializing>", class);
 
+            // 创建 Adapter
 			MTLJSONAdapter *otherAdapter = [self JSONAdapterForModelClass:class error:error];
 
+            // 创建 model
 			return [otherAdapter modelFromJSONDictionary:JSONDictionary error:error];
 		}
 	}
 
 	NSMutableDictionary *dictionaryValue = [[NSMutableDictionary alloc] initWithCapacity:JSONDictionary.count];
 
+    // 遍历属性名
 	for (NSString *propertyKey in [self.modelClass propertyKeys]) {
+        // 取出 keypath
 		id JSONKeyPaths = self.JSONKeyPathsByPropertyKey[propertyKey];
 
 		if (JSONKeyPaths == nil) continue;
 
+        // 从 JSONDictionary 中取出 propertyKey 对应的值
 		id value;
 
 		if ([JSONKeyPaths isKindOfClass:NSArray.class]) {
+            // 如果 keypath 是数组，就遍历数组
+            
 			NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
 
+            // 从 JSONDictionary 中找到 keypath 对应的值，并保存到临时字典中去，再赋值给 value
 			for (NSString *keyPath in JSONKeyPaths) {
 				BOOL success = NO;
 				id value = [JSONDictionary mtl_valueForJSONKeyPath:keyPath success:&success error:error];
@@ -308,6 +330,8 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 			value = dictionary;
 		} else {
+            // 如果不是数组，那就是字符串，直接从 JSONDictionary 中找到 keypath 对应的值，并赋值给 value
+            
 			BOOL success = NO;
 			value = [JSONDictionary mtl_valueForJSONKeyPath:JSONKeyPaths success:&success error:error];
 
@@ -316,13 +340,17 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 		if (value == nil) continue;
 
+        //
 		@try {
+            // 取出 transformer，如果不为空，就进行对 value 进行转换
 			NSValueTransformer *transformer = self.valueTransformersByPropertyKey[propertyKey];
 			if (transformer != nil) {
 				// Map NSNull -> nil for the transformer, and then back for the
 				// dictionary we're going to insert into.
+                // 先将 NSNull 转为 nil，以备 transform，然后再转回来
 				if ([value isEqual:NSNull.null]) value = nil;
 
+                // 转换 value
 				if ([transformer respondsToSelector:@selector(transformedValue:success:error:)]) {
 					id<MTLTransformerErrorHandling> errorHandlingTransformer = (id)transformer;
 
@@ -334,9 +362,11 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 					value = [transformer transformedValue:value];
 				}
 
+                // 将 nil 转回 NSNull
 				if (value == nil) value = NSNull.null;
 			}
 
+            // 将值保存到一对一映射属性的 dictionary 中
 			dictionaryValue[propertyKey] = value;
 		} @catch (NSException *ex) {
 			NSLog(@"*** Caught exception %@ parsing JSON key path \"%@\" from: %@", ex, JSONKeyPaths, JSONDictionary);
@@ -361,6 +391,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		}
 	}
 
+    // 使用最终的可以一对一映射属性的 dictionary 来初始化 model
 	id model = [self.modelClass modelWithDictionary:dictionaryValue error:error];
 
 	return [model validate:error] ? model : nil;
@@ -432,13 +463,17 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 	NSParameterAssert(modelClass != nil);
 	NSParameterAssert([modelClass conformsToProtocol:@protocol(MTLJSONSerializing)]);
 
+    // MARK: 为什么要加锁？
 	@synchronized(self) {
+        // 读取缓存
 		MTLJSONAdapter *result = [self.JSONAdaptersByModelClass objectForKey:modelClass];
 
 		if (result != nil) return result;
 
+        // 创建 Adapter
 		result = [[self.class alloc] initWithModelClass:modelClass];
 
+        // 写入缓存
 		if (result != nil) {
 			[self.JSONAdaptersByModelClass setObject:result forKey:modelClass];
 		}

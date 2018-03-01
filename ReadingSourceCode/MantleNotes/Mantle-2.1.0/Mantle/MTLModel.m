@@ -133,6 +133,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	self = [self init];
 	if (self == nil) return nil;
 
+    // 遍历字典，验证 value 通过后，再使用 KVC 设置属性值
 	for (NSString *key in dictionary) {
 		// Mark this as being autoreleased, because validateValue may return
 		// a new object to be stored in this variable (and we don't want ARC to

@@ -1,4 +1,4 @@
-# [Mantle](https://github.com/Mantle/Mantle)(v 2.1.0)
+# [Mantle](https://github.com/Mantle/Mantle)(v2.1.0)源码解析
 -------
 
 ### 主要逻辑
@@ -9,13 +9,25 @@
 	- [MTLJSONAdapter modelFromJSONDictionary:error:]   // 返回 model 结果
 ```
 
-### 设计思路：从 JSON 映射到 Model 的原理
+### 设计思路
+
+- 从 JSON 映射到 Model 的原理
+- 主要逻辑
+  - 获取所有属性名
+  - 获取 transformer（可选）
+  - 从 JSON Dictionary 中取出各属性名对应的值
+  - 按照 transformer 的规则转换属性值（可选）
+  - 使用 KVC 设置属性的值
 
 
 ### 代码结构
 
 ### 细节
 #### 1. NSParameterAssert()
+
+#### 2. NSMapTable
+
+
 
 
 ### 性能
