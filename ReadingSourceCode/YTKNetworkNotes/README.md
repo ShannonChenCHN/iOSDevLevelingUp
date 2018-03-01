@@ -97,7 +97,7 @@ YTKRequest 的 `- startWithCompletionBlockWithSuccess:failure:` 方法调用栈�
      - Archive
      - NSData
   - 存储路径
-  - 为什么文件名用 MD5 编码？
+  - 为什么文件名用 MD5 编码？（出于安全性考虑，因为 MD5 算法不可逆）
 
 3. 线程
 
@@ -136,7 +136,7 @@ YTKRequest 的 `- startWithCompletionBlockWithSuccess:failure:` 方法调用栈�
 
 9. 代码规范
 - 对于部分需要调用 super 的重载方法，使用 NS_REQUIRES_SUPER 标注，防止使用错误
-- 使用 NSParameterAssert 对一些 API 的输入进行限制，减少函数内部逻辑层级
+- 使用 NSParameterAssert 对一些 API 的输入进行限制，减少函数内部逻辑层级。NSParameterAssert 一般用来检查编译时的错误？
 
 
 ### 参考资料
