@@ -49,8 +49,8 @@ static dispatch_queue_t ytkrequest_cache_writing_queue() {
 
 @interface YTKCacheMetadata : NSObject<NSSecureCoding>
 
-@property (nonatomic, assign) long long version;                // 缓存版本，因为 api 的返回值可能数据结构有更新，所以 cache 的数据虽没有过期但已经不能用了。这个属性的值一般取自服务端返回数据中的某个字段的，重载 YTKRequest 的 -cacheVersion 方法时带上，如果 cacheVersion 和上次不一样，就会发请求。
-@property (nonatomic, strong) NSString *sensitiveDataString;    // 敏感数据，cacheSensitiveData 是在 cacheVersion 的基础上，再加上一些敏感数据，例如，加上 userId，这样当 userId 变化的时候，即使 cacheVersion 没有变，也会重新发请求
+@property (nonatomic, assign) long long version;                // 缓存版本，因为 api 的返回值可能数据结构有更新，所以 cache 的数据虽没有过期但已经不能用了。这个属性的值一般取自服务端返回数据中的某个字段的，重载 YTKRequest 的 -cacheVersion 方法时带上，如果 cacheVersion 和上次不一样，就会发请求。 https://github.com/yuantiku/YTKNetwork/issues/198
+@property (nonatomic, strong) NSString *sensitiveDataString;    // 敏感数据，cacheSensitiveData 是在 cacheVersion 的基础上，再加上一些敏感数据，例如，加上 userId，这样当 userId 变化的时候，即使 cacheVersion 没有变，也会重新发请求 https://github.com/yuantiku/YTKNetwork/issues/198
 @property (nonatomic, assign) NSStringEncoding stringEncoding;  // 编码方式
 @property (nonatomic, strong) NSDate *creationDate;             // 创建时间
 @property (nonatomic, strong) NSString *appVersionString;       // APP 版本
@@ -123,6 +123,7 @@ static dispatch_queue_t ytkrequest_cache_writing_queue() {
         return;
     }
 
+    // 用来标记返回的数据是否来自缓存
     _dataFromCache = YES;
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -154,10 +155,14 @@ static dispatch_queue_t ytkrequest_cache_writing_queue() {
 
     // 写入缓存
     if (self.writeCacheAsynchronously) {
+        // 如果是异步的，就在一个串行队列 ytkrequest_cache_writing_queue 中处理
+        
         dispatch_async(ytkrequest_cache_writing_queue(), ^{
             [self saveResponseDataToCacheFile:[super responseData]];
         });
     } else {
+        // 否则就直接在主线程处理
+        
         [self saveResponseDataToCacheFile:[super responseData]];
     }
 }

@@ -38,7 +38,9 @@
     self = [super init];
     if (self) {
         _requestArray = [requestArray copy];
-        _finishedCount = 0;
+        _finishedCount = 0; // 用来记录已经成功返回的请求个数，如果 _finishedCount 和 _requestArray.count 值相等则全部请求完毕
+        
+        // 检查类型
         for (YTKRequest * req in _requestArray) {
             if (![req isKindOfClass:[YTKRequest class]]) {
                 YTKLog(@"Error, request item must be YTKRequest instance.");
@@ -50,16 +52,17 @@
 }
 
 - (void)start {
+    // 防止重复调用
     if (_finishedCount > 0) {
         YTKLog(@"Error! Batch request has already started.");
         return;
     }
     _failedRequest = nil;
-    [[YTKBatchRequestAgent sharedAgent] addBatchRequest:self];
-    [self toggleAccessoriesWillStartCallBack];
+    [[YTKBatchRequestAgent sharedAgent] addBatchRequest:self]; // 添加到 YTKBatchRequestAgent 中进行保活
+    [self toggleAccessoriesWillStartCallBack];  // 通知插件请求即将开始
     for (YTKRequest * req in _requestArray) {
         req.delegate = self;
-        [req clearCompletionBlock];
+        [req clearCompletionBlock]; // 外面是不允许设置单个 request 的回调的：https://github.com/yuantiku/YTKNetwork/issues/266
         [req start];
     }
 }
@@ -67,9 +70,9 @@
 - (void)stop {
     [self toggleAccessoriesWillStopCallBack];
     _delegate = nil;
-    [self clearRequest];
+    [self clearRequest]; // 取消所有的子请求，并且置空回调 block
     [self toggleAccessoriesDidStopCallBack];
-    [[YTKBatchRequestAgent sharedAgent] removeBatchRequest:self];
+    [[YTKBatchRequestAgent sharedAgent] removeBatchRequest:self];  // 从 YTKBatchRequestAgent 中移除
 }
 
 - (void)startWithCompletionBlockWithSuccess:(void (^)(YTKBatchRequest *batchRequest))success
@@ -109,6 +112,8 @@
 
 - (void)requestFinished:(YTKRequest *)request {
     _finishedCount++;
+    
+    // 如果 _finishedCount 和 _requestArray.count 值相等，则全部请求完毕
     if (_finishedCount == _requestArray.count) {
         [self toggleAccessoriesWillStopCallBack];
         if ([_delegate respondsToSelector:@selector(batchRequestFinished:)]) {
@@ -126,10 +131,13 @@
 - (void)requestFailed:(YTKRequest *)request {
     _failedRequest = request;
     [self toggleAccessoriesWillStopCallBack];
+    
     // Stop
+    // 只要与一个请求失败了，就取消所有未完成的请求
     for (YTKRequest *req in _requestArray) {
         [req stop];
     }
+    
     // Callback
     if ([_delegate respondsToSelector:@selector(batchRequestFailed:)]) {
         [_delegate batchRequestFailed:self];

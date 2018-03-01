@@ -259,19 +259,25 @@
     NSParameterAssert(request != nil);
 
     if (request.resumableDownloadPath) {
+        // 如果是下载请求，需要将数据保存起来，留作断点下载
+        
         NSURLSessionDownloadTask *requestTask = (NSURLSessionDownloadTask *)request.requestTask;
         [requestTask cancelByProducingResumeData:^(NSData *resumeData) {
             NSURL *localUrl = [self incompleteDownloadTempPathForDownloadPath:request.resumableDownloadPath];
             [resumeData writeToURL:localUrl atomically:YES];
         }];
     } else {
+        // 否则就直接 cancel 掉
+        
         [request.requestTask cancel];
     }
 
+    // 清除保存的 request 相关数据： YTKRequest 对象和回调 block
     [self removeRequestFromRecord:request];
     [request clearCompletionBlock];
 }
 
+/// 取消所有请求：从 _requestsRecord 中取出所有的 request，然后一个一个 stop
 - (void)cancelAllRequests {
     Lock();
     NSArray *allKeys = [_requestsRecord allKeys];
@@ -284,6 +290,10 @@
             Unlock();
             // We are using non-recursive lock.
             // Do not lock `stop`, otherwise deadlock may occur.
+            // 因为这里从 _requestsRecord 中读取 request 时加了锁，
+            // 而 -stop 方法中又会调用到 -cancelRequest 和 -removeRequestFromRecord: 方法，
+            // removeRequestFromRecord: 方法中有一个从 _requestsRecord 中移除 request 的操作，这个移除操作也是加了锁的
+            // 所以，如果对这个 -stop 的调用也加了锁，就会导致死锁
             [request stop];
         }
     }
@@ -316,6 +326,7 @@
 }
 
 - (void)handleRequestResult:(NSURLSessionTask *)task responseObject:(id)responseObject error:(NSError *)error {
+    // MARK: 这里为什么需要加锁？
     Lock();
     YTKBaseRequest *request = _requestsRecord[@(task.taskIdentifier)];
     Unlock();
@@ -582,6 +593,7 @@
 
 - (NSURL *)incompleteDownloadTempPathForDownloadPath:(NSString *)downloadPath {
     NSString *tempPath = nil;
+    // MARK: 文件名为什么用 MD5 处理？
     NSString *md5URLString = [YTKNetworkUtils md5StringFromString:downloadPath];
     tempPath = [[self incompleteDownloadTempCacheFolder] stringByAppendingPathComponent:md5URLString];
     return [NSURL fileURLWithPath:tempPath];

@@ -113,6 +113,7 @@ NSString *const YTKRequestValidationErrorDomain = @"com.yuantiku.request.validat
     [[YTKNetworkAgent sharedAgent] addRequest:self];
 }
 
+/// 不同于系统的 NSURLSession 的设计，YTKNetwork 在 cancel 请求的时候并不会回调
 - (void)stop {
     [self toggleAccessoriesWillStopCallBack];
     self.delegate = nil;
