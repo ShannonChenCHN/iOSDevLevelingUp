@@ -155,17 +155,23 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	Class cls = self;
 	BOOL stop = NO;
 
+    // 从当前类到父类，一层一层遍历属性，直到 MTLModel 为止
 	while (!stop && ![cls isEqual:MTLModel.class]) {
 		unsigned count = 0;
+        // 读取当前类的属性列表
 		objc_property_t *properties = class_copyPropertyList(cls, &count);
 
+        // 向父类继续查找
 		cls = cls.superclass;
 		if (properties == NULL) continue;
 
+        // 当这块 scope 的代码执行完了，最后在执行这里的代码，也就是释放 properties 指针
+        // MARK: 为什么不直接放到最后执行呢？
 		@onExit {
 			free(properties);
 		};
 
+        // 遍历当前这一层类的属性列表，并传给外面的 block
 		for (unsigned i = 0; i < count; i++) {
 			block(properties[i], &stop);
 			if (stop) break;
@@ -173,12 +179,16 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	}
 }
 
+/// 获取所有的属性名
 + (NSSet *)propertyKeys {
+    // 读取缓存
 	NSSet *cachedKeys = objc_getAssociatedObject(self, MTLModelCachedPropertyKeysKey);
 	if (cachedKeys != nil) return cachedKeys;
 
+    // 获取所有的属性名
 	NSMutableSet *keys = [NSMutableSet set];
 
+    // 遍历所有属性
 	[self enumeratePropertiesUsingBlock:^(objc_property_t property, BOOL *stop) {
 		NSString *key = @(property_getName(property));
 
@@ -189,6 +199,8 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 
 	// It doesn't really matter if we replace another thread's work, since we do
 	// it atomically and the result should be the same.
+    // MARK: 上面这段注释啥意思？
+    // 将获取的属性名列表缓存起来
 	objc_setAssociatedObject(self, MTLModelCachedPropertyKeysKey, keys, OBJC_ASSOCIATION_COPY);
 
 	return keys;

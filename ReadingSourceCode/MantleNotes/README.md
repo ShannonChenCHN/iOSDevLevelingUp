@@ -27,13 +27,16 @@
 
 #### 2. NSMapTable
 
+#### 3. class_copyPropertyList、objc_property_t
 
+#### 4. @onExit
 
 
 ### 性能
 
 ### 延伸阅读
 - [Objective-C Runtime - 玉令天下](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/)
+- [Objective-C Runtime Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048)
 - [Mantle实现分析 - 南峰子的技术博客](http://southpeak.github.io/2015/01/11/sourcecode-mantle/)
 - [iOS模型框架- Mantle 解读](http://www.jianshu.com/p/d9e66beedb8f)
 - [iOS JSON 模型转换库评测 - ibireme](https://blog.ibireme.com/2015/10/23/ios_model_framework_benchmark/)
