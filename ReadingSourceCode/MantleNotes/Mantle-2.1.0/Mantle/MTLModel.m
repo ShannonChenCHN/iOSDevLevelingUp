@@ -181,7 +181,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 
 /// 获取所有的属性名
 + (NSSet *)propertyKeys {
-    // 读取缓存
+    // 读取缓存，如果有缓存就直接返回缓存
 	NSSet *cachedKeys = objc_getAssociatedObject(self, MTLModelCachedPropertyKeysKey);
 	if (cachedKeys != nil) return cachedKeys;
 
@@ -192,6 +192,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	[self enumeratePropertiesUsingBlock:^(objc_property_t property, BOOL *stop) {
 		NSString *key = @(property_getName(property));
 
+        // 筛选掉不需要转化的属性名
 		if ([self storageBehaviorForPropertyWithKey:key] != MTLPropertyStorageNone) {
 			 [keys addObject:key];
 		}
@@ -234,26 +235,42 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	return [self dictionaryWithValuesForKeys:keys.allObjects];
 }
 
+
+// 计算一个属性 key 值的存储行为，也就是说 JSON 解析时是否需要转化
 + (MTLPropertyStorage)storageBehaviorForPropertyWithKey:(NSString *)propertyKey {
+    // 获取属性名对应的 objc_property_t
 	objc_property_t property = class_getProperty(self.class, propertyKey.UTF8String);
 
 	if (property == NULL) return MTLPropertyStorageNone;
 
+    // 将 objc_property_t 类型的属性信息转成 mtl_propertyAttributes 类型
 	mtl_propertyAttributes *attributes = mtl_copyPropertyAttributes(property);
+    
+    // 这段代码块所在的 scope 执行完后，最后执行这段代码
 	@onExit {
 		free(attributes);
-	};
+	}; 
 	
+    // 是否有 getter 和 setter
 	BOOL hasGetter = [self instancesRespondToSelector:attributes->getter];
 	BOOL hasSetter = [self instancesRespondToSelector:attributes->setter];
+    
+
 	if (!attributes->dynamic && attributes->ivar == NULL && !hasGetter && !hasSetter) {
+        // 没有声明 @dynamic（@dynamic 就是要来告诉编译器，代码中用 @dynamic 修饰的属性，其 getter 和 setter 方法会在程序运行的时候或者用其他方式动态绑定，无须编译器自动合成，用 @dynamic 声明以便让编译器通过编译）
+        // 该属性所对应的实例变量值为 NULL
+        // 没有 getter 和 setter
 		return MTLPropertyStorageNone;
 	} else if (attributes->readonly && attributes->ivar == NULL) {
+        // 声明了 readonly，并且该属性所对应的实例变量值为 NULL
+        
 		if ([self isEqual:MTLModel.class]) {
+            // 如果是 MTLModel 的属性，就不参与转换
 			return MTLPropertyStorageNone;
 		} else {
 			// Check superclass in case the subclass redeclares a property that
 			// falls through
+            // 如果不是 MTLModel 的属性，就向父类查找，以防该类重写了父类的这个属性
 			return [self.superclass storageBehaviorForPropertyWithKey:propertyKey];
 		}
 	} else {

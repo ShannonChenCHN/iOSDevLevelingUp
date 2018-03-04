@@ -9,18 +9,24 @@
 #import "MTLReflection.h"
 #import <objc/runtime.h>
 
+// 生成“属性名+JSONTransformer”的 selector
 SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
+    // 1. 计算字符串长度
 	NSUInteger keyLength = [key maximumLengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 	NSUInteger suffixLength = strlen(suffix);
 
+    // 2. 拼接成 C 字符串
 	char selector[keyLength + suffixLength + 1];
 
+    // 2.1 将 NSString 类型的属性名写入到 selector buffer 中去
 	BOOL success = [key getBytes:selector maxLength:keyLength usedLength:&keyLength encoding:NSUTF8StringEncoding options:0 range:NSMakeRange(0, key.length) remainingRange:NULL];
 	if (!success) return NULL;
 
+    // 2.2 将 JSONTransformer 拼接到属性名后面
 	memcpy(selector + keyLength, suffix, suffixLength);
 	selector[keyLength + suffixLength] = '\0';
 
+    // 3. 通过 C 字符串创建一个 selector
 	return sel_registerName(selector);
 }
 

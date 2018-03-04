@@ -19,6 +19,12 @@
   - 按照 transformer 的规则转换属性值（可选）
   - 使用 KVC 设置属性的值
 
+### 相关知识点
+
+- 获取属性列表
+- 判断属性类型
+
+
 
 ### 代码结构
 
@@ -30,6 +36,22 @@
 #### 3. class_copyPropertyList、objc_property_t
 
 #### 4. @onExit
+
+#### 5. C 函数
+
+- `memcpy`
+- 函数指针
+
+	```
+	// 这里为什么不用 performSelector: 方法？
+	IMP imp = [modelClass methodForSelector:selector];
+	NSValueTransformer * (*function)(id, SEL) = (__typeof__(function))imp;
+	NSValueTransformer *transformer = function(modelClass, selector);
+	
+	if (transformer != nil) result[key] = transformer;
+	
+	```
+	
 
 
 ### 性能

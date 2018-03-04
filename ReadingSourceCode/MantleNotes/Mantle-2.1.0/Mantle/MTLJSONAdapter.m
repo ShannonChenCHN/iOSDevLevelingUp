@@ -146,19 +146,19 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
     // 属性名和 keypath 的映射
 	_JSONKeyPathsByPropertyKey = [modelClass JSONKeyPathsByPropertyKey];
 
-    // 获取所有属性名
+    // 获取所有参与 JSON 解析的属性名
 	NSSet *propertyKeys = [self.modelClass propertyKeys];
 
     
     // 检查 _JSONKeyPathsByPropertyKey 中的 key 和 value 是否都合法
 	for (NSString *mappedPropertyKey in _JSONKeyPathsByPropertyKey) {
-        // 检查 _JSONKeyPathsByPropertyKey 中的 key 都是 model 的属性名
+        // 检查 _JSONKeyPathsByPropertyKey 中的 key 是否都是 model 的属性名
 		if (![propertyKeys containsObject:mappedPropertyKey]) {
 			NSAssert(NO, @"%@ is not a property of %@.", mappedPropertyKey, modelClass);
 			return nil;
 		}
 
-        // 取出属性对应的字段名，判断 keypath 类型是否都符合要求
+        // 取出属性对应的字段名，判断 keypath 类型是否都符合要求，要么是包含 NSString 的 NSArray，要么就是 NSString
 		id value = _JSONKeyPathsByPropertyKey[mappedPropertyKey];
 
 		if ([value isKindOfClass:NSArray.class]) {
@@ -340,7 +340,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 		if (value == nil) continue;
 
-        //
+        // 这里为什么要用 Try-catch？
 		@try {
             // 取出 transformer，如果不为空，就进行对 value 进行转换
 			NSValueTransformer *transformer = self.valueTransformersByPropertyKey[propertyKey];
@@ -404,8 +404,12 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 
 	for (NSString *key in [modelClass propertyKeys]) {
+        
+        // A. 如果 model 类实现了 “属性名+JSONTransformer” 的方法
+        // 将属性名和 JSONTransformer 拼接后生成一个 selector
 		SEL selector = MTLSelectorWithKeyPattern(key, "JSONTransformer");
 		if ([modelClass respondsToSelector:selector]) {
+            // MARK: 这里为什么不用 performSelector: 方法？
 			IMP imp = [modelClass methodForSelector:selector];
 			NSValueTransformer * (*function)(id, SEL) = (__typeof__(function))imp;
 			NSValueTransformer *transformer = function(modelClass, selector);
@@ -414,7 +418,8 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 			continue;
 		}
-
+ 
+        // B. 如果 model 类实现了 +JSONTransformerForKey: 的方法
 		if ([modelClass respondsToSelector:@selector(JSONTransformerForKey:)]) {
 			NSValueTransformer *transformer = [modelClass JSONTransformerForKey:key];
 
@@ -423,6 +428,8 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 				continue;
 			}
 		}
+        
+        // C. 如果上面两个都没实现
 
 		objc_property_t property = class_getProperty(modelClass, key.UTF8String);
 
@@ -436,6 +443,8 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		NSValueTransformer *transformer = nil;
 
 		if (*(attributes->type) == *(@encode(id))) {
+            // 如果是 id 类型
+            
 			Class propertyClass = attributes->objectClass;
 
 			if (propertyClass != nil) {
@@ -450,6 +459,9 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 			
 			if (transformer == nil) transformer = [NSValueTransformer mtl_validatingTransformerForClass:propertyClass ?: NSObject.class];
 		} else {
+            // 如果不是 id 类型
+            
+            // 如果是 BOOL 类型，就默认转成 BOOL 类型，如果不是，则用 NSValue 的标准去验证
 			transformer = [self transformerForModelPropertiesOfObjCType:attributes->type] ?: [NSValueTransformer mtl_validatingTransformerForClass:NSValue.class];
 		}
 
@@ -486,6 +498,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 	return propertyKeys;
 }
 
+// 通过“类名+JSONTransformer 的方法”获取 transformer
 + (NSValueTransformer *)transformerForModelPropertiesOfClass:(Class)modelClass {
 	NSParameterAssert(modelClass != nil);
 
