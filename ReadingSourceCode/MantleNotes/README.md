@@ -13,10 +13,10 @@
 
 - 从 JSON 映射到 Model 的原理
 - 主要逻辑
-  - 获取所有属性名
-  - 获取 transformer（可选）
+  - 获取所有需要设置值的属性名
+  - 获取 transformer（非核心逻辑）
   - 从 JSON Dictionary 中取出各属性名对应的值
-  - 按照 transformer 的规则转换属性值（可选）
+  - 按照 transformer 的规则转换属性值（非核心逻辑）
   - 使用 KVC 设置属性的值
 
 ### 相关知识点

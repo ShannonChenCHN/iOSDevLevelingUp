@@ -443,25 +443,28 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		NSValueTransformer *transformer = nil;
 
 		if (*(attributes->type) == *(@encode(id))) {
-            // 如果是 id 类型
+            // 如果是 Objective-C 对象类型
             
 			Class propertyClass = attributes->objectClass;
 
 			if (propertyClass != nil) {
+                // 自己实现的转换器，为系统类转换提供的方法，比如 +NSURLJSONTransformer，+NSUUIDJSONTransformer
 				transformer = [self transformerForModelPropertiesOfClass:propertyClass];
 			}
 
 
 			// For user-defined MTLModel, try parse it with dictionaryTransformer.
+            // 如果是用户自定义的 model，可以尝试用默认的 dictionaryTransformer 来转换
 			if (nil == transformer && [propertyClass conformsToProtocol:@protocol(MTLJSONSerializing)]) {
 				transformer = [self dictionaryTransformerWithModelClass:propertyClass];
 			}
 			
+            // 验证一下对象类型对不对
 			if (transformer == nil) transformer = [NSValueTransformer mtl_validatingTransformerForClass:propertyClass ?: NSObject.class];
 		} else {
-            // 如果不是 id 类型
+            // 如果不是 对象 类型
             
-            // 如果是 BOOL 类型，就默认转成 BOOL 类型，如果不是，则用 NSValue 的标准去验证
+            // 如果是 BOOL 类型，就默认转成 BOOL 类型，如果不是，则用 NSValue 的标准去验证一下
 			transformer = [self transformerForModelPropertiesOfObjCType:attributes->type] ?: [NSValueTransformer mtl_validatingTransformerForClass:NSValue.class];
 		}
 
