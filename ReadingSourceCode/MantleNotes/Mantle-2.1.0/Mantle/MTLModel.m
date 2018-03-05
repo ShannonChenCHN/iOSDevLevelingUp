@@ -207,6 +207,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	return keys;
 }
 
+/// 临时性、一次性的 property
 + (NSSet *)transitoryPropertyKeys {
 	NSSet *transitoryPropertyKeys = objc_getAssociatedObject(self, MTLModelCachedTransitoryPropertyKeysKey);
 
@@ -218,6 +219,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	return transitoryPropertyKeys;
 }
 
+/// 永久性的 property
 + (NSSet *)permanentPropertyKeys {
 	NSSet *permanentPropertyKeys = objc_getAssociatedObject(self, MTLModelCachedPermanentPropertyKeysKey);
 
@@ -229,9 +231,11 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	return permanentPropertyKeys;
 }
 
+/// 根据所有需要转换的属性名，生成一个 key 为属性名， value 为属性值的字典
 - (NSDictionary *)dictionaryValue {
 	NSSet *keys = [self.class.transitoryPropertyKeys setByAddingObjectsFromSet:self.class.permanentPropertyKeys];
 
+    // 利用 KVC 将对象属性转成字典
 	return [self dictionaryWithValuesForKeys:keys.allObjects];
 }
 

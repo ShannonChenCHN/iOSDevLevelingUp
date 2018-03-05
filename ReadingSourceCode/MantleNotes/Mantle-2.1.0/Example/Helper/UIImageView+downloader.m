@@ -18,8 +18,11 @@
     
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
-        UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
-        self.image = downloadedImage;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
+            self.image = downloadedImage;
+        });
+        
     }];
     
     [task resume];

@@ -21,11 +21,27 @@
 
 ### 相关知识点
 
+#### 1. runtime
 - 获取属性列表
 - 判断属性类型
 
+#### 2. KVC
+
+- `-dictionaryWithValuesForKeys:`
+- `-setValue:forKeyPath:`
+
+#### 3. `NSValueTransformer`
 
 ### 代码结构
+
+核心类：
+
+- MTLModel
+- MTLJSONAdapter
+
+辅助类：
+
+- MTLValueTransformer
 
 ### 细节
 #### 1. NSParameterAssert()
@@ -50,8 +66,18 @@
 	if (transformer != nil) result[key] = transformer;
 	
 	```
-	
-- `NSValueTransformer`
+
+#### 6. `-arrayWithCapacity:` 和 `-array`方法
+
+发现 Mantle 跟 AFNetworking 一样，很多地方在创建数组时用的是 `-arrayWithCapacity:` 方法
+
+参考：
+
+- [The Foundation Collection Classes - objc.io](https://www.objc.io/issues/7-foundation/collections/#should_i_use_arraywithcapacity)
+- [Benchmarking - NSHipster](http://nshipster.cn/benchmarking/)
+- [What is the advantage of using arrayWithCapacity](https://stackoverflow.com/a/24958401)
+- [What is advantage of using arrayWithCapacity than using array?](https://stackoverflow.com/a/7141214)
+
 
 ### 性能
 
