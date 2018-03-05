@@ -52,10 +52,14 @@
 
 #### 4. @onExit
 
-#### 5. C 函数
+#### 5. C 语言
 
 - `memcpy`
-- 函数指针
+- `int	 strcmp(const char *__s1, const char *__c);` 查找字符串s中首次出现字符c的位置
+- `strncpy`
+- `void *calloc(size_t n, size_t size);` 在内存的动态存储区中分配n个长度为size的连续空间，函数返回一个指向分配起始地址的指针；如果分配不成功，返回NULL。
+- [利用指针计算字符串的长度](http://www.cnblogs.com/youxin/p/3232485.html)
+- 函数指针的调用比 Objective-C 的消息发送更快
 
 	```
 	// 这里为什么不用 performSelector: 方法？
