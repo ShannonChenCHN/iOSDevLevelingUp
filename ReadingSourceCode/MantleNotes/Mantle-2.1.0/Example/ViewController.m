@@ -43,6 +43,7 @@
         NSLog(@"model: error: %@", modelError);
     }
     
+    NSDictionary *JSONDictionary = [MTLJSONAdapter JSONDictionaryFromModel:issue error:nil];
     
     // 更新界面
     self.nameLabel.text = issue.assignee.name;

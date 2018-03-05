@@ -83,6 +83,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 }
 
 + (NSArray *)modelsOfClass:(Class)modelClass fromJSONArray:(NSArray *)JSONArray error:(NSError **)error {
+    // 先判断参数是否合法
 	if (JSONArray == nil || ![JSONArray isKindOfClass:NSArray.class]) {
 		if (error != NULL) {
 			NSDictionary *userInfo = @{
@@ -94,6 +95,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		return nil;
 	}
 
+    // 遍历数组，逐个解析
 	NSMutableArray *models = [NSMutableArray arrayWithCapacity:JSONArray.count];
 	for (NSDictionary *JSONDictionary in JSONArray){
 		MTLModel *model = [self modelOfClass:modelClass fromJSONDictionary:JSONDictionary error:error];
@@ -191,14 +193,18 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 	NSParameterAssert(model != nil);
 	NSParameterAssert([model isKindOfClass:self.modelClass]);
 
+    
 	if (self.modelClass != model.class) {
 		MTLJSONAdapter *otherAdapter = [self JSONAdapterForModelClass:model.class error:error];
 
 		return [otherAdapter JSONDictionaryFromModel:model error:error];
 	}
 
+    // 所有需要解析的属性名
 	NSSet *propertyKeysToSerialize = [self serializablePropertyKeys:[NSSet setWithArray:self.JSONKeyPathsByPropertyKey.allKeys] forModel:model];
 
+    // 将所有的属性转成 NSDictionary
+    // 从属性转成的 NSDictionary 中筛选出需要解析的 key-value，因为不一定所有的属性都需要转化
 	NSDictionary *dictionaryValue = [model.dictionaryValue dictionaryWithValuesForKeys:propertyKeysToSerialize.allObjects];
 	NSMutableDictionary *JSONDictionary = [[NSMutableDictionary alloc] initWithCapacity:dictionaryValue.count];
 
@@ -206,10 +212,13 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 	__block NSError *tmpError = nil;
 
 	[dictionaryValue enumerateKeysAndObjectsUsingBlock:^(NSString *propertyKey, id value, BOOL *stop) {
+        
 		id JSONKeyPaths = self.JSONKeyPathsByPropertyKey[propertyKey];
 
+        // 如果 JSONKeyPathsByPropertyKey 不包含这个 propertyKey 就忽略掉
 		if (JSONKeyPaths == nil) return;
 
+        // 取出转换器对属性值进行转换
 		NSValueTransformer *transformer = self.valueTransformersByPropertyKey[propertyKey];
 		if ([transformer.class allowsReverseTransformation]) {
 			// Map NSNull -> nil for the transformer, and then back for the
@@ -230,9 +239,14 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 			}
 		}
 
-		void (^createComponents)(id, NSString *) = ^(id obj, NSString *keyPath) {
-			NSArray *keyPathComponents = [keyPath componentsSeparatedByString:@"."];
+        void (^createComponents)(id, NSString *) = ^(id obj, NSString *keyPath) {
+            // JSONKeyPathsByPropertyKey 示例：@{@"reporterLogin": @"assignee.login"}
+			NSArray *keyPathComponents = [keyPath componentsSeparatedByString:@"."]; // @[@"assignee",  @"login"]
 
+            // 示例：
+            // 第一步：@{}
+            // 第二步：@{@"assignee" : @{}}
+            // 第三步：@{@"assignee" : @{login : @""}}
 			// Set up dictionaries at each step of the key path.
 			for (NSString *component in keyPathComponents) {
 				if ([obj valueForKey:component] == nil) {
@@ -245,12 +259,17 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 			}
 		};
 
+        // 设置属性值给 Dictionary
+        
+        // JSONKeyPathsByPropertyKey 示例：@{@"reporterLogin": @"assignee.login"}
 		if ([JSONKeyPaths isKindOfClass:NSString.class]) {
 			createComponents(JSONDictionary, JSONKeyPaths);
 
+            // KVC 设置值
 			[JSONDictionary setValue:value forKeyPath:JSONKeyPaths];
 		}
 
+        // JSONKeyPathsByPropertyKey 示例：@{@"point": @[@"longitude", @"latitude"]}
 		if ([JSONKeyPaths isKindOfClass:NSArray.class]) {
 			for (NSString *JSONKeyPath in JSONKeyPaths) {
 				createComponents(JSONDictionary, JSONKeyPath);
@@ -271,7 +290,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 - (id)modelFromJSONDictionary:(NSDictionary *)JSONDictionary error:(NSError **)error {
     
-    // 如果指定了要解析的目标 model class，为什么是直接取 self.class 呢？因为有可能是 class cluster
+    // 如果指定了要解析的目标 model class，就创建 model class 对应的 adapter 去解析（为什么不是直接取 self.class 呢？因为有可能是 class cluster）
 	if ([self.modelClass respondsToSelector:@selector(classForParsingJSONDictionary:)]) {
 		Class class = [self.modelClass classForParsingJSONDictionary:JSONDictionary];
         
@@ -308,6 +327,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
         // 取出 keypath
 		id JSONKeyPaths = self.JSONKeyPathsByPropertyKey[propertyKey];
 
+        // 如果 JSONKeyPathsByPropertyKey 不包含这个 propertyKey，就忽略掉
 		if (JSONKeyPaths == nil) continue;
 
         // 从 JSONDictionary 中取出 propertyKey 对应的值
@@ -340,7 +360,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 		if (value == nil) continue;
 
-        // 这里为什么要用 Try-catch？
+        // MARK: 这里为什么要用 Try-catch？
 		@try {
             // 取出 transformer，如果不为空，就进行对 value 进行转换
 			NSValueTransformer *transformer = self.valueTransformersByPropertyKey[propertyKey];
@@ -448,18 +468,18 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 			Class propertyClass = attributes->objectClass;
 
 			if (propertyClass != nil) {
-                // 自己实现的转换器，为系统类转换提供的方法，比如 +NSURLJSONTransformer，+NSUUIDJSONTransformer
+                // MTLJSONAdapter 自己实现的转换器，主要是为了将一些基础类（NSString等）转换成其他类（NSURL等），比如 +NSURLJSONTransformer，+NSUUIDJSONTransformer
 				transformer = [self transformerForModelPropertiesOfClass:propertyClass];
 			}
 
 
 			// For user-defined MTLModel, try parse it with dictionaryTransformer.
-            // 如果是用户自定义的 model，可以尝试用默认的 dictionaryTransformer 来转换
+            // 如果是用户自定义的 model（遵守 MTLJSONSerializing 协议），可以尝试用默认的 dictionaryTransformer 来转换
 			if (nil == transformer && [propertyClass conformsToProtocol:@protocol(MTLJSONSerializing)]) {
 				transformer = [self dictionaryTransformerWithModelClass:propertyClass];
 			}
 			
-            // 验证一下对象类型对不对
+            // 如果 transformer 还是为空的话，就验证一下对象类型对不对
 			if (transformer == nil) transformer = [NSValueTransformer mtl_validatingTransformerForClass:propertyClass ?: NSObject.class];
 		} else {
             // 如果不是 对象 类型
@@ -529,6 +549,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 
 @implementation MTLJSONAdapter (ValueTransformers)
 
+// 根据类名生成 “字典->model” 的转换器
 + (NSValueTransformer<MTLTransformerErrorHandling> *)dictionaryTransformerWithModelClass:(Class)modelClass {
 	NSParameterAssert([modelClass conformsToProtocol:@protocol(MTLModel)]);
 	NSParameterAssert([modelClass conformsToProtocol:@protocol(MTLJSONSerializing)]);
@@ -538,6 +559,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		transformerUsingForwardBlock:^ id (id JSONDictionary, BOOL *success, NSError **error) {
 			if (JSONDictionary == nil) return nil;
 			
+            // 先判断是不是 NSDictionary ？
 			if (![JSONDictionary isKindOfClass:NSDictionary.class]) {
 				if (error != NULL) {
 					NSDictionary *userInfo = @{
@@ -552,6 +574,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 				return nil;
 			}
 
+            // 解析数据
 			if (!adapter) {
 				adapter = [[self alloc] initWithModelClass:modelClass];
 			}
@@ -565,6 +588,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		reverseBlock:^ NSDictionary * (id model, BOOL *success, NSError **error) {
 			if (model == nil) return nil;
 			
+            // 先检查是否遵循了 MTLModel 协议和 MTLJSONSerializing 协议
 			if (![model conformsToProtocol:@protocol(MTLModel)] || ![model conformsToProtocol:@protocol(MTLJSONSerializing)]) {
 				if (error != NULL) {
 					NSDictionary *userInfo = @{
@@ -579,6 +603,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 				return nil;
 			}
 
+            // 将 model 转成 NSDictionary
 			if (!adapter) {
 				adapter = [[self alloc] initWithModelClass:modelClass];
 			}
@@ -591,13 +616,16 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 		}];
 }
 
+// 根据类名生成 “字典数组->model 数组” 的转换器
 + (NSValueTransformer<MTLTransformerErrorHandling> *)arrayTransformerWithModelClass:(Class)modelClass {
+    // 先创建一个 “字典->model” 的转换器（所以使用这个转换器的前提是数组中的元素类型都一致）
 	id<MTLTransformerErrorHandling> dictionaryTransformer = [self dictionaryTransformerWithModelClass:modelClass];
 	
 	return [MTLValueTransformer
 		transformerUsingForwardBlock:^ id (NSArray *dictionaries, BOOL *success, NSError **error) {
 			if (dictionaries == nil) return nil;
 			
+            // 先检查是不是数组
 			if (![dictionaries isKindOfClass:NSArray.class]) {
 				if (error != NULL) {
 					NSDictionary *userInfo = @{
@@ -614,11 +642,13 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 			
 			NSMutableArray *models = [NSMutableArray arrayWithCapacity:dictionaries.count];
 			for (id JSONDictionary in dictionaries) {
+                // 判断是不是 NSNull，需要单独处理
 				if (JSONDictionary == NSNull.null) {
 					[models addObject:NSNull.null];
 					continue;
 				}
 				
+                // 检查数组中的元素是不是 NSDictionary
 				if (![JSONDictionary isKindOfClass:NSDictionary.class]) {
 					if (error != NULL) {
 						NSDictionary *userInfo = @{
@@ -633,6 +663,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 					return nil;
 				}
 				
+                // 把单个元素转成 model
 				id model = [dictionaryTransformer transformedValue:JSONDictionary success:success error:error];
 				
 				if (*success == NO) return nil;

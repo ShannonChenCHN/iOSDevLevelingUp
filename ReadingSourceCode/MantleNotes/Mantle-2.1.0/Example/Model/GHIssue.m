@@ -18,6 +18,15 @@
     return dateFormatter;
 }
 
+// 没有在该方法中声明的 property key 会被忽略掉
+// 其中的 “location” 对应的就是一个字典：
+// @{
+//      @"latitude": JSONDictionary[@"latitude"],
+//      @"longitude": JSONDictionary[@"longitude"]
+//   }
+//
+// “reporterLogin” 对应的是：JSONDictionary[@"assignee"][@"login"]
+//
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
              @"URL": @"url",
@@ -28,7 +37,8 @@
              @"assignee": @"assignee",
              @"updatedAt": @"updated_at",
              @"title": @"title",
-             @"body": @"body"
+             @"body": @"body",
+             @"location" : @[@"latitude", @"longitude"],
              };
 }
 
@@ -47,9 +57,9 @@
                                                                            }];
 }
 
-+ (NSValueTransformer *)assigneeJSONTransformer {
-    return [MTLJSONAdapter dictionaryTransformerWithModelClass:GHUser.class];
-}
+//+ (NSValueTransformer *)assigneeJSONTransformer {
+//    return [MTLJSONAdapter dictionaryTransformerWithModelClass:GHUser.class];
+//}
 
 + (NSValueTransformer *)updatedAtJSONTransformer {
     return [MTLValueTransformer transformerUsingForwardBlock:^id(NSString *dateString, BOOL *success, NSError *__autoreleasing *error) {
