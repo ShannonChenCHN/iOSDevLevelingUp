@@ -142,6 +142,7 @@ static void verifyAllowedClassesByPropertyKey(Class modelClass) {
 			
 			return [coder decodeObjectOfClasses:[NSSet setWithArray:allowedClasses] forKey:key];
 		} else {
+            // 解码
 			return [coder decodeObjectForKey:key];
 		}
 	} @catch (NSException *ex) {
@@ -152,6 +153,7 @@ static void verifyAllowedClassesByPropertyKey(Class modelClass) {
 
 #pragma mark NSCoding
 
+// 解码：遍历所有的 property，然后调用 -decodeObjectForKey: 方法逐个解码
 - (instancetype)initWithCoder:(NSCoder *)coder {
 	BOOL requiresSecureCoding = coderRequiresSecureCoding(coder);
 	NSNumber *version = nil;
@@ -190,6 +192,7 @@ static void verifyAllowedClassesByPropertyKey(Class modelClass) {
 	NSSet *propertyKeys = self.class.propertyKeys;
 	NSMutableDictionary *dictionaryValue = [[NSMutableDictionary alloc] initWithCapacity:propertyKeys.count];
 
+    // 遍历所有的 property，然后逐个解码
 	for (NSString *key in propertyKeys) {
 		id value = [self decodeValueForKey:key withCoder:coder modelVersion:version.unsignedIntegerValue];
 		if (value == nil) continue;
@@ -204,6 +207,7 @@ static void verifyAllowedClassesByPropertyKey(Class modelClass) {
 	return self;
 }
 
+// 编码：遍历该对象的属性，然后逐个调用 -encodeObject:forKey: 方法来编码
 - (void)encodeWithCoder:(NSCoder *)coder {
 	if (coderRequiresSecureCoding(coder)) verifyAllowedClassesByPropertyKey(self.class);
 

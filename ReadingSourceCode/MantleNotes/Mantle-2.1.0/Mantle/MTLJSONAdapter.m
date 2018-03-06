@@ -137,6 +137,7 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
 }
 
 - (id)initWithModelClass:(Class)modelClass {
+    // 自定义 Model 类必须遵循 MTLJSONSerializing 协议
 	NSParameterAssert(modelClass != nil);
 	NSParameterAssert([modelClass conformsToProtocol:@protocol(MTLJSONSerializing)]);
 
@@ -154,7 +155,8 @@ NSString * const MTLJSONAdapterThrownExceptionErrorKey = @"MTLJSONAdapterThrownE
     
     // 检查 _JSONKeyPathsByPropertyKey 中的 key 和 value 是否都合法
 	for (NSString *mappedPropertyKey in _JSONKeyPathsByPropertyKey) {
-        // 检查 _JSONKeyPathsByPropertyKey 中的 key 是否都是 model 的属性名
+        // 检查 _JSONKeyPathsByPropertyKey 中的 propertyKey 是否都是 model 的属性名
+        // 只要有一个出错就会返回 nil
 		if (![propertyKeys containsObject:mappedPropertyKey]) {
 			NSAssert(NO, @"%@ is not a property of %@.", mappedPropertyKey, modelClass);
 			return nil;

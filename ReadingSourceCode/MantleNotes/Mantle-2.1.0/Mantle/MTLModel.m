@@ -179,7 +179,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	}
 }
 
-/// 获取所有的属性名
+/// 获取所有的属性名，除了没有实例变量的 readonly 属性和 MTLModel 自己的属性之外
 + (NSSet *)propertyKeys {
     // 读取缓存，如果有缓存就直接返回缓存
 	NSSet *cachedKeys = objc_getAssociatedObject(self, MTLModelCachedPropertyKeysKey);
@@ -262,11 +262,11 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 
 	if (!attributes->dynamic && attributes->ivar == NULL && !hasGetter && !hasSetter) {
         // 没有声明 @dynamic（@dynamic 就是要来告诉编译器，代码中用 @dynamic 修饰的属性，其 getter 和 setter 方法会在程序运行的时候或者用其他方式动态绑定，无须编译器自动合成，用 @dynamic 声明以便让编译器通过编译）
-        // 该属性所对应的实例变量值为 NULL
+        // 该属性所对应的实例变量为 NULL
         // 没有 getter 和 setter
 		return MTLPropertyStorageNone;
 	} else if (attributes->readonly && attributes->ivar == NULL) {
-        // 声明了 readonly，并且该属性所对应的实例变量值为 NULL
+        // 声明了 readonly，并且该属性所对应的实例变量为 NULL
         
 		if ([self isEqual:MTLModel.class]) {
             // 如果是 MTLModel 的属性，就不参与转换
@@ -340,6 +340,7 @@ static BOOL MTLValidateAndSetValue(id obj, NSString *key, id value, BOOL forceUp
 	return [NSString stringWithFormat:@"<%@: %p> %@", self.class, self, permanentProperties];
 }
 
+// MARK: hash 值应该如何计算？
 - (NSUInteger)hash {
 	NSUInteger value = 0;
 
