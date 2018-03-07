@@ -1,6 +1,7 @@
 # [Mantle](https://github.com/Mantle/Mantle)(v2.1.0)源码解析
 -------
 
+## 基本介绍
 ### 使用注意点
 
 1. 使用 Mantle 进行自动转换的自定义 model 类必须要遵循的两个条件：   
@@ -23,36 +24,17 @@
 }
 ```
 
-
-### 主要逻辑
-
-#### 1. JSON 转 model
+## 二、实现原理
+### 如何实现 JSON 转 Model
 
 
-方法调用栈：
+要求：
+- 自动将 JSON Dictionary 中的 key-value 和 model 的属性对应起来
+
 
 ```
-+ [MTLJSONAdapter modelOfClass:fromJSONDictionary:error:]
-	- [MTLJSONAdapter initWithModelClass:]              // 初始化 MTLJSONAdapter
-  	   + [MTLModel JSONKeyPathsByPropertyKey]   // 获取属性-字段映射表
-  	   + [MTLModel propertyKeys]   // 所有的属性名
-  	   + [MTLJSONAdapter  valueTransformersForModelClass]
-  	      + [MTLModel propertyKey##JSONTransformer]
-  	      + [MTLModel JSONTransformerForKey:]
-  	      + [MTLJSONAdapter transformerForModelPropertiesOfClass:]
-  	      + [MTLJSONAdapter dictionaryTransformerWithModelClass:]
-	- [MTLJSONAdapter modelFromJSONDictionary:error:]   // 返回 model 结果
-	   + [MTLModel classForParsingJSONDictionary] 
-	   - [JSONDictionary mtl_valueForJSONKeyPath]
-	   - [MTLValueTransformer transformedValue:success:error:]
-	   + [MTLModel modelWithDictionary:error:]
-  	      - [MTLModel initWithDictionary:error:] 
-  	         MTLValidateAndSetValue()
-  	            - [MTLModel setValue:forKey:]  // 设置属性值
-	   - [MTLModel validate:]
+JSON Dictionary -> Model 
 ```
-
-#### 2. model 转 JSON
 
 ### 设计思路
 
@@ -111,6 +93,39 @@ NSValueTransformer 是一个抽象类，用来将一个输入的类型值转换�
 
 - MTLValueTransformer：继承自 NSValueTransformer 的转换器类，用于定义属性值的转换规则，比如将 `NSString` 类型的属性转成 `NSURL` 类型时，就需要用到。 
 - EXTRuntimeExtensions：定义了读取 Objective-C 属性信息的函数，以及表示属性信息的结构体。
+
+#### 其他工具类
+
+
+### 主要逻辑
+
+#### 1. JSON 转 model
+
+
+方法调用栈：
+
+```
++ [MTLJSONAdapter modelOfClass:fromJSONDictionary:error:]
+	- [MTLJSONAdapter initWithModelClass:]              // 初始化 MTLJSONAdapter
+  	   + [MTLModel JSONKeyPathsByPropertyKey]   // 获取属性-字段映射表
+  	   + [MTLModel propertyKeys]   // 所有的属性名
+  	   + [MTLJSONAdapter  valueTransformersForModelClass]
+  	      + [MTLModel propertyKey##JSONTransformer]
+  	      + [MTLModel JSONTransformerForKey:]
+  	      + [MTLJSONAdapter transformerForModelPropertiesOfClass:]
+  	      + [MTLJSONAdapter dictionaryTransformerWithModelClass:]
+	- [MTLJSONAdapter modelFromJSONDictionary:error:]   // 返回 model 结果
+	   + [MTLModel classForParsingJSONDictionary] 
+	   - [JSONDictionary mtl_valueForJSONKeyPath]
+	   - [MTLValueTransformer transformedValue:success:error:]
+	   + [MTLModel modelWithDictionary:error:]
+  	      - [MTLModel initWithDictionary:error:] 
+  	         MTLValidateAndSetValue()
+  	            - [MTLModel setValue:forKey:]  // 设置属性值
+	   - [MTLModel validate:]
+```
+
+#### 2. model 转 JSON
 
 ### 细节
 #### 1. NSParameterAssert()
@@ -189,8 +204,8 @@ if (transformer != nil) result[key] = transformer;
 ### 延伸阅读
 - [Objective-C Runtime - 玉令天下](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/)
 - [Objective-C Runtime Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048)
-- [iOS JSON 模型转换库评测 - ibireme](https://blog.ibireme.com/2015/10/23/ios_model_framework_benchmark/)
-- [《iOS进阶指南》试读之《Mantle解析》](http://ios.jobbole.com/86119/)
+- [ibireme ：iOS JSON 模型转换库评测](https://blog.ibireme.com/2015/10/23/ios_model_framework_benchmark/)（推荐）
+- [叶孤城：《iOS进阶指南》试读之《Mantle解析》](http://ios.jobbole.com/86119/)（推荐）
 - [iOS模型框架- Mantle 解读](http://www.jianshu.com/p/d9e66beedb8f)
 - [Mantle实现分析 - 南峰子的技术博客](http://southpeak.github.io/2015/01/11/sourcecode-mantle/)
 - [iOS开源库源码解析之Mantle](http://blog.csdn.net/hello_hwc/article/details/51548128)
