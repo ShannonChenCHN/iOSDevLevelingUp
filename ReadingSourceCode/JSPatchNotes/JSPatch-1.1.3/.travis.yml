@@ -1,0 +1,11 @@
+language: objective-c
+osx_image: xcode7.3
+env:
+  - UDID="D72029C0-E8E1-4349-B423-E458466135B3", IOS_DEVICE="iPhone 4s (8.1)"
+  - UDID="5752202B-E7A2-4B6C-9D7B-B211C2F54654", IOS_DEVICE="iPhone 6s (9.3)"
+
+script:
+    - xcrun instruments -s devices
+    - open -a "simulator" --args -CurrentDeviceUDID $UDID
+    - xcodebuild test -project ./Demo/iOSDemo/JSPatchDemo.xcodeproj -scheme JSPatchDemo -sdk iphonesimulator -destination "platform=iOS Simulator,id=$UDID"
+    - osascript -e 'tell app "Simulator" to quit'
