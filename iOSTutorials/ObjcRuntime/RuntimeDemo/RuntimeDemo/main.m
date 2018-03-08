@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+#import <malloc/malloc.h>
 
 #import "Person.h"
 
@@ -62,24 +63,68 @@ void printClassesAfterAllocatedOrInitilized() {
     NSLog(@"obj6 class is %@",NSStringFromClass([obj6 class]));
 }
 
+void callMethodThroughFuntionPointer() {
+    Person *person = [[Person alloc] init];
+    
+    SEL selector = @selector(driveWithCar:);
+    IMP imp = [person methodForSelector:selector];
+    
+    BOOL (*drive)(id, SEL, id) = (__typeof__(drive))imp;
+    drive(person, selector, @"car");
+    //        objc_msgSend(person, selector, @"car");
+}
+
+
+@interface A : NSObject { @public int a; } @end
+@implementation A @end
+@interface B : A { @public int b; } @end
+@implementation B @end
+@interface C : B { @public int c; } @end
+@implementation C @end
+
+void printObjectInHexRepresentation() {
+    
+    C *obj = [[C alloc] init];
+    obj->a = 0xaaaaaaaa;
+    obj->b = 0xbbbbbbbb;
+    obj->c = 0xcccccccc;
+    
+    NSData *objData = [NSData dataWithBytes:(__bridge const void * _Nullable)(obj) length:malloc_size(CFBridgingRetain(obj))];
+    NSLog(@"Object contains %@", objData);
+}
+
+
+void printAllLoadedLibraryNames() {
+    unsigned int count = 0;
+    const char **imageNames = objc_copyImageNames(&count);
+    
+    for (int i = 0; i < count; i++) {
+        const char *imageName = imageNames[i];
+        
+        NSLog(@"%s", imageName);
+    }
+}
+
+void run() {
+    NSLog(@"%s", __FUNCTION__);
+}
+
+
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         
-        class_printAllProtertyNames(Person.class);
-        class_getMethodNames(NSString.class);
-        
-        printClassesAfterAllocatedOrInitilized();
-        
-        Person *person = [[Person alloc] init];
-        
-        SEL selector = @selector(driveWithCar:);
-        IMP imp = [person methodForSelector:selector];
-
-        BOOL (*drive)(id, SEL, id) = (__typeof__(drive))imp;
-        drive(person, selector, @"car");
-        
-        
-//        objc_msgSend(person, selector, @"car");
+//        class_printAllProtertyNames(Person.class);
+//
+//        class_getMethodNames(NSString.class);
+//
+//        printClassesAfterAllocatedOrInitilized();
+//
+//        callMethodThroughFuntionPointer();
+//
+//        printObjectInHexRepresentation();
+//
+//        printAllLoadedLibraryNames();
         
     }
     return 0;
