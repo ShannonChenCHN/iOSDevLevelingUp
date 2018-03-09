@@ -37,23 +37,23 @@ A resources list for leveling up iOS dev knowledge and skills.
     
 ### Open Source
 - Networking
-    - [ ] AFNetworking *****
-    - [ ] YTKNetwork *****
-    - [ ] RTNetwork *****
+    - [x] AFNetworking *****
+    - [x] YTKNetwork *****
+    - [x] RTNetwork *****
     - Alamofire
     - XMNetworking
 - Image Download 
-    - [ ] SDWebImage *****
+    - [x] SDWebImage *****
     - [ ] YYWebImage
     - Kingfisher
 - Model
     - [ ] MJExtension *****
-    - [ ] Mantle ****
+    - [x] Mantle ****
     - [ ] YYModel
     - JSONModel
     - SwiftyJSON
 - Refresh
-    - MJRefresh
+    - [x] MJRefresh
 - Database/Cache
     - FMDB
     - MigicalRecord
@@ -65,13 +65,14 @@ A resources list for leveling up iOS dev knowledge and skills.
     - MBProgressHUD
     - SVProgressHUD
 - WebView/JavaScript
-    - WebViewJavaScriptBridge
+    - [x] WebViewJavaScriptBridge
     - JSPatch
 - Other
     - ReactiveCocoa
     - Aspects
-    - IGListKit
-    - GNUstep
+    - [x] IGListKit
+    - [x] GNUstep
+    - [x] objc4
         
 ### Books
 - [x] Pro Multithreading and Memory Management for iOS and OS X *****

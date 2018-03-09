@@ -5,7 +5,7 @@
 - [language:Objective-C stars:>1000](https://github.com/search?l=&q=language%3AObjective-C+stars%3A%3E1000&ref=advsearch&type=Repositories&utf8=✓)
 - [language:Swift stars:>1000](https://github.com/search?o=desc&q=language%3ASwift+stars%3A%3E1000&s=stars&type=Repositories&utf8=✓)
 - [Awesome Open Source Teams](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/AwesomeOpenSourceTeams)：国内外各大公司比较优秀的开源项目
-- [Awesome iOS Open Source](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/Awesome-iOS.md): 按类别、功能，列出的各领域比较优秀的开源项目
+- [Awesome iOS Open Source](https://github.com/ShannonChenCHN/iOSLevelingUp/blob/master/ReadingSourceCode/Awesome-iOS.md): 按类别、功能，列出的各领域比较优秀的开源项目
 
 ### Contents
 
