@@ -175,7 +175,7 @@ __unsafe_unretained id result = nil;
 [invocation getReturnValue:&result];
 ```
 
-（5）函数指针的调用比 Objective-C 的消息发送更快
+（5）函数指针的调用比 Objective-C 的方法调用更快，因为中间少了消息发送、转发的流程。
 
 ```
 // 这里为什么不用 performSelector: 方法？
