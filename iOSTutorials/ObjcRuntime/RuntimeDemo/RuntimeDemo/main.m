@@ -110,6 +110,11 @@ void run() {
 }
 
 
+union {
+    int i;
+    char x[2];
+}a;
+
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -126,6 +131,9 @@ int main(int argc, const char * argv[]) {
 //
 //        printAllLoadedLibraryNames();
         
+        a.x[0] = 10;
+        a.x[1] = 1;
+        printf("%d\n",a.i);
     }
     return 0;
 }

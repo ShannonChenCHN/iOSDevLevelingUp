@@ -298,12 +298,16 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [THE DOWN LOW ON OBJECTIVE-C RUNTIME](https://novemberfive.co/blog/objective-c-runtime/)
   - [Video Tutorial: Objective-C Runtime](https://www.raywenderlich.com/61318/video-tutorial-objective-c-runtime)
   - [Friday Q&A 2009-03-13: Intro to the Objective-C Runtime by Mike Ash](https://www.mikeash.com/pyblog/friday-qa-2009-03-13-intro-to-the-objective-c-runtime.html)
-  - [从 ObjC Runtime 源码分析一个对象创建的过程](https://www.jianshu.com/p/8e4887a43bd7)（推荐）
   - [Objective-C Runtime（二）：动态类型，动态绑定，动态方法决议，内省](http://liuduo.me/2018/02/01/objective-c-runtime-2-dynamic-typing-and-dynamic-binding/)
-  - [从源代码看 ObjC 中消息的发送](https://draveness.me/message) 
-  - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)
-  - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)
   - [深入理解Objective-C：方法缓存](https://tech.meituan.com/DiveIntoMethodCache.html)
+- Objc 源代码解读
+  - [对象是如何初始化的（iOS）](https://draveness.me/object-init)：介绍了 Objective-C 对象初始化的过程
+  - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)：深入剖析了 isa 的结构和作用
+  - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)：介绍了在 ObjC 中是如何存储方法的
+  - [从源代码看 ObjC 中消息的发送](https://draveness.me/message) ：通过逐步断点调试 objc 源码的方式，从 Objc 源代码中分析并合理地推测一些关于消息传递的过程
+  - [从 ObjC Runtime 源码分析一个对象创建的过程](https://www.jianshu.com/p/8e4887a43bd7)
+  - [Runtime源码 —— 概述和调试环境准备](https://www.jianshu.com/u/43bb8b1a9d39)：作者写了一个系列的文章，内容很详细
+  - [Objective-C runtime - 系列开始](http://vanney9.com/2017/06/03/objective-c-runtime-summarize/)：简单介绍了学习 objc 源代码的方法
 - Method Swizzling
   - [Method Swizzling - NSHipster](http://nshipster.cn/method-swizzling/)（推荐）
   - [Method Swizzling 和 AOP 实践](http://tech.glowing.com/cn/method-swizzling-aop/)
@@ -341,7 +345,7 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [iOS runtime实用篇--和常见崩溃say good-bye！](https://www.jianshu.com/p/5d625f86bd02)
   
 - 理论
-  - [Objective-C Runtime 运行时之一：类与对象](http://www.cocoachina.com/ios/20141031/10105.html)
+  - [Objective-C Runtime 运行时之一：类与对象](http://southpeak.github.io/2014/10/25/objective-c-runtime-1/)
   - [从AOP框架学习iOS Runtime](https://yq.aliyun.com/articles/3063)
   - [OC最实用的runtime总结，面试、工作你看我就足够了！](http://www.jianshu.com/p/ab966e8a82e2)
   - [让你快速上手Runtime](http://www.jianshu.com/p/e071206103a4)
@@ -360,4 +364,5 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [Objective-C 的运行时以及 Swift 的动态性 - Realm Academy](https://academy.realm.io/cn/posts/mobilization-roy-marmelstein-objective-c-runtime-swift-dynamic/)
 - 相关源码  
   - [Apple 官方开源的 objc4 源码](https://opensource.apple.com/tarballs/objc4/)
+  - [第三方开发者自己配置的可运行的 objc runtime 723 源代码](https://github.com/RetVal/objc-runtime)
   
