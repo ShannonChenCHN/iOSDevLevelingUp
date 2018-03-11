@@ -289,6 +289,12 @@ runtime 是一把双刃剑，应该谨慎使用：
 
 ### 参考
 
+- 官方文档
+  - [Objective-C Runtime Programming Guide: Interacting with the Runtime](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtInteracting.html)：这份文档主要介绍了 NSObject 类，以及 Objective-C 程序是如何跟 runtime 系统打交道的。另外，还介绍了运行时动态加载类和消息转发，以及当程序在运行时如何获取对象的信息。
+  - [Objective-C Runtime Reference](//link.zhihu.com/?target=https%3A//developer.apple.com/reference/objectivec/1657527-objective_c_runtime)
+  - [About Key-Value Coding](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/)
+  - [Introduction to Key-Value Observing Programming Guide](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html)
+  - [Introspection - Concepts in Objective-C Programming](https://developer.apple.com/library/content/documentation/General/Conceptual/CocoaEncyclopedia/Introspection/Introspection.html)
 - Runtime 介绍
   - [sunnyxx：重识 Objective-C Runtime - Smalltalk 与 C 的融合](http://blog.sunnyxx.com/2016/08/13/reunderstanding-runtime-0/)（推荐）
   - [sunnyxx：重识 Objective-C Runtime - 看透 Type 与 Value](http://blog.sunnyxx.com/2016/08/13/reunderstanding-runtime-1/)
@@ -358,13 +364,6 @@ runtime 是一把双刃剑，应该谨慎使用：
 
 - Swift
 - [Objective-C 的运行时以及 Swift 的动态性 - Realm Academy](https://academy.realm.io/cn/posts/mobilization-roy-marmelstein-objective-c-runtime-swift-dynamic/)
-
-### 官方文档
-- [Objective-C Runtime Programming Guide: Interacting with the Runtime](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtInteracting.html)：这份文档主要介绍了 NSObject 类，以及 Objective-C 程序是如何跟 runtime 系统打交道的。另外，还介绍了运行时动态加载类和消息转发，以及当程序在运行时如何获取对象的信息。
-- [Objective-C Runtime Reference](//link.zhihu.com/?target=https%3A//developer.apple.com/reference/objectivec/1657527-objective_c_runtime)
-- [About Key-Value Coding](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueCoding/)
-- [Introduction to Key-Value Observing Programming Guide](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html)
-- [Introspection - Concepts in Objective-C Programming](https://developer.apple.com/library/content/documentation/General/Conceptual/CocoaEncyclopedia/Introspection/Introspection.html)
 
 
   
