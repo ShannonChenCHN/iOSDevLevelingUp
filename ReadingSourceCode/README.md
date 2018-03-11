@@ -105,3 +105,4 @@ Repos|Version|Article
   - [iOS开源库源码解析之AsyncDispalyKit](http://blog.csdn.net/hello_hwc/article/details/51383470)
   - [苹果核 - Tangram iOS版本框架结构解析](http://pingguohe.net/2017/04/24/tangram-ios-structure.html)
   - [Sonic iOS 源码分析](http://beelearning.cn/2017/12/Sonic-iOS/)
+  - [FBRetainCycleDetector源码分析](http://www.alonemonkey.com/2016/05/15/fbretaincycledetector-analyse/)
