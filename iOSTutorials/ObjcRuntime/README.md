@@ -289,34 +289,49 @@ runtime 是一把双刃剑，应该谨慎使用：
 
 ### 参考
 
-- runtime
+- Runtime 介绍
   - [sunnyxx：重识 Objective-C Runtime - Smalltalk 与 C 的融合](http://blog.sunnyxx.com/2016/08/13/reunderstanding-runtime-0/)（推荐）
   - [sunnyxx：重识 Objective-C Runtime - 看透 Type 与 Value](http://blog.sunnyxx.com/2016/08/13/reunderstanding-runtime-1/)
   - [玉令天下：Objective-C Runtime](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/)（推荐）
-  - [喵神：深入Objective-C的动态特性](https://onevcat.com/2012/04/objective-c-runtime/)
+  - [Objective-C Runtime 运行时之一：类与对象 - 南峰子的技术博客](http://southpeak.github.io/2014/10/25/objective-c-runtime-1/)
   - [Understanding the Objective-C Runtime](http://cocoasamurai.blogspot.co.uk/2010/01/understanding-objective-c-runtime.html)（推荐）
   - [THE DOWN LOW ON OBJECTIVE-C RUNTIME](https://novemberfive.co/blog/objective-c-runtime/)
-  - [Video Tutorial: Objective-C Runtime](https://www.raywenderlich.com/61318/video-tutorial-objective-c-runtime)
   - [Friday Q&A 2009-03-13: Intro to the Objective-C Runtime by Mike Ash](https://www.mikeash.com/pyblog/friday-qa-2009-03-13-intro-to-the-objective-c-runtime.html)
   - [Objective-C Runtime（二）：动态类型，动态绑定，动态方法决议，内省](http://liuduo.me/2018/02/01/objective-c-runtime-2-dynamic-typing-and-dynamic-binding/)
   - [深入理解Objective-C：方法缓存](https://tech.meituan.com/DiveIntoMethodCache.html)
-- Objc 源代码解读
-  - [对象是如何初始化的（iOS）](https://draveness.me/object-init)：介绍了 Objective-C 对象初始化的过程
-  - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)：深入剖析了 isa 的结构和作用
-  - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)：介绍了在 ObjC 中是如何存储方法的
-  - [从源代码看 ObjC 中消息的发送](https://draveness.me/message) ：通过逐步断点调试 objc 源码的方式，从 Objc 源代码中分析并合理地推测一些关于消息传递的过程
+  - [神经病院objc runtime入院考试](http://blog.sunnyxx.com/2014/11/06/runtime-nuts/)
+  - [神经病院Objective-C Runtime入院第一天——isa和Class](http://www.jianshu.com/p/9d649ce6d0b8)
+  - [神经病院Objective-C Runtime住院第二天——消息发送与转发](https://www.jianshu.com/p/4d619b097e20)
+  - [神经病院Objective-C Runtime出院第三天——如何正确使用Runtime](https://www.jianshu.com/p/db6dc23834e3)
+  - [喵神：深入Objective-C的动态特性](https://onevcat.com/2012/04/objective-c-runtime/)
+- Runtime API 的介绍和使用
+  - [Objective-C Runtime 1小时入门教程](https://www.ianisme.com/ios/2019.html)
+  - [Objc Runtime](https://github.com/ming1016/study/wiki/Objc-Runtime)
+- Runtime 源代码解读
+  - Draveness 出品的 runtime 源码阅读系列文章（强烈推荐）
+     - [对象是如何初始化的（iOS）](https://draveness.me/object-init)：介绍了 Objective-C 对象初始化的过程
+     - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)：深入剖析了 isa 的结构和作用
+     - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)：介绍了在 ObjC 中是如何存储方法的
+     - [从源代码看 ObjC 中消息的发送](https://draveness.me/message) ：通过逐步断点调试 objc 源码的方式，从 Objc 源代码中分析并合理地推测一些关于消息传递的过程
   - [从 ObjC Runtime 源码分析一个对象创建的过程](https://www.jianshu.com/p/8e4887a43bd7)
+  - [Objective-C 对象模型](http://blog.leichunfeng.com/blog/2015/04/25/objective-c-object-model/)
+  - [Objc 对象的今生今世](https://www.jianshu.com/p/f725d2828a2f)
   - [Runtime源码 —— 概述和调试环境准备](https://www.jianshu.com/u/43bb8b1a9d39)：作者写了一个系列的文章，内容很详细
   - [Objective-C runtime - 系列开始](http://vanney9.com/2017/06/03/objective-c-runtime-summarize/)：简单介绍了学习 objc 源代码的方法
+- 消息发送和消息转发
+  - [Objective-C 消息发送与转发机制原理](http://yulingtianxia.com/blog/2016/06/15/Objective-C-Message-Sending-and-Forwarding/)（强烈推荐）
 - Method Swizzling
-  - [Method Swizzling - NSHipster](http://nshipster.cn/method-swizzling/)（推荐）
+  - [Objective-C Method Swizzling](http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/)
+  - [Method Swizzling - NSHipster](http://nshipster.cn/method-swizzling/)
   - [Method Swizzling 和 AOP 实践](http://tech.glowing.com/cn/method-swizzling-aop/)
   - [The Right Way to Swizzle in Objective-C](https://blog.newrelic.com/2014/04/16/right-way-to-swizzle/)
   - [Using dispatch_once in method swizzling](https://stackoverflow.com/questions/29435788/using-dispatch-once-in-method-swizzling)
+  - [Objective-C Method Swizzling 的最佳实践](http://blog.leichunfeng.com/blog/2015/06/14/objective-c-method-swizzling-best-practice/)
 - Associated Objects
   - [Associated Objects - NSHipster](http://nshipster.cn/associated-objects/)
   - [关联对象 AssociatedObject 完全解析](https://draveness.me/ao) 
   - [如何实现 iOS 中的 Associated Object](https://draveness.me/retain-cycle3)
+  - [Objective-C Associated Objects 的实现原理](http://blog.leichunfeng.com/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
 - load 和 initialize
   - [NSObject +load and +initialize - What do they do?](https://stackoverflow.com/questions/13326435/nsobject-load-and-initialize-what-do-they-do?rq=1)
   - [Objective-C +load vs +initialize](http://blog.leichunfeng.com/blog/2015/05/02/objective-c-plus-load-vs-plus-initialize/)
@@ -324,8 +339,25 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [你真的了解 load 方法么？](https://draveness.me/load)
   - [懒惰的 initialize 方法](https://draveness.me/initialize)
 - Category
-  - [结合 category 工作原理分析 OC2.0 中的 runtime](https://bestswifter.com/runtime-category/)
   - [深入理解Objective-C：Category](https://tech.meituan.com/DiveIntoCategory.html)
+  - [Objective-C Category 的实现原理](http://blog.leichunfeng.com/blog/2015/05/18/objective-c-category-implementation-principle/)
+  - [结合 category 工作原理分析 OC2.0 中的 runtime](https://bestswifter.com/runtime-category/)
+  
+- 应用与实践
+  - [Runtime在实际开发中的应用](http://www.jianshu.com/p/851b21870d91)
+  - [利用Runtime 实现自动化归档](http://www.jianshu.com/p/bd24c3f3cd0a)
+  - [MLeaksFinder：精准 iOS 内存泄露检测工具](http://wereadteam.github.io/2016/02/22/MLeaksFinder/?from=singlemessage&isappinstalled=0)
+  - [[iOS]利用runtime,解决多次点击相同button,导致重复跳转的问题](http://www.jianshu.com/p/65ce6471cd0f)
+  - [iOS runtime实用篇--和常见崩溃say good-bye！](https://www.jianshu.com/p/5d625f86bd02)
+  - [OC最实用的runtime总结，面试、工作你看我就足够了！](http://www.jianshu.com/p/ab966e8a82e2)
+  - [iOS 模块详解—「Runtime面试、工作」看我就 🐒 了 ^_^.](http://www.jianshu.com/p/19f280afcb24)
+  
+- 相关源码
+  - [Apple 官方开源的 objc4 源码](https://opensource.apple.com/tarballs/objc4/)
+  - [第三方开发者自己配置的可运行的 objc runtime 723 源代码](https://github.com/RetVal/objc-runtime)
+
+- Swift
+- [Objective-C 的运行时以及 Swift 的动态性 - Realm Academy](https://academy.realm.io/cn/posts/mobilization-roy-marmelstein-objective-c-runtime-swift-dynamic/)
 
 ### 官方文档
 - [Objective-C Runtime Programming Guide: Interacting with the Runtime](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtInteracting.html)：这份文档主要介绍了 NSObject 类，以及 Objective-C 程序是如何跟 runtime 系统打交道的。另外，还介绍了运行时动态加载类和消息转发，以及当程序在运行时如何获取对象的信息。
@@ -334,35 +366,5 @@ runtime 是一把双刃剑，应该谨慎使用：
 - [Introduction to Key-Value Observing Programming Guide](//link.zhihu.com/?target=https%3A//developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html)
 - [Introspection - Concepts in Objective-C Programming](https://developer.apple.com/library/content/documentation/General/Conceptual/CocoaEncyclopedia/Introspection/Introspection.html)
 
-### 延伸阅读
 
-
-- 应用与实践
-  - [Runtime在实际开发中的应用](http://www.jianshu.com/p/851b21870d91)
-  - [利用Runtime 实现自动化归档](http://www.jianshu.com/p/bd24c3f3cd0a)
-  - [MLeaksFinder：精准 iOS 内存泄露检测工具](http://wereadteam.github.io/2016/02/22/MLeaksFinder/?from=singlemessage&isappinstalled=0)
-  - [[iOS]利用runtime,解决多次点击相同button,导致重复跳转的问题](http://www.jianshu.com/p/65ce6471cd0f)
-  - [iOS runtime实用篇--和常见崩溃say good-bye！](https://www.jianshu.com/p/5d625f86bd02)
-  
-- 理论
-  - [Objective-C Runtime 运行时之一：类与对象](http://southpeak.github.io/2014/10/25/objective-c-runtime-1/)
-  - [从AOP框架学习iOS Runtime](https://yq.aliyun.com/articles/3063)
-  - [OC最实用的runtime总结，面试、工作你看我就足够了！](http://www.jianshu.com/p/ab966e8a82e2)
-  - [让你快速上手Runtime](http://www.jianshu.com/p/e071206103a4)
-  - [Glowing : Objective-C Runtime](http://tech.glowing.com/cn/objective-c-runtime/)  - [Objc Runtime](https://github.com/ming1016/study/wiki/Objc-Runtime)
-  - [iOS 模块详解—「Runtime面试、工作」看我就 🐒 了 ^_^.](http://www.jianshu.com/p/19f280afcb24)
-  - [iOS~runtime理解](http://www.jianshu.com/p/927c8384855a)
-  - [神经病院objc runtime入院考试](http://blog.sunnyxx.com/2014/11/06/runtime-nuts/)
-  - [神经病院Objective-C Runtime入院第一天——isa和Class](http://www.jianshu.com/p/9d649ce6d0b8)
-  - [runtime 完整总结](http://www.jianshu.com/p/6b905584f536)
-  - [Objective-C Runtime 基本使用](http://qiubaiying.top/2017/02/04/Objective-C-Runtime-基本使用/)
-  - [Runtime 10种用法（没有比这更全的了）](http://www.jianshu.com/p/3182646001d1)
--   [Runtime全方位装逼指南](http://www.jianshu.com/p/efeb33712445)
-  - [Objective-C特性：Runtime](http://www.jianshu.com/p/25a319aee33d)
-  - [Runtime深度解析以及实用技巧（不扯淡，不套路）](http://www.jianshu.com/p/88d11bb12ba1)
-  - [Objective-C Runtime 1小时入门教程](https://www.ianisme.com/ios/2019.html)
-  - [Objective-C 的运行时以及 Swift 的动态性 - Realm Academy](https://academy.realm.io/cn/posts/mobilization-roy-marmelstein-objective-c-runtime-swift-dynamic/)
-- 相关源码  
-  - [Apple 官方开源的 objc4 源码](https://opensource.apple.com/tarballs/objc4/)
-  - [第三方开发者自己配置的可运行的 objc runtime 723 源代码](https://github.com/RetVal/objc-runtime)
   
