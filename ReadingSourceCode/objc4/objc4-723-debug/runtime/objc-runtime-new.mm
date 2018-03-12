@@ -1730,6 +1730,7 @@ static Class realizeClass(Class cls)
 
     // fixme verify class is not in an un-dlopened part of the shared cache?
 
+    // 取出 cls 中的 data，然后强转成 class_ro_t
     ro = (const class_ro_t *)cls->data();
     if (ro->flags & RO_FUTURE) {
         // This was a future class. rw data is already allocated.
@@ -6174,40 +6175,48 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
                               size_t *outAllocatedSize = nil)
 {
     if (!cls) return nil;
-
+    
     assert(cls->isRealized());
-
+    
     // Read class's info bits all at once for performance
     bool hasCxxCtor = cls->hasCxxCtor();
     bool hasCxxDtor = cls->hasCxxDtor();
     bool fast = cls->canAllocNonpointer();
-
-    size_t size = cls->instanceSize(extraBytes);
+    
+    // 计算要申请的内存大小
+    size_t size = cls->instanceSize(extraBytes);  // 实例变量内存大小
     if (outAllocatedSize) *outAllocatedSize = size;
-
+    
+    // 下面两种条件不论哪种，都会走 initIsa 函数
     id obj;
     if (!zone  &&  fast) {
+        // 调用 calloc 函数申请内存来创建对象
         obj = (id)calloc(1, size);
         if (!obj) return nil;
+        
+        // 初始化 isa 指针
         obj->initInstanceIsa(cls, hasCxxDtor);
-    } 
+    }
     else {
+        // 调用 malloc_zone_calloc 或者 calloc 函数申请内存来创建对象
         if (zone) {
             obj = (id)malloc_zone_calloc ((malloc_zone_t *)zone, 1, size);
         } else {
             obj = (id)calloc(1, size);
         }
         if (!obj) return nil;
-
-        // Use raw pointer isa on the assumption that they might be 
+        
+        // Use raw pointer isa on the assumption that they might be
         // doing something weird with the zone or RR.
+        
+        // 初始化 isa 指针
         obj->initIsa(cls);
     }
-
+    
     if (cxxConstruct && hasCxxCtor) {
         obj = _objc_constructOrFree(obj, cls);
     }
-
+    
     return obj;
 }
 
@@ -6645,3 +6654,4 @@ Class class_setSuperclass(Class cls, Class newSuper)
 
 // __OBJC2__
 #endif
+

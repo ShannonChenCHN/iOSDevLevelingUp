@@ -9,6 +9,8 @@
 
 @interface XXObject : NSObject
 
+@property (nonatomic, strong) NSString *name;
+
 - (void)hello;
 
 @end

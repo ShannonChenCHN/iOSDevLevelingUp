@@ -105,15 +105,27 @@ void printAllLoadedLibraryNames() {
     }
 }
 
-void run() {
-    NSLog(@"%s", __FUNCTION__);
+void printClassInfo(const char *clsName, BOOL isMetaCls) {
+    
+    NSLog(@"clsName: %s, isMetaCls: %@", clsName, isMetaCls ? @"YES" : @"NO");
 }
 
+void getClassHierachy() {
+    Person *person = [[Person alloc] init];
+    
+    Class cls = object_getClass(person);     // Person(Class)
+    printClassInfo(class_getName(cls),       // Person
+                   class_isMetaClass(cls));  // NO
+    
+    Class meta = object_getClass(cls);       // Person(meta-class)
+    printClassInfo(class_getName(meta),      // Person
+                   class_isMetaClass(meta)); // YES
+    
+    Class meta_meta = object_getClass(meta);      // NSObject(meta-class)
+    printClassInfo(class_getName(meta_meta),      // NSObject
+                   class_isMetaClass(meta_meta)); // YES
+}
 
-union {
-    int i;
-    char x[2];
-}a;
 
 
 int main(int argc, const char * argv[]) {
@@ -131,9 +143,9 @@ int main(int argc, const char * argv[]) {
 //
 //        printAllLoadedLibraryNames();
         
-        a.x[0] = 10;
-        a.x[1] = 1;
-        printf("%d\n",a.i);
+    
+        getClassHierachy();
+
     }
     return 0;
 }

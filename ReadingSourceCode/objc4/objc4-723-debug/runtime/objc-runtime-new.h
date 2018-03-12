@@ -93,7 +93,7 @@ template <typename Element, typename List, uint32_t FlagMask>
 struct entsize_list_tt {
     uint32_t entsizeAndFlags;
     uint32_t count;
-    Element first;
+    Element first;  // 通过first字段，可以取得类里任意一个类成员变量的定义
 
     uint32_t entsize() const {
         return entsizeAndFlags & ~FlagMask;
@@ -219,6 +219,8 @@ struct method_t {
     };
 };
 
+
+
 struct ivar_t {
 #if __x86_64__
     // *offset was originally 64-bit on some x86_64 platforms.
@@ -259,6 +261,7 @@ struct method_list_t : entsize_list_tt<method_t, method_list_t, 0x3> {
     }
 };
 
+// ivar_list_t 是类所有成员变量的定义列表，ivar_list_t 继承于 entsize_list_tt<Element, List, FlagMask>，元素变量类型 ivar_t
 struct ivar_list_t : entsize_list_tt<ivar_t, ivar_list_t, 0> {
     bool containsIvar(Ivar ivar) const {
         return (ivar >= (Ivar)&*begin()  &&  ivar < (Ivar)&*end());
@@ -528,14 +531,14 @@ struct locstamped_category_list_t {
 struct class_ro_t {
     uint32_t flags;
     uint32_t instanceStart;
-    uint32_t instanceSize;
+    uint32_t instanceSize;           // 实例变量大小，决定对象创建时要分配的内存
 #ifdef __LP64__
     uint32_t reserved;
 #endif
 
     const uint8_t * ivarLayout;
     
-    const char * name;
+    const char * name;                // 类名
     method_list_t * baseMethodList;   // （编译时确定的）方法列表
     protocol_list_t * baseProtocols;  // （编译时确定的）所属协议列表
     const ivar_list_t * ivars;        // （编译时确定的）实例变量列表

@@ -314,6 +314,8 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [Objective-C Runtime 1小时入门教程](https://www.ianisme.com/ios/2019.html)
   - [Objc Runtime](https://github.com/ming1016/study/wiki/Objc-Runtime)
 - Runtime 源代码解读
+  - [Objective-C 中的类和对象](https://blog.ibireme.com/2013/11/25/objc-object/)
+  - [Objective-C类成员变量深度剖析](http://quotation.github.io/objc/2015/05/21/objc-runtime-ivar-access.html)（强烈推荐）
   - Draveness 出品的 runtime 源码阅读系列文章（强烈推荐）
      - [对象是如何初始化的（iOS）](https://draveness.me/object-init)：介绍了 Objective-C 对象初始化的过程
      - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)：深入剖析了 isa 的结构和作用
@@ -325,6 +327,7 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [Runtime源码 —— 概述和调试环境准备](https://www.jianshu.com/u/43bb8b1a9d39)：作者写了一个系列的文章，内容很详细
   - [Objective-C runtime - 系列开始](http://vanney9.com/2017/06/03/objective-c-runtime-summarize/)：简单介绍了学习 objc 源代码的方法
 - 消息发送和消息转发
+  - [Objective-C 中的消息与消息转发](https://blog.ibireme.com/2013/11/26/objective-c-messaging/) 
   - [Objective-C 消息发送与转发机制原理](http://yulingtianxia.com/blog/2016/06/15/Objective-C-Message-Sending-and-Forwarding/)（强烈推荐）
 - Method Swizzling
   - [Objective-C Method Swizzling](http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/)

@@ -14,6 +14,7 @@ int main(int argc, const char * argv[]) {
         
         Class cls = [XXObject class];
         XXObject *obj = [[cls alloc] init];
+        obj.name = @"Michael";
         [obj hello];
         
         
