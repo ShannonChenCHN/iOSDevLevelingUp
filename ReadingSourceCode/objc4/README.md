@@ -4,7 +4,7 @@
 - objc 运行时源码的入口在 `void _objc_init(void)` 函数。
 
 
-### Objective-C 对象是什么？Class 是什么？id 又是什么？
+### 1. Objective-C 对象是什么？Class 是什么？id 又是什么？
 
 所有的类都继承 NSObject 或者 NSProxy，先来看看这两个类在各自的公开头文件中的定义：
 
@@ -61,7 +61,7 @@ struct objc_class {
 
 
 
-### isa 是什么？为什么要有 isa？
+### 2. isa 是什么？为什么要有 isa？
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/Runtime/class-diagram.jpg)
 
@@ -84,10 +84,10 @@ struct objc_class {
 - [Why "Everything" in Objective C is pointers. I mean why I should declare NSArray instance variables in pointers.](https://teamtreehouse.com/community/why-everything-in-objective-c-is-pointers-i-mean-why-i-should-declare-nsarray-instance-variables-in-pointers)
 - [Why do all objects in Objective-C have to use pointers?](https://www.quora.com/Why-do-all-objects-in-Objective-C-have-to-use-pointers#)
 
-### Objective-C 对象是如何初始化的？
+### 3. Objective-C 对象是如何初始化的？
 
 
-### Objective-C 对象的实例变量是什么？为什么不能给 Objective-C 对象动态添加实例变量？
+### 4. Objective-C 对象的实例变量是什么？为什么不能给 Objective-C 对象动态添加实例变量？
 
 
 
@@ -102,10 +102,10 @@ struct objc_class {
 - [深入理解Objective-C：Category](https://tech.meituan.com/DiveIntoCategory.html)
 - [Non-fragile ivars ](http://www.sealiesoftware.com/blog/archive/2009/01/27/objc_explain_Non-fragile_ivars.html)
 
-### Objective-C 对象的方法是什么？
+### 5. Objective-C 对象的属性是什么？属性跟实例变量的区别？
 
 
-### Objective-C 对象的方法在内存中的存储结构
+### 6. Objective-C 对象的方法是什么？Objective-C 对象的方法在内存中的存储结构是什么样的？
 
 objc_class 有一个 class_data_bits_t 类型的变量 bits，Objective-C 类中的属性、方法还有遵循的协议等信息都保存在 class_rw_t 中，通过调用 objc_class 的 class_rw_t *data() 方法，可以获取这个 class_rw_t 类型的变量。
 
@@ -219,7 +219,7 @@ struct method_t {
 
 3. 在 class_ro_t 中的属性在运行期间就不能改变了，再添加方法时，会修改 class_rw_t 中的 methods 列表，而不是 class_ro_t 中的 baseMethods。
     
-### 关于选择器 selector
+### 7. 什么是选择器 selector ？什么是 IMP？
 1. 向不同的类发送相同的消息时，其生成的选择子是完全相同的
 2. 通过 @selector(方法名) 就可以返回一个选择子，通过 (void *)@selector(方法名)， 就可以读取选择器的地址
 3. 推断 selector 的特性：
@@ -227,7 +227,7 @@ struct method_t {
    - 在使用 @selector() 时会从这个选择子表中根据选择子的名字查找对应的 SEL。如果没有找到，则会生成一个 SEL 并添加到表中
    - 在编译期间会扫描全部的头文件和实现文件将其中的方法以及使用 @selector() 生成的选择子加入到选择子表中
    
-### 关于消息发送和消息转发 
+### 8. 关于消息发送和消息转发
 > 具体过程查看源码中 `lookUpImpOrForward()` 函数部分的注释
 
 1. 发送 hello 消息后，编译器会将上面这行 [obj hello]; 代码转成 objc_msgSend()（注：objc_msgSend 是一个私有方法，而且是用汇编实现的，我们没有办法进入它的实现，但是我们可以通过 lookUpImpOrForward 函数断点拦截）
@@ -238,14 +238,24 @@ struct method_t {
 6. 如果还没找到，就进行方法决议
 7. 最后还没找到的话，就走消息转发
 
-### Category
+### 9. Method Swizzling 的原理是什么？
 
-### Protocol
+### 10. Objective-C 中的 Category 是什么？
+
+### 11.  Associated Objects 的原理是什么？到底能不能给 Objective-C 类添加属性和实例变量？
+
+### 12. Objective-C 中的 Protocol 是什么？
 
 
-### self 和 super 
+### 13. self 和 super 的本质
 
 - [Objc Runtime](http://iostangtang.com/2017/05/20/Runtime/)
+
+
+### 延伸
+
+1. clang 命令的使用（比如 `clang -rewrite-objc test.m`），`clang -rewrite-objc` 的作用是什么？clang rewrite 出来的文件跟 objc runtime 源码的实现有什么区别吗？
+
 
 ### 参考：
 
