@@ -1795,14 +1795,20 @@ callAlloc(Class cls, bool checkNil, bool allocWithZone=false)
             // 没有构造函数和 raw isa，就采用快捷方式创建对象，也就是直接用 calloc 函数申请一块内存
             
             bool dtor = cls->hasCxxDtor();
+            
+            // 申请内存空间
             id obj = (id)calloc(1, cls->bits.fastInstanceSize());
             if (slowpath(!obj)) return callBadAllocHandler(cls);
+            
+            // 初始化 isa
             obj->initInstanceIsa(cls, dtor);
             return obj;
         }
         else {
             // Has ctor or raw isa or something. Use the slower path.
             // 有构造函数或者 raw isa，就采用慢一点的方式，也就是调用 class_createInstance 函数
+            
+            // 申请内存空间并且初始化 isa
             id obj = class_createInstance(cls, 0);
             if (slowpath(!obj)) return callBadAllocHandler(cls);
             return obj;

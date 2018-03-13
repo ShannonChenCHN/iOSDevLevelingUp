@@ -71,7 +71,7 @@ union isa_t
     isa_t(uintptr_t value) : bits(value) { }
 
     Class cls;
-    uintptr_t bits;
+    uintptr_t bits;       // 通过 bits 可以设置结构体中的一些数据，比如 nonpointer 和 magic
 
 #if SUPPORT_PACKED_ISA
 
@@ -109,15 +109,15 @@ union isa_t
 #   define ISA_MAGIC_MASK  0x001f800000000001ULL
 #   define ISA_MAGIC_VALUE 0x001d800000000001ULL
     struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t has_cxx_dtor      : 1;
+        uintptr_t nonpointer        : 1;  // 表示 isa_t 的类型，0 表示 raw isa，也就是没有结构体的部分，访问对象的 isa 会直接返回一个指向 cls 的指针，也就是在 iPhone 迁移到 64 位系统之前时 isa 的类型。1 表示当前 isa 不是指针，但是其中也有 cls 的信息，只是其中关于类的指针都是保存在 shiftcls 中。
+        uintptr_t has_assoc         : 1;  // 对象含有或者曾经含有关联引用，没有关联引用的可以更快地释放内存
+        uintptr_t has_cxx_dtor      : 1;  // 表示当前对象有 C++ 或者 ObjC 的析构器(destructor)，如果没有析构器就会快速释放内存。
         uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000
-        uintptr_t magic             : 6;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 8;
+        uintptr_t magic             : 6;  // 用于调试器判断当前对象是真的对象还是没有初始化的空间
+        uintptr_t weakly_referenced : 1;  // 对象被指向或者曾经指向一个 ARC 的弱变量，没有弱引用的对象可以更快释放
+        uintptr_t deallocating      : 1;  // 对象正在释放内存
+        uintptr_t has_sidetable_rc  : 1;  // 对象的引用计数太大了，存不下
+        uintptr_t extra_rc          : 8;  // 对象的引用计数超过 1，会存在这个这个里面，如果引用计数为 10，extra_rc 的值就为 9
 #       define RC_ONE   (1ULL<<56)
 #       define RC_HALF  (1ULL<<7)
     };
@@ -165,6 +165,7 @@ union isa_t
 };
 
 
+#pragma mark ------------------------ objc_object ------------------------------
 struct objc_object {
 private:
     isa_t isa;  // isa 是一个 union 联合体，其包含这个对象所属类的信息
@@ -174,10 +175,10 @@ public:
     // isa 的 get 方法
     
     // ISA() assumes this is NOT a tagged pointer object
-    Class ISA();
+    Class ISA();         // isa 是纯指针
 
     // getIsa() allows this to be a tagged pointer object
-    Class getIsa();
+    Class getIsa();      // this 是一个 tagged pointer 时， isa 不仅仅包含指针
 
     // initIsa() should be used to init the isa of new objects only.
     // If this object already has an isa, use changeIsa() for correctness.

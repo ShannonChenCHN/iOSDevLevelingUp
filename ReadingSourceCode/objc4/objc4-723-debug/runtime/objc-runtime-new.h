@@ -1064,6 +1064,7 @@ public:
 };
 
 
+#pragma mark ------------------------ objc_class ------------------------------
 // Objective-C 类是一个结构体，继承于 objc_object
 struct objc_class : objc_object {
     // 这里没写 isa，其实继承了 objc_object 的 isa , 在这里 isa 是一个指向元类的指针
@@ -1289,6 +1290,7 @@ struct objc_class : objc_object {
     size_t instanceSize(size_t extraBytes) {
         size_t size = alignedInstanceSize() + extraBytes;
         // CF requires all objects be at least 16 bytes.
+        // Core Foundation 需要所有的对象的大小至少有 16 字节。
         if (size < 16) size = 16;
         return size;
     }

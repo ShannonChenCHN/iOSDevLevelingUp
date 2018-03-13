@@ -6184,7 +6184,7 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
     bool fast = cls->canAllocNonpointer();
     
     // 计算要申请的内存大小
-    size_t size = cls->instanceSize(extraBytes);  // 实例变量内存大小
+    size_t size = cls->instanceSize(extraBytes);  // 实例变量内存大小，实例大小 instanceSize 会存储在类的 isa_t 结构体中，经过对齐最后返回。
     if (outAllocatedSize) *outAllocatedSize = size;
     
     // 下面两种条件不论哪种，都会走 initIsa 函数
