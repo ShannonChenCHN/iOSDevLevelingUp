@@ -4,6 +4,9 @@
     int age;
     NSString *name;
 }
+
+@property (nonatomic, copy) NSString *cost;
+
 - (void)nyan;
 + (void)nyan;
 @end

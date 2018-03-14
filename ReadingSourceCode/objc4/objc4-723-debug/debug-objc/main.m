@@ -16,7 +16,8 @@ int main(int argc, const char * argv[]) {
         XXObject *obj = [[cls alloc] init];
         obj.name = @"Michael";
         [obj hello];
-
+        
+        
         
         NSLog(@"%p", cls);
     }

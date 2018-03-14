@@ -243,9 +243,10 @@ struct ivar_t {
     }
 };
 
+// 属性的数据结构
 struct property_t {
-    const char *name;
-    const char *attributes;
+    const char *name;         // property 的名字
+    const char *attributes;   // property 的属性
 };
 
 // Two bits of entsize are used for fixup markers.

@@ -143,6 +143,7 @@ static SEL __sel_registerName(const char *name, int lock, int copy)
     if (lock) selLock.assertUnlocked();
     else selLock.assertWriting();
 
+    // name  为空直接返回 0
     if (!name) return (SEL)0;
 
     result = search_builtins(name);
@@ -168,6 +169,7 @@ static SEL __sel_registerName(const char *name, int lock, int copy)
         result = (SEL)NXMapGet(namedSelectors, name);
     }
     if (!result) {
+        // 创建一个 SEL
         result = sel_alloc(name, copy);
         // fixme choose a better container (hash not map for starters)
         NXMapInsert(namedSelectors, sel_getName(result), result);

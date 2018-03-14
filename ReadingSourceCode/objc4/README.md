@@ -327,6 +327,7 @@ id _objc_rootInit(id obj) {
 
 
 根据 Runtime 源码可知，一个变量实际上就是一个 ivar_t 结构体。而每个 Objective-C 对象对应于 `struct objc_object`，后者的 isa 指向类定义，即 struct objc_class：
+       
 
 ```
 typedef struct ivar_t *Ivar;
@@ -488,10 +489,147 @@ runtime 提供了一个 class_addIvar() 函数用于给类添加成员变量，�
 
 ### 6. Objective-C 对象的属性是什么？属性跟实例变量的区别？
 
+属性是一个结构体，其中包含属性名和属性本身的属性（attributes）。
+
+我们一般是通过使用 `@property` 进行属性定义，编译时编译器会自动生成对应的实例变量（默认情况下生成的实例变量名是在对应的属性名前加了下划线“_”），同时还会自动合成对应的 setter 和 getter 方法用于存取属性值。
+
+我们可以验证一下，先定义一个带有属性的类 NyanCat，如下：
+
+```
+
+@interface NyanCat : NSObject {
+    int age;
+    NSString *name;
+}
+
+@property (nonatomic, copy) NSString *cost;
+
+@end
+
+@implementation NyanCat
+
+@end
+```
+
+然后再通过 `clang -rewrite-objc NyanCat.m` 将该类重写为 cpp 代码后，得到了下面这些内容：
+
+```
+
+#ifndef _REWRITER_typedef_NyanCat
+#define _REWRITER_typedef_NyanCat
+typedef struct objc_object NyanCat; // NyanCat 类实际上就是一个 objc_object 结构体
+typedef struct {} _objc_exc_NyanCat;
+#endif
+
+extern "C" unsigned long OBJC_IVAR_$_NyanCat$_cost;
+struct NyanCat_IMPL {
+	struct NSObject_IMPL NSObject_IVARS;
+	int age;
+	NSString *name;
+	NSString *_cost;
+};
+
+
+//...
+
+// 属性 cost 的 setter 和 getter 对应的函数
+static NSString * _I_NyanCat_cost(NyanCat * self, SEL _cmd) { return (*(NSString **)((char *)self + OBJC_IVAR_$_NyanCat$_cost)); }
+extern "C" __declspec(dllimport) void objc_setProperty (id, SEL, long, id, bool, bool);
+
+static void _I_NyanCat_setCost_(NyanCat * self, SEL _cmd, NSString *cost) { objc_setProperty (self, _cmd, __OFFSETOFIVAR__(struct NyanCat, _cost), (id)cost, 0, 1); }
+
+// 属性的数据结构
+struct _prop_t {
+	const char *name;
+	const char *attributes;
+};
+
+extern "C" unsigned long int OBJC_IVAR_$_NyanCat$age __attribute__ ((used, section ("__DATA,__objc_ivar"))) = __OFFSETOFIVAR__(struct NyanCat, age);
+extern "C" unsigned long int OBJC_IVAR_$_NyanCat$name __attribute__ ((used, section ("__DATA,__objc_ivar"))) = __OFFSETOFIVAR__(struct NyanCat, name);
+extern "C" unsigned long int OBJC_IVAR_$_NyanCat$_cost __attribute__ ((used, section ("__DATA,__objc_ivar"))) = __OFFSETOFIVAR__(struct NyanCat, _cost);
+
+
+// 实例变量列表
+static struct /*_ivar_list_t*/ {
+	unsigned int entsize;  // sizeof(struct _prop_t)
+	unsigned int count;
+	struct _ivar_t ivar_list[3];
+} _OBJC_$_INSTANCE_VARIABLES_NyanCat __attribute__ ((used, section ("__DATA,__objc_const"))) = {
+	sizeof(_ivar_t),
+	3,
+	{{(unsigned long int *)&OBJC_IVAR_$_NyanCat$age, "age", "i", 2, 4},
+	 {(unsigned long int *)&OBJC_IVAR_$_NyanCat$name, "name", "@\"NSString\"", 3, 8},
+	 {(unsigned long int *)&OBJC_IVAR_$_NyanCat$_cost, "_cost", "@\"NSString\"", 3, 8}}
+};
+
+
+// 实例方法列表
+static struct /*_method_list_t*/ {
+	unsigned int entsize;  // sizeof(struct _objc_method)
+	unsigned int method_count;
+	struct _objc_method method_list[2];
+} _OBJC_$_INSTANCE_METHODS_NyanCat __attribute__ ((used, section ("__DATA,__objc_const"))) = {
+	sizeof(_objc_method),
+	2,
+	{(struct objc_selector *)"cost", "@16@0:8", (void *)_I_NyanCat_cost},
+	{(struct objc_selector *)"setCost:", "v24@0:8@16", (void *)_I_NyanCat_setCost_}}
+};
+
+// 属性列表
+static struct /*_prop_list_t*/ {
+	unsigned int entsize;  // sizeof(struct _prop_t)
+	unsigned int count_of_properties;
+	struct _prop_t prop_list[1];
+} _OBJC_$_PROP_LIST_NyanCat __attribute__ ((used, section ("__DATA,__objc_const"))) = {
+	sizeof(_prop_t),
+	1,
+	{{"cost","T@\"NSString\",C,N,V_cost"}}
+};
+
+
+```
+
+从上面 clang 重写的代码中可以看到：
+
+- 属性列表的数据结构 _prop_list_t 中有属性`cost`对应的属性名和属性的 attributes（attributes 字符串所代表的含义可以在[官方文档](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6)上查阅到）。
+- 实例变量列表 `_method_list_t` 中也有属性 `cost` 对应的变量信息，变量名为 `_cost`，类型为 `@"NSString"`。
+- 实例方法列表 `_method_list_t` 中有属性 `cost` 对应的 setter 和 getter 方法，这两个方法的实现分别对应的是两个函数—— `_I_NyanCat_setCost_(NyanCat * self, SEL _cmd, NSString *cost) `和 `_I_NyanCat_cost(NyanCat * self, SEL _cmd)`。
+
+以上三条结果正好验证了我们一开始提出的结论。
+
+实际上，在 runtime 源码 objc-runtime-new.h 的实现中，属性就是一个 property_t 类型的结构体，其中包含属性名以及属性自己的属性（attributes）。
+
+```
+typedef struct property_t *objc_property_t;
+
+// 属性的数据结构
+struct property_t {
+    const char *name;         // property 的名字
+    const char *attributes;   // property 的属性
+};
+
+```
+
+
+在实际使用 runtime 时，通过下面两个函数分别可以获取 property 名字和 attributes 字符串。
+
+```
+// Returns the name of a property.
+const char * _Nonnull property_getName(objc_property_t _Nonnull property);
+
+// Returns the attribute string of a property.
+const char * _Nullable property_getAttributes(objc_property_t _Nonnull property);
+
+```
+
+**小结：**
+
+- 一个对象的属性实际上包括实例变量以及存取属性值（实际上就是实例变量值）的 setter/getter 方法两部分（这里只讨论类本身定义的属性，category 中的 @property 并没有为我们生成实例变量以及存取方法，而需要我们手动实现）。
+- 属性的实际结构是一个结构体，其中包含属性名和 attributes 两部分。
 
 ### 7. Objective-C 对象的方法是什么？Objective-C 对象的方法在内存中的存储结构是什么样的？
 
-objc_class 有一个 class_data_bits_t 类型的变量 bits，Objective-C 类中的属性、方法还有遵循的协议等信息都保存在 class_rw_t 中，通过调用 objc_class 的 class_rw_t *data() 方法，可以获取这个 class_rw_t 类型的变量。
+objc_class 有一个 `class_data_bits_t` 类型的变量 bits，Objective-C 类中的属性、方法还有遵循的协议等信息都保存在 class_rw_t 中，通过调用 objc_class 的 class_rw_t *data() 方法，可以获取这个 class_rw_t 类型的变量。
 
 
 
@@ -584,7 +722,7 @@ cls->setData(rw);
 
 在上面这段代码运行之后 `class_rw_t` 中的方法，属性以及协议列表均为空。这时需要 `realizeClass` 调用 `methodizeClass` 方法来将类自己实现的方法（包括分类）、属性和遵循的协议加载到 methods、 properties 和 protocols 列表中。
 
-方法的结构，与类和对象一样，方法在内存中也是一个结构体。
+方法的结构，与类和对象一样，方法在内存中也是一个结构体 method_t，其中包括成员变量 name（SEL 类型，实际上就是方法名）、types（一个C字符串方法类型，详见 [Type Encodings](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html)）、imp（IMP 类型方法实现）。
 
 ```
 struct method_t {
@@ -596,20 +734,122 @@ struct method_t {
 
 结论：
 
-1. 在 runtime 初始化之后，realizeClass 之前，从 class_data_bits_t 结构体中获取的 class_rw_t 一直都不是 class_rw_t 结构体，而是class_ro_t。因为类的一些方法、属性和协议都是在编译期决定的（baseMethods 等成员以及类在内存中的位置都是编译期决定的）。
+（1） 在 runtime 初始化之后，realizeClass 之前，从 class_data_bits_t 结构体中获取的 class_rw_t 一直都不是 class_rw_t 结构体，而是class_ro_t。因为类的一些方法、属性和协议都是在编译期决定的（baseMethods 等成员以及类在内存中的位置都是编译期决定的）。
 
-2. 类在内存中的位置是在编译期间决定的，在之后修改代码，也不会改变内存中的位置。
+（2） 类在内存中的位置是在编译期间决定的，在之后修改代码，也不会改变内存中的位置。
 类的方法、属性以及协议在编译期间存放到了“错误”的位置，直到 realizeClass 执行之后，才放到了 class_rw_t 指向的只读区域 class_ro_t，这样我们即可以在运行时为 class_rw_t 添加方法，也不会影响类的只读结构。
 
-3. 在 class_ro_t 中的属性在运行期间就不能改变了，再添加方法时，会修改 class_rw_t 中的 methods 列表，而不是 class_ro_t 中的 baseMethods。
+（3） 在 class_ro_t 中的属性在运行期间就不能改变了，再添加方法时，会修改 class_rw_t 中的 methods 列表，而不是 class_ro_t 中的 baseMethods。
+
+（4）一个类（Class）持有一个分发表，在运行期分发消息，表中的每一个实体代表一个方法（Method），它的名字叫做选择子（SEL），对应着一种方法实现（IMP）。
+
+参考：
+
+- [Selector, Method 和 IMP 的区别与联系](https://www.jianshu.com/p/84d1771e9792)
+- [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)
     
-### 7. 什么是选择器 selector ？什么是 IMP？
-1. 向不同的类发送相同的消息时，其生成的选择子是完全相同的
-2. 通过 @selector(方法名) 就可以返回一个选择子，通过 (void *)@selector(方法名)， 就可以读取选择器的地址
-3. 推断 selector 的特性：
-   - Objective-C 为我们维护了一个巨大的选择子表
-   - 在使用 @selector() 时会从这个选择子表中根据选择子的名字查找对应的 SEL。如果没有找到，则会生成一个 SEL 并添加到表中
-   - 在编译期间会扫描全部的头文件和实现文件将其中的方法以及使用 @selector() 生成的选择子加入到选择子表中
+### 7. 什么是 IMP？什么是选择器 selector ？
+
+#### 7.1 IMP
+
+IMP 在 runtime 源码 objc.h 中的定义是：
+
+```
+/// A pointer to the function of a method implementation. 
+typedef void (*IMP)(void /* id, SEL, ... */ );
+```
+
+它就是一个函数指针，这是由编译器生成的。当你发起一个 ObjC 消息之后，最终它会执行的那段代码，就是由这个函数指针指定的。而 IMP 这个函数指针就指向了这个方法的实现。既然得到了执行某个实例某个方法的入口，我们就可以绕开消息传递阶段，直接执行方法的实现，以达到更好的性能（在 [Mantle](https://github.com/Mantle/Mantle/commit/097177c8cd7d513578d006a9bee2e66325129e4e) 的 `MTLModelAdapter.m` 中可以看到这方面的应用）。
+
+你会发现 IMP 指向的方法与 objc_msgSend 函数类型相同，参数都包含 id 和 SEL 类型。每个方法名都对应一个 SEL 类型的方法选择器，而每个实例对象中的 SEL 对应的方法实现肯定是唯一的，通过一组 id 和 SEL 参数就能确定唯一的方法实现地址；反之亦然。
+
+#### 7.2 选择器 selector
+
+选择器代表方法在 Runtime 期间的标识符，为 SEL 类型，SEL 与普通字符串的区别在于 SEL 对于选择器来说总是能保证其唯一性。在类加载的时候，编译器会生成与方法相对应的选择子，并注册到 Objective-C 的 Runtime 运行系统。
+
+SEL 在 objc.h 中的定义是：
+
+```
+/// An opaque type that represents a method selector.
+typedef struct objc_selector *SEL;
+```
+
+SEL 看上去是一个指向结构体的指针，但是实际上是什么类型呢？objc.h 中提供了运行时向系统注册选择器的函数 `sel_registerName()`。而在开源的 `objc-sel.mm` 中提供了`sel_registerName()` 函数的实现，其中能找到一些蛛丝马迹：
+
+```
+SEL sel_registerName(const char *name) {
+    return __sel_registerName(name, 1, 1);     // YES lock, YES copy
+}
+
+static SEL __sel_registerName(const char *name, int lock, int copy) 
+{
+    SEL result = 0;
+
+    if (lock) selLock.assertUnlocked();
+    else selLock.assertWriting();
+
+    // name  为空直接返回 0
+    if (!name) return (SEL)0;
+
+    result = search_builtins(name);
+    if (result) return result;
+    
+    if (lock) selLock.read();
+    if (namedSelectors) {
+        // 到全局的表中去找
+        result = (SEL)NXMapGet(namedSelectors, name);
+    }
+    if (lock) selLock.unlockRead();
+    if (result) return result;
+
+    // No match. Insert.
+
+    if (lock) selLock.write();
+
+    if (!namedSelectors) {
+        namedSelectors = NXCreateMapTable(NXStrValueMapPrototype, 
+                                          (unsigned)SelrefCount);
+    }
+    if (lock) {
+        // Rescan in case it was added while we dropped the lock
+        result = (SEL)NXMapGet(namedSelectors, name);
+    }
+    if (!result) {
+        // 创建一个 SEL
+        result = sel_alloc(name, copy);
+        // fixme choose a better container (hash not map for starters)
+        NXMapInsert(namedSelectors, sel_getName(result), result);
+    }
+
+    if (lock) selLock.unlockWrite();
+    return result;
+}
+
+static SEL sel_alloc(const char *name, bool copy)
+{
+    selLock.assertWriting();
+    return (SEL)(copy ? strdupIfMutable(name) : name);   
+}
+
+```
+从创建 SEL 的实现来看， SEL 实际上是一个 `char *` 类型，也就是一个字符串。
+
+
+（1） 使用 `@selector()` 生成的选择子不会因为类的不同而改变（即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择子），其内存地址在编译期间就已经确定了。也就是说向不同的类发送相同的消息时，其生成的选择子是完全相同的。
+
+（2） 通过 `@selector(方法名)` 就可以返回一个选择子，通过 `(void *)@selector(方法名)`， 就可以读取选择器的地址。
+
+（3） 推断出的 selector 的特性：
+
+- Objective-C 为我们维护了一个巨大的选择子表
+- 在使用 `@selector()` 时会从这个选择子表中根据选择子的名字查找对应的 SEL。如果没有找到，则会生成一个 `SEL` 并添加到表中。
+- 在编译期间会扫描全部的头文件和实现文件将其中的方法以及使用 `@selector()` 生成的选择子加入到选择子表中。
+
+
+参考：
+
+- [Cocoa Core Competencies](https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/Selector.html)
+- [从源代码看 ObjC 中消息的发送](https://draveness.me/message)
    
 ### 8. 关于消息发送和消息转发
 > 具体过程查看源码中 `lookUpImpOrForward()` 函数部分的注释
@@ -621,6 +861,11 @@ struct method_t {
 5. 如果没找到，就到父类的方法列表中去查找，如果找到了直接 done
 6. 如果还没找到，就进行方法决议
 7. 最后还没找到的话，就走消息转发
+
+
+参考：
+
+- [从源代码看 ObjC 中消息的发送](https://draveness.me/message)
 
 ### 9. Method Swizzling 的原理是什么？
 
