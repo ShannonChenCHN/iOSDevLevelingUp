@@ -867,11 +867,25 @@ static SEL sel_alloc(const char *name, bool copy)
 
 - [从源代码看 ObjC 中消息的发送](https://draveness.me/message)
 
-### 9. Method Swizzling 的原理是什么？
+### 9. Method Swizzling
 
-### 10. Objective-C 中的 Category 是什么？
+- 什么是 Method Swizzling ？
+- Method Swizzling 有什么注意点？
+- Method Swizzling 的原理是什么？
+- Method Swizzling 为什么要在 +load 方法中进行？
 
-### 11.  Associated Objects 的原理是什么？到底能不能给 Objective-C 类添加属性和实例变量？
+### 10. Category
+
+- Category 是什么？
+- Category 中的方法和属性以及协议是怎么存储和加载的？
+- Category 和 Class 的关系
+
+### 11.  Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
+
+- Associated Objects 的原理是什么？
+- Associated Objects 的内存管理机制？
+- 到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
+
 
 ### 12. Objective-C 中的 Protocol 是什么？
 
@@ -905,6 +919,11 @@ objc_super 包含了两个变量，receiver是消息的实际接收者，super_c
 - [Objc Runtime](http://iostangtang.com/2017/05/20/Runtime/)
 
 ### 14. load 方法和 initialize 方法
+
+
+- `+load ` 方法和 `+initialize` 方法分别在什么时候被调用？
+- 这两个方法是用来干嘛的？
+
 
 ### 延伸
 
