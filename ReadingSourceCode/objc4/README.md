@@ -893,15 +893,26 @@ static SEL sel_alloc(const char *name, bool copy)
 ### 13. self 和 super 的本质
 
 
-self和super两个是不同的，self是类的一个隐藏参数，每个方法的实现的第一个参数即为self。而super不是一个隐藏参数，它实际上只是一个”编译器标示符”，它负责告诉编译器，当调用viewDidLoad方法时，去调用父类的方法，而不是本类中的方法。我们可以看看super的定义。
+self 和 super 两个是不同的，self 是类的一个隐藏参数，每个方法的实现的第一个参数即为 self。而 super 不是一个隐藏参数，它实际上只是一个”编译器标示符”，它负责告诉编译器，当调用 [super xxx]方法时，去调用父类的方法，而不是本类中的方法。
+
+我们可以看看 message.h 中提供的发消息给父类的函数：
 
 ```
-#ifndef OBJC_SUPER
-#define OBJC_SUPER
+OBJC_EXPORT void 
+objc_msgSendSuper(void /* struct objc_super *super, SEL op, ... */ );
+```
+
+当我们发送消息给 super 时，runtime 时就不是使用 objc_msgSend 方法了，而是 objc_msgSendSuper。函数的第一个参数也不再是 self 了，编译器会生成一个 objc_super 结构体
+
+关于 super 的结构定义：
+
+```
+
 /// Specifies the superclass of an instance. 
 struct objc_super {
     /// Specifies an instance of a class.
     __unsafe_unretained id receiver;
+    
     /// Specifies the particular superclass of the instance to message. 
 #if !defined(__cplusplus)  &&  !__OBJC2__
     /* For compatibility with old objc-runtime.h header */
@@ -914,7 +925,7 @@ struct objc_super {
 #endif
 ```
 
-objc_super 包含了两个变量，receiver是消息的实际接收者，super_class是指向当前类的父类。当我们使用super来接收消息时，编译器会生成一个objc_super结构体。发送消息时，就不是使用objc_msgSend方法了，而是objc_msgSendSuper
+objc_super 包含了两个变量，receiver 是消息的实际接收者，super_class 是指向当前类的父类。
 
 - [Objc Runtime](http://iostangtang.com/2017/05/20/Runtime/)
 
@@ -923,6 +934,7 @@ objc_super 包含了两个变量，receiver是消息的实际接收者，super_c
 
 - `+load ` 方法和 `+initialize` 方法分别在什么时候被调用？
 - 这两个方法是用来干嘛的？
+- ProtocolKit 的实现中为什么要在 main 函数执行前进行 Protocol 方法默认实现的注册？
 
 
 ### 延伸
