@@ -893,7 +893,7 @@ static SEL sel_alloc(const char *name, bool copy)
 ### 13. self 和 super 的本质
 
 
-self 和 super 两个是不同的，self 是类的一个隐藏参数，每个方法的实现的第一个参数即为 self。而 super 不是一个隐藏参数，它实际上只是一个”编译器标示符”，它负责告诉编译器，当调用 [super xxx]方法时，去调用父类的方法，而不是本类中的方法。
+self 和 super 两个是不同的，self 是方法的一个隐藏参数（每个方法都有两个隐藏的参数，`self` 和 `_cmd`），每个方法的实现的第一个参数即为 self。而 super 不是一个隐藏参数，它实际上只是一个”编译器标示符”，它负责告诉编译器，当调用 [super xxx]方法时，去调用父类的方法，而不是本类中的方法。
 
 我们可以看看 message.h 中提供的发消息给父类的函数：
 
@@ -902,9 +902,7 @@ OBJC_EXPORT void
 objc_msgSendSuper(void /* struct objc_super *super, SEL op, ... */ );
 ```
 
-当我们发送消息给 super 时，runtime 时就不是使用 objc_msgSend 方法了，而是 objc_msgSendSuper。函数的第一个参数也不再是 self 了，编译器会生成一个 objc_super 结构体
-
-关于 super 的结构定义：
+当我们发送消息给 super 时，runtime 时就不是使用 objc_msgSend 方法了，而是 objc_msgSendSuper。函数的第一个参数也不再是 self 了，编译器会生成一个 objc_super 结构体。下面是 message.h 中 objc_super 结构体的定义：
 
 ```
 
@@ -927,7 +925,94 @@ struct objc_super {
 
 objc_super 包含了两个变量，receiver 是消息的实际接收者，super_class 是指向当前类的父类。
 
+通过 `clang -rewrite-objc NyanCat.m` 命令将下面定义的 NyanCat 类转成 cpp 代码。
+
+```
+#import <Foundation/Foundation.h>
+
+@interface NyanCat : NSObject
+@end
+
+@implementation NyanCat
+
+- (instancetype)init {
+    self = [super init];
+    
+    return self;
+}
+
+@end
+```
+
+```
+struct __rw_objc_super { 
+	struct objc_object *object; 
+	struct objc_object *superClass; 
+	__rw_objc_super(struct objc_object *o, struct objc_object *s) : object(o), superClass(s) {} 
+};
+
+
+#ifndef _REWRITER_typedef_NyanCat
+#define _REWRITER_typedef_NyanCat
+typedef struct objc_object NyanCat;
+typedef struct {} _objc_exc_NyanCat;
+#endif
+
+struct NyanCat_IMPL {
+	struct NSObject_IMPL NSObject_IVARS;
+};
+
+/* @end */
+
+
+// @implementation NyanCat
+
+
+static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
+    self = ((NyanCat *(*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("NyanCat"))}, sel_registerName("init"));
+
+    return self;
+}
+
+// ...
+
+```
+
+由此可见，`[super xxxx]` 在运行时确实被转成了 objc_msgSendSuper 函数。
+
+那么 objc_msgSendSuper 这个函数的内部实现是怎么样的呢？文档 objc_msgSendSuper 函数的注释中对 super 参数的注释是这样写的：
+
+> super - A pointer to an objc_super data structure. Pass values identifying the context the message was sent to, including the instance of the class that is to receive the message and the superclass at which to start searching for the method implementation.
+
+我们可以推断出，objc_msgSendSuper 函数实现实际上就是：**从 `objc_super` 结构体指向的 `objc_super->superClass` 的方法列表开始查找调用方法的 selector 对应的实现**，找到后以 `objc_super->receiver` 去调用这个 selector，最后就变成了调用 objc_msgSend 函数给 self 发消息的形式了。
+
+```
+objc_msgSend(objc_super->receiver, @selector(xxx));
+```
+
+这里的 objc_super->receiver 就相当于 self，上面的操作其实就是：
+
+```
+objc_msgSend(self, @selector(xxx));
+```
+
+`[self init]` 和 `[super init]` 的相同点在于消息接收者实际上都是 self（方法调用源头），区别就在于查找方法的实现时，前者是从 currentClass（self 所属的类）的方法列表中开始往上找，而后者是从 objc_super->spuerClass（也就是调用了 super 的地方的父类，这是在编译时就确定了的）的方法列表中开始往上查找。
+
+需要强调的地方是，**`[self xxx]` 要调用的实现是在运行时动态决定的，而  `[super xxx]` 要调用的实现是编译时就确定了的（这里有个[例子](https://stackoverflow.com/a/5675894)可以测试一下）**。从上面转换出来的 cpp 代码中也可以看出来，这其实是因为 `objc_msgSendSuper` 函数的第一个参数 `objc_super` 结构体中的 `receiver` 是通过接收方法中的 self 参数得来的，所以动态决定的，而 `objc_super->superClass` 是通过 `class_getSuperclass(objc_getClass("NyanCat"))` 得到的，所以是静态的，在编译时就确定了的。
+
+```
+static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
+    self = ((NyanCat *(*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("NyanCat"))}, sel_registerName("init"));
+
+    return self;
+}
+```
+
+参考：
+
 - [Objc Runtime](http://iostangtang.com/2017/05/20/Runtime/)
+- [Objective C: Difference between self and super](https://stackoverflow.com/a/5675894)
+- [What does it mean when you assign [super init] to self?](https://www.cocoawithlove.com/2009/04/what-does-it-mean-when-you-assign-super.html)
 
 ### 14. load 方法和 initialize 方法
 

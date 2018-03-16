@@ -13,6 +13,57 @@
 
 #import "Person.h"
 
+@interface Grandparent : NSObject
+
+- (void) One;
+
+@end
+
+@implementation Grandparent
+
+- (void) One { NSLog(@"Grandparent One\n"); }
+
+@end
+
+@interface Parent : Grandparent
+
+- (void) One;
+- (void) Two;
+
+@end
+
+@implementation Parent
+
+- (void) One { NSLog(@"Parent One\n"); }
+
+- (void) Two
+{
+    [self One];                 // will call One based on the calling object
+    [super One];                // will call One based on the defining object - Parent in this case so will Grandparent's One
+}
+
+@end
+
+@interface Child : Parent
+
+- (void) One;
+
+@end
+
+@implementation Child
+
+- (void) One { NSLog(@"Child One\n"); }
+
+@end
+
+void testSelfSuper() {
+    Child *c = [Child new];
+    [c Two];                            // will call the Two inherited from Parent
+    
+    Parent *p = [Parent new];
+    [p Two];                            // will call Parent's Two
+
+}
 
 void class_printAllProtertyNames(Class class) {
     unsigned int propertyCount = 0;
@@ -146,6 +197,7 @@ int main(int argc, const char * argv[]) {
     
         getClassHierachy();
 
+        testselfSuper();
     }
     return 0;
 }
