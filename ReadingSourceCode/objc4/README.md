@@ -1028,15 +1028,16 @@ static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
 
 
 ### 参考：
-
-  - [Objective-C 中的类和对象](https://blog.ibireme.com/2013/11/25/objc-object/)
-  - Draveness 出品的 runtime 源码阅读系列文章（强烈推荐）
-     - [对象是如何初始化的（iOS）](https://draveness.me/object-init)：介绍了 Objective-C 对象初始化的过程
-     - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)：深入剖析了 isa 的结构和作用
-     - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)：介绍了在 ObjC 中是如何存储方法的
-     - [从源代码看 ObjC 中消息的发送](https://draveness.me/message) ：通过逐步断点调试 objc 源码的方式，从 Objc 源代码中分析并合理地推测一些关于消息传递的过程
-  - [从 ObjC Runtime 源码分析一个对象创建的过程](https://www.jianshu.com/p/8e4887a43bd7)
-  - [Objective-C 对象模型](http://blog.leichunfeng.com/blog/2015/04/25/objective-c-object-model/)
-  - [Objc 对象的今生今世](https://www.jianshu.com/p/f725d2828a2f)
-  - [Runtime源码 —— 概述和调试环境准备](https://www.jianshu.com/u/43bb8b1a9d39)：作者写了一个系列的文章，内容很详细
-  - [Objective-C runtime - 系列开始](http://vanney9.com/2017/06/03/objective-c-runtime-summarize/)：简单介绍了学习 objc 源代码的方法
+- [Understanding the Objective-C Runtime](http://cocoasamurai.blogspot.co.uk/2010/01/understanding-objective-c-runtime.html)
+- [Objective-C Runtime - 玉令天下的博客](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/)
+- [Objective-C 中的类和对象 - ibireme 的博客](https://blog.ibireme.com/2013/11/25/objc-object/)
+- Draveness 出品的 runtime 源码阅读系列文章（强烈推荐）
+   - [对象是如何初始化的（iOS）](https://draveness.me/object-init)：介绍了 Objective-C 对象初始化的过程
+   - [从 NSObject 的初始化了解 isa](https://draveness.me/isa)：深入剖析了 isa 的结构和作用
+   - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)：介绍了在 ObjC 中是如何存储方法的
+   - [从源代码看 ObjC 中消息的发送](https://draveness.me/message) ：通过逐步断点调试 objc 源码的方式，从 Objc 源代码中分析并合理地推测一些关于消息传递的过程
+- [从 ObjC Runtime 源码分析一个对象创建的过程](https://www.jianshu.com/p/8e4887a43bd7)
+- [Objective-C 对象模型 - 雷纯锋的技术博客](http://blog.leichunfeng.com/blog/2015/04/25/objective-c-object-model/)
+- [Objc 对象的今生今世](https://www.jianshu.com/p/f725d2828a2f)
+- [Runtime源码 —— 概述和调试环境准备](https://www.jianshu.com/u/43bb8b1a9d39)：作者写了一个系列的文章，内容很详细
+- [Objective-C runtime - 系列开始](http://vanney9.com/2017/06/03/objective-c-runtime-summarize/)：简单介绍了学习 objc 源代码的方法
