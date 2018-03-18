@@ -17,17 +17,16 @@ A journey of leveling up iOS dev knowledge and skill.
 - 基础
   - 语言
     - [Objective-C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/39)
-       - 对象模型
     - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
     - [C/C++](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/99)
     - [JavaScript](https://github.com/ShannonChenCHN/AFrontEndWebDevTour)
+    - [Ruby](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/96)
     - Python
     - Java
-    - [Ruby](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/96)
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
-  - [内存](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
+  - [内存管理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
   - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
-  - [存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
+  - [数据存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
   - 布局和渲染
     - [storyboard 与布局适配](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/8)
     - [Drawing](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/48)
@@ -35,7 +34,7 @@ A journey of leveling up iOS dev knowledge and skill.
     - [动画](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/31)
   - [多线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
   - 计算机基础
-    - [数据结构和算法](https://github.com/ShannonChenCHN/DataStructure-Algorithm-Notes/wiki)
+    - [数据结构和算法](https://github.com/ShannonChenCHN/DataStructure-Algorithm-Notes)
     - [编译原理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
     - [操作系统](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/54)
     - [正则表达式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/85)
