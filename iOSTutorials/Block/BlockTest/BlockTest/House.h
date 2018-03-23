@@ -10,4 +10,6 @@
 
 @interface House : NSObject
 
+@property (nonatomic, strong) NSString *name;
+
 @end

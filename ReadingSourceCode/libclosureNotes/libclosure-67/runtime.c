@@ -186,7 +186,7 @@ Internal Support routines for copying
 
 // Copy, or bump refcount, of a block.  If really copying, call the copy helper if present.
 void *_Block_copy(const void *arg) {
-    struct Block_layout *aBlock;
+    struct Block_layout *aBlock;  // block 对象
 
     if (!arg) return NULL;
     
@@ -202,14 +202,24 @@ void *_Block_copy(const void *arg) {
     }
     else {
         // Its a stack block.  Make a copy.
+        // 如果是栈上的 block，就进行 copy
+        
+        // 1. 申请内存
         struct Block_layout *result = malloc(aBlock->descriptor->size);
         if (!result) return NULL;
+        
+        // 2. 将栈上的 block 数据复制给 result
         memmove(result, aBlock, aBlock->descriptor->size); // bitcopy first
+        
+        
         // reset refcount
         result->flags &= ~(BLOCK_REFCOUNT_MASK|BLOCK_DEALLOCATING);    // XXX not needed
-        result->flags |= BLOCK_NEEDS_FREE | 2;  // logical refcount 1
+        result->flags |= BLOCK_NEEDS_FREE | 2;  // logical refcount 1 增加block的引用计数
         _Block_call_copy_helper(result, aBlock);
+        
+        
         // Set isa last so memory analysis tools see a fully-initialized object.
+        // 将 isa 指针改为指向堆 block 的类型
         result->isa = _NSConcreteMallocBlock;
         return result;
     }

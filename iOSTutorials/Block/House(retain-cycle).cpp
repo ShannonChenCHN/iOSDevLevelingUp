@@ -1,3 +1,20 @@
+/*
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        
+        // self 持有 person
+        _person = [Person new];
+        [_person setCallback:^(Person *person) {
+            
+            _person.name = @"xxx"; // 这里会导致 block 持有 self，而 block 是 person 对象所持有的，这就导致了循环引用
+        }];
+        
+    }
+    return self;
+}
+
+*/
 
 
 #ifndef BLOCK_IMPL

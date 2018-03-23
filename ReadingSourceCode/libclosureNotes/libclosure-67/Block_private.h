@@ -63,12 +63,12 @@ struct Block_descriptor_3 {
 
 // block 的数据结构
 struct Block_layout {
-    void *isa;
+    void *isa;                          // isa 指针有 6 种类型，定义在 data.c 文件中
     volatile int32_t flags; // contains ref count
     int32_t reserved; 
-    void (*invoke)(void *, ...);
+    void (*invoke)(void *, ...);        // 函数指针
     struct Block_descriptor_1 *descriptor;
-    // imported variables
+    // imported variables   // 捕获到的变量，block 能够访问它外部的局部变量，就是因为将这些变量（或变量的地址）复制到了结构体中。
 };
 
 

@@ -9,13 +9,13 @@ struct __block_impl {
   void *FuncPtr;
 };
 
-/// __block 变量结构体
+/// 捕获的 __block 变量转为了结构体
 struct __Block_byref_block_val_0 {
-  void *__isa;
+  void *__isa;                           // 结构体中带有 isa，说明它也是一个对象
 __Block_byref_block_val_0 *__forwarding; //  __forwarding ，存储 __block 结构体的地址
  int __flags;
  int __size;
- int block_val;
+ int block_val; // 捕获的参数值
 };
 
 struct __main_block_impl_0 {
@@ -53,6 +53,9 @@ static void __main_block_dispose_0(struct __main_block_impl_0*src) {
 static struct __main_block_desc_0 {
   size_t reserved;
   size_t Block_size;
+    
+    // 我们需要负责 __Block_byref_block_val_0 结构体相关的内存管理，
+    // 所以 main_block_desc_0 中增加了 copy 和 dispose 函数指针，对于在调用前后修改相应变量的引用计数。
   void (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);
   void (*dispose)(struct __main_block_impl_0*);
 } __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0), __main_block_copy_0, __main_block_dispose_0};
@@ -62,12 +65,13 @@ static struct __main_block_desc_0 {
 int main() {
 
     // __block 变量被转成了结构体变量，其中第二个参数是把 block_val 的地址传给了成员变量 __forwarding
+    // 第三个参数是把__block 变量值传给了保存数值的成员变量
     __attribute__((__blocks__(byref))) __Block_byref_block_val_0 block_val = {(void*)0,
                                                                               (__Block_byref_block_val_0 *)&block_val,
                                                                               0,
                                                                               sizeof(__Block_byref_block_val_0),
                                                                               8};
-    // __block 的结构体变量的地址被传进了 block 结构体构造函数
+    // __block 的结构体变量的地址被传进了 block 结构体构造函数，这样就可以达到修改外部变量的作用。
     void (*myBlock)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, (__Block_byref_block_val_0 *)&block_val, 570425344));
 
     ((void (*)(__block_impl *))((__block_impl *)myBlock)->FuncPtr)((__block_impl *)myBlock);

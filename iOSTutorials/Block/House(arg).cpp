@@ -1,3 +1,21 @@
+/*
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        
+        // self 持有 person
+        _person = [Person new];
+        [_person setCallback:^(Person *person) {
+            
+            person.name = @"xxx";  // 但是这样就不会导致循环引用，因为这里是作为一个参数传进来的，不会捕获 self
+        }];
+        
+    }
+    return self;
+}
+
+*/
+
 
 #ifndef BLOCK_IMPL
 #define BLOCK_IMPL
