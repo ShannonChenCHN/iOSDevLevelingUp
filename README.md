@@ -35,7 +35,7 @@ A journey of leveling up iOS dev knowledge and skill.
   - [多线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
   - 计算机基础
     - [数据结构和算法](https://github.com/ShannonChenCHN/DataStructure-Algorithm-Notes)
-    - [编译原理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
+    - [编译、链接和装载](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
     - [操作系统](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/54)
     - [正则表达式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/85)
   - [APP 上架与审核](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/20)

@@ -309,6 +309,7 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [神经病院Objective-C Runtime入院第一天——isa和Class](http://www.jianshu.com/p/9d649ce6d0b8)
   - [神经病院Objective-C Runtime住院第二天——消息发送与转发](https://www.jianshu.com/p/4d619b097e20)
   - [神经病院Objective-C Runtime出院第三天——如何正确使用Runtime](https://www.jianshu.com/p/db6dc23834e3)
+  - [iOS 程序 main 函数之前发生了什么](http://blog.sunnyxx.com/2014/08/30/objc-pre-main/)
   - [喵神：深入Objective-C的动态特性](https://onevcat.com/2012/04/objective-c-runtime/)
 - Runtime API 的介绍和使用
   - [Objective-C Runtime 1小时入门教程](https://www.ianisme.com/ios/2019.html)

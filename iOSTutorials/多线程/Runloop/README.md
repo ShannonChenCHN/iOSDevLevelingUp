@@ -448,6 +448,7 @@ ASDK 仿照 QuartzCore/UIKit 框架的模式，实现了一套类似的界面更
 - [RunLoop的前世今生](https://www.gaoshilei.com/2016/11/20/RunLoop/)
 - [并发编程 - obj.io](https://www.objc.io/issues/2-concurrency/)
 - [Threading Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html)
+- [The App Life Cycle - App Programming Guide for iOS](https://developer.apple.com/library/content/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/TheAppLifeCycle/TheAppLifeCycle.html)
 - [《招聘一个靠谱的iOS》面试题参考答案（下）](https://github.com/ChenYilong/iOSInterviewQuestions/blob/master/01《招聘一个靠谱的iOS》面试题参考答案/《招聘一个靠谱的iOS》面试题参考答案（下）.md)
 - [Objective-C之run loop详解](http://blog.csdn.net/wzzvictory/article/details/9237973)
 - [深入研究 Runloop 与线程保活](https://bestswifter.com/runloop-and-thread/)
