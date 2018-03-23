@@ -26,6 +26,7 @@ STWebPDecoder | | [笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/
 MJRefresh | | Done
 ProtocolKit | | Done
 objc4 | | Done
+libclosure | | Done
 YYModel | |
 MJExtension | |
 MBProgressHUD | | **TODO**
