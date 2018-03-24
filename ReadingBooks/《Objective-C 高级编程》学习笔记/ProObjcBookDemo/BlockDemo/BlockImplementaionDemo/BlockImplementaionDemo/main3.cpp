@@ -11,10 +11,11 @@ int global_val = 60;
 static int static_global_val = 10;
 
 
+// blcok 的数据结构
 struct __main_block_impl_0 {
   struct __block_impl impl;
   struct __main_block_desc_0* Desc;
-  int *static_val;
+  int *static_val;  // 捕获进来的 static 变量的地址
   int val;
     
   __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int *_static_val, int _val, int flags=0) : static_val(_static_val), val(_val) {
@@ -26,6 +27,7 @@ struct __main_block_impl_0 {
 };
 
 
+// block 的实现对应的函数
 static void __main_block_func_0(struct __main_block_impl_0 *__cself) {
   int *static_val = __cself->static_val; // bound by copy，
   int val = __cself->val; // bound by copy

@@ -344,10 +344,113 @@ int main() {
 }
 ```
 
-### 6. block 对变量的捕获规则
+### 6. 静态变量和全局变量
+
+
+```
+#include <stdio.h>
+
+int global_val = 60;
+static int static_global_val = 10;
+
+int main() {
+    
+    int val = 10;
+    static int static_val = 4;
+    
+    void (^myBlock)(void) = ^void(void) {
+//        val = 20;
+        static_val = 30;
+        global_val = 6;
+        static_global_val = 50;
+        printf("myBlock:val(10) = %d,\n static_val(4) = %d,\n global_val(60) = %d,\n static_global_val(10) = %d\n", val, static_val, global_val, static_global_val);
+    };
+    
+    myBlock();
+    
+}
+
+```
+
+通过 clang 翻译成 C++ 之后的代码：
+
+```
+
+struct __block_impl {
+  void *isa;
+  int Flags;
+  int Reserved;
+  void *FuncPtr;
+};
+
+
+int global_val = 60;
+static int static_global_val = 10;
+
+
+// blcok 的数据结构
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+  int *static_val;  // 捕获进来的 static 变量的地址
+  int val;
+    
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int *_static_val, int _val, int flags=0) : static_val(_static_val), val(_val) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+
+// block 的实现对应的函数
+static void __main_block_func_0(struct __main_block_impl_0 *__cself) {
+  int *static_val = __cself->static_val; // bound by copy，
+  int val = __cself->val; // bound by copy
+
+        // 通过访问静态局部变量的地址来改变变量值
+        (*static_val) = 30;
+    
+        // 全局变量和静态变量可以直接访问
+        global_val = 6;
+        static_global_val = 50;
+    
+        // 自动变量无法访问，只能读取变量值
+        printf("myBlock:val(10) = %d,\n static_val(4) = %d,\n global_val(60) = %d,\n static_global_val(10) = %d\n", val, (*static_val), global_val, static_global_val);
+    }
+
+static struct __main_block_desc_0 {
+  size_t reserved;
+  size_t Block_size;
+} __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0)};
+
+
+int main() {
+
+    int val = 10;
+    static int static_val = 4;
+    
+    // 这里把静态变量的地址传入了 __main_block_impl_0 结构体的构造函数并保存
+    void (*myBlock)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, &static_val, val));
+
+    ((void (*)(__block_impl *))((__block_impl *)myBlock)->FuncPtr)((__block_impl *)myBlock);
+
+}
+
+
+```
+
+结论：
+
+- 通过访问静态局部变量的地址来改变变量值
+- 全局变量和静态变量可以直接访问
+
+
+### 7. block 对变量的捕获规则
 
 （1） 静态存储区的变量：例如全局变量、方法中的static变量
-引用，可修改。
+捕获的是对变量的引用，可修改。
 
 （2）block接受的参数
 只是传值，不会引用，因为 block 只有截获外部变量时，才会引用它。可修改，和一般函数的参数相同。
@@ -374,3 +477,5 @@ const，不可修改。 当block被copy后，block会对 id类型的变量产生
 - [Block Implementation Specification - Clang 7 documentation](http://clang.llvm.org/docs/Block-ABI-Apple.html)
 - Matt Galloway: A look inside blocks[(Episode 1)](http://www.galloway.me.uk/2012/10/a-look-inside-blocks-episode-1/)[(Episode 2)](http://www.galloway.me.uk/2012/10/a-look-inside-blocks-episode-2)[(Episode 3)](http://www.galloway.me.uk/2013/05/a-look-inside-blocks-episode-3-block-copy/)
 - [深入理解Block之Block的类型](http://ios.jobbole.com/88191/)
+- [霜神：深入研究Block用weakSelf、strongSelf、@weakify、@strongify解决循环引用](https://www.jianshu.com/p/701da54bd78c)
+- [霜神：深入研究Block捕获外部变量和__block实现原理](https://www.jianshu.com/p/ee9756f3d5f6)

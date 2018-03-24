@@ -301,9 +301,17 @@ ARC中ARC 只是在编译层做手脚，所以我们可以对整个项目设置 
 
 - `__unsafe_unretained` 跟 `__weak` 的不同点在于，使用该修饰符的变量在变量所引用的对象销毁后，不会被赋值 nil，因为附有 `__unsafe_unretained` 修饰符的变量不属于编译器的内存管理对象。所以，我们在使用带有 `__unsafe_unretained` 的变量时，要确保被赋值的对象确实存在，否则会引起程序崩溃。
 
-- 垂悬指针（dangling pointer）：指向曾经存在的对象，但该对象已经不再存在了，此类指针称为垂悬指针。结果未定义，往往导致程序错误，而且难以检测。（来源：[csdn 博客](http://blog.csdn.net/zhaojinjia/article/details/8770989)）
 
-- 野指针（wild pointer）：野指针不是 NULL 指针，是指向 “垃圾” 内存（不可用内存）的指针。产生野指针的原因有三个，一是指针变量没有被初始化，它的缺省值是随机的，它会乱指一气，二是指针 p 被 free 或者 delete 之后，没有置为 NULL，让人误以为p是个合法的指针，三是指针操作超越了变量的作用范围。（来源：[csdn 博客](http://blog.csdn.net/zhaojinjia/article/details/8770989)）
+> 知识点
+> - 垂悬指针（dangling pointer）：指向曾经存在的对象，但该对象已经不再存在了，此类指针称为垂悬指针。
+> 
+> - 野指针（wild pointer）：野指针指的是还没有初始化的指针。严格地说，编程语言中每个指针在初始化前都是野指针。任何指针变量刚被创建时不会自动成为NULL指针，它的缺省值是随机的，它会乱指一气。所以，指针变量在创建的同时应当被初始化，要么将指针设置为NULL，要么让它指向合法的内存。（维基百科上将野指针和垂悬指针归为一类）
+> 
+> 参考：
+> - [迷途指针 - 维基百科](https://zh.wikipedia.org/wiki/%E8%BF%B7%E9%80%94%E6%8C%87%E9%92%88)
+> - [Wild pointer and Dangling pointer](https://codingfox.com/14-21-wild-pointer-and-dangling-pointer/)
+> - [Dangling pointer（悬垂指针、迷途指针）和 Wild pointer（野指针）](https://blog.csdn.net/crayondeng/article/details/24845191)
+
 
 **（8）所有权修饰符之四：__autoreleasing**
 
