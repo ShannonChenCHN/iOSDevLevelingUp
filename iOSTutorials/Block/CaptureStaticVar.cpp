@@ -17,6 +17,17 @@ int main(int argc, const char * argv[]) {
 
 */
 
+#ifndef BLOCK_IMPL
+#define BLOCK_IMPL
+struct __block_impl {
+    void *isa;
+    int Flags;
+    int Reserved;
+    void *FuncPtr;
+};
+#endif
+
+// block 的结构
 struct __main_block_impl_0 {
   struct __block_impl impl;
   struct __main_block_desc_0* Desc;
@@ -58,7 +69,7 @@ int main(int argc, const char * argv[]) {
 
 
         static NSString *staticText = (NSString *)&__NSConstantStringImpl__var_folders_nt_bkkycgbs2hv63tthr5dbd2g40000gn_T_main_93a859_mi_0;
-        void (*myBlock)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, &staticText, 570425344));
+        void (*myBlock)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, &staticText, 570425344));  // 捕获到的是静态变量的地址
 
 
     }

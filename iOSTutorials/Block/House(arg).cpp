@@ -25,6 +25,7 @@ struct __block_impl {
     int Reserved;
     void *FuncPtr;
 };
+#endif
 
 #ifndef _REWRITER_typedef_House
 #define _REWRITER_typedef_House
