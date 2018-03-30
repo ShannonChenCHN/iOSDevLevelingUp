@@ -282,6 +282,9 @@ runtime 是一把双刃剑，应该谨慎使用：
 - 不要用 runtime 去修改系统框架的私有方法，以免应用提交审核时被拒
 - 如果对系统的方法使用了 Method Swizzling 技术，一定要记得调用原来的实现。
 
+更详细的讨论见  [What are the Dangers of Method Swizzling in Objective C?](https://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c)。
+
+
 ### 十三、相关开源项目
 - Aspects
 - JSPatch
@@ -361,6 +364,9 @@ runtime 是一把双刃剑，应该谨慎使用：
   - [iOS runtime实用篇--和常见崩溃say good-bye！](https://www.jianshu.com/p/5d625f86bd02)
   - [OC最实用的runtime总结，面试、工作你看我就足够了！](http://www.jianshu.com/p/ab966e8a82e2)
   - [iOS 模块详解—「Runtime面试、工作」看我就 🐒 了 ^_^.](http://www.jianshu.com/p/19f280afcb24)
+  
+  - 注意点
+    - [What are the Dangers of Method Swizzling in Objective C?](https://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c)
   
 - 相关源码
   - [Apple 官方开源的 objc4 源码](https://opensource.apple.com/tarballs/objc4/)

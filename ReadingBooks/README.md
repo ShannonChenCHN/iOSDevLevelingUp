@@ -16,6 +16,8 @@ iOS Core Animation Advanced Techniques  |  |  Done |
 程序员的自我修养  |    |   |
 图解 TCP/IP   |     |   |
 网络是怎样连接的  |   |   |
+程序是怎样跑起来的  |   |   |
+深入理解计算机系统  |    |    |
 iOS and OS X Network Programming Cookbook  |  |  |
 Swifter |  |  |
 

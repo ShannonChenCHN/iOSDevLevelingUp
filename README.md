@@ -25,7 +25,6 @@ A journey of leveling up iOS dev knowledge and skill.
     - Java
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
   - [内存管理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
-  - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
   - [数据存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
   - 布局和渲染
     - [storyboard 与布局适配](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/8)
@@ -33,11 +32,13 @@ A journey of leveling up iOS dev knowledge and skill.
     - [文字/图像](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/44)
     - [动画](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/31)
   - [多线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
-  - 计算机基础
+  - [正则表达式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/85)
+  - **计算机基础（重点）**
     - [数据结构和算法](https://github.com/ShannonChenCHN/DataStructure-Algorithm-Notes)
     - [编译、链接和装载](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
     - [操作系统](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/54)
-    - [正则表达式](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/85)
+    - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
+    - 计算机组成原理
   - [APP 上架与审核](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/20)
 - [需求](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/41)
   - 普通需求
