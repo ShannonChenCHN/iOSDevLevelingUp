@@ -14,10 +14,10 @@ The Swift Programming Language |  |  Done |
 iOS Core Animation Advanced Techniques  |  |  Done |
 计算机是怎样跑起来的  |   |  Done  |
 图解 HTTP  |   | Done |
+程序是怎样跑起来的  |   | [《程序是怎样跑起来的》读书笔记]()  |
 程序员的自我修养  |    |   |
 图解 TCP/IP   |     |   |
 网络是怎样连接的  |   |   |
-程序是怎样跑起来的  |   |   |
 深入理解计算机系统  |    |    |
 剑指 offer |  |  |
 高性能iOS应用开发  |  |  |
