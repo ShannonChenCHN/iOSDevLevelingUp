@@ -38,7 +38,7 @@ A journey of leveling up iOS dev knowledge and skill.
     - [编译、链接和装载](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
     - [操作系统](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/54)
     - [网络](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/37)
-    - 计算机组成原理
+    - [计算机组成原理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/109)
   - [APP 上架与审核](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/20)
 - [需求](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/41)
   - 普通需求
