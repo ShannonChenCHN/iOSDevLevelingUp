@@ -112,6 +112,44 @@ void testGCDSemaphore() {
      */
 }
 
+// 堵塞当前线程，待多个异步任务都执行完毕后，再回到当前线程继续执行
+// https://www.jianshu.com/p/e54cacca3d5d
+void waitUntilGroupTaskFinished() {
+    
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    dispatch_time_t overTime = dispatch_time(DISPATCH_TIME_NOW, 15 * NSEC_PER_SEC); // 超时时长为 15 秒
+    
+    // 异步任务一
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        sleep(3); // 3 秒后开锁
+        NSLog(@"线程1, %@", [NSThread currentThread]);
+        dispatch_semaphore_signal(signal);     // 发送信号，如果没有等待的线程接受信号，则使 signal 信号值加一（做到对信号的保存）。
+    });
+    
+    // 异步任务二
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 1000; i++) {
+            NSLog(@".");
+        }
+        NSLog(@"线程2, %@", [NSThread currentThread]);
+        dispatch_semaphore_signal(signal);     // 发送信号，如果没有等待的线程接受信号，则使 signal 信号值加一（做到对信号的保存）。
+    });
+    
+    
+    // dispatch_semaphore_wait 会堵塞当前线程，一个 dispatch_semaphore_wait() 函数必须要对应一个 dispatch_semaphore_signal() 函数
+    // 先判断信号量值是否大于 0，如果大于 0 的话，就不会阻塞线程，而是直接执行后面的任务，同时信号量减 1。
+    // 如果信号值为 0，该线程会直接进入 waiting 状态，等待其他线程发送信号唤醒线程去执行后续任务。或者当 overTime  时限到了，也会执行后续任务。
+    dispatch_semaphore_wait(signal, overTime);
+    
+    // 执行完上面这行代码后，信号量又会减 1，所以又会变成 0
+    // 所以在这里继续等待
+    dispatch_semaphore_wait(signal, overTime);
+    
+    // 最后执行的任务
+    NSLog(@"---所有任务都结束了---");
+}
+
 void testNSCondition() {
     
     NSCondition *lock = [[NSCondition alloc] init];
@@ -302,12 +340,15 @@ int main(int argc, const char * argv[]) {
 //        testNSLock();
 //        testSynchronizedLock();
 //        testGCDSemaphore();
+//        waitUntilGroupTaskFinished();
 //        testNSCondition();
 //        testConditionLock();
 //        testNSRecursiveLock();
 //        testOSSpinLock();
 //        testPthreadMutexLock();
 //        testPthreadMutexRecursiveLock();
+        
+        
         
         sleep(10);
        

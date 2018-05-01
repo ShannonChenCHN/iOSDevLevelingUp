@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if 1
+
 #import "House.h"
 
 
@@ -44,24 +47,31 @@ void BlockAsAFunctionParameter() {
     void(^anotherBlock)(BlockType aBlock) = ^(BlockType aBlock){
         NSLog(@"AnotherBlock");
         
-        aBlock();
+        aBlock();   // 这里只是从函数参数中获取到 aBlock，没有引用关系
+        myBlock();  // 这种情况下，会把外面的 myBlock 捕获进来，引用计数+1
+        
     };
     
     anotherBlock(myBlock);
     
     // 可以把这里传进去的 myBlock 看成是一个对象，调用 anotherBlock 时，就相当于调用一个函数，在这个函数中，myBlock 跟 anotherBlock 没有什么
     // 引用关系，myBlock 纯粹是一个参数，所以只需要考虑 myBlock 本身的情况。另外，myBlock 将外部的 string 对象捕获进去了，而且 myBlock 在堆上，所以 myBlock 对这个 string 对象进行了强引用。
+    
+
 }
+
+#endif
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         
-        ModifyAObjCObjectInBlock();
-        
-        NSLog(@"%@", ^{});  // __NSGlobalBlock__
-        
-        PrintGlobalBlock();
+//        ModifyAObjCObjectInBlock();
+//
+//        NSLog(@"%@", ^{});  // __NSGlobalBlock__
+//
+//        PrintGlobalBlock();
         BlockAsAFunctionParameter();
+        
         
     }
     return 0;
