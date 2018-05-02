@@ -1,0 +1,5 @@
+ [
+  { "first": "Grace",     "last": "Hopper",   "year": 1906 },
+  { "first": "Ada",       "last": "Lovelace", "year": 1815 },
+  { "first": "Margaret",  "last": "Hamilton", "year": 1936 }
+  ]

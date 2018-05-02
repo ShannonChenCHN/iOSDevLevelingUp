@@ -26,3 +26,4 @@ AFNetworking.framework.zip
 fastlane/test-output/*
 
 Carthage/Build
+ReadingSourceCode/MBProgressHUDNotes/MBProgressHUD-1.0.0/MBProgressHUD.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist

@@ -20,6 +20,27 @@
 
 @implementation JPRootViewController
 
++ (void)request:(void(^)(NSString *content, BOOL success))callback {
+    callback(@"I'm content", YES);
+}
+
+typedef void (^JSBlock)(NSDictionary *dict);
++ (JSBlock)genBlock {
+    NSString *ctn = @"JSPatch";
+    JSBlock block = ^(NSDictionary *dict) {
+        NSLog(@"I'm %@, version: %@", ctn, dict[@"v"]);
+    };
+    return block;
+}
+
+- (void)callBlock:(void(^)(void))block {
+    block();
+}
+
+- (void)doSomething {
+    NSLog(@"My boyfriend is gay!");
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];

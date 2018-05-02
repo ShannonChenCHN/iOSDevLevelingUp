@@ -540,6 +540,8 @@ static void addMethodToProtocol(Protocol* protocol, NSString *selectorName, NSSt
     protocol_addMethodDescription(protocol, sel, type, YES, isInstance);
 }
 
+// 定义一个类
+// 以 classDeclaration 为 JPDemoController: UIViewController 为例
 static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods)
 {
     NSScanner *scanner = [NSScanner scannerWithString:classDeclaration];
@@ -547,13 +549,13 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
     NSString *className;
     NSString *superClassName;
     NSString *protocolNames;
-    [scanner scanUpToString:@":" intoString:&className];
+    [scanner scanUpToString:@":" intoString:&className]; // 类名 JPDemoController
     if (!scanner.isAtEnd) {
         scanner.scanLocation = scanner.scanLocation + 1;
-        [scanner scanUpToString:@"<" intoString:&superClassName];
+        [scanner scanUpToString:@"<" intoString:&superClassName]; // 父类 UIViewController
         if (!scanner.isAtEnd) {
             scanner.scanLocation = scanner.scanLocation + 1;
-            [scanner scanUpToString:@">" intoString:&protocolNames];
+            [scanner scanUpToString:@">" intoString:&protocolNames]; // 协议
         }
     }
     
@@ -563,6 +565,7 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
     
     NSArray *protocols = [protocolNames length] ? [protocolNames componentsSeparatedByString:@","] : nil;
     
+    // 使用 Runtime 生成 Objective-C 类
     Class cls = NSClassFromString(className);
     if (!cls) {
         Class superCls = NSClassFromString(superClassName);
@@ -581,6 +584,7 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
         }
     }
     
+    // 第一次处理实例方法，第二次处理类方法
     for (int i = 0; i < 2; i ++) {
         BOOL isInstance = i == 0;
         JSValue *jsMethods = isInstance ? instanceMethods: classMethods;
@@ -589,6 +593,8 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
         NSDictionary *methodDict = [jsMethods toDictionary];
         for (NSString *jsMethodName in methodDict.allKeys) {
             JSValue *jsMethodArr = [jsMethods valueForProperty:jsMethodName];
+            
+            // 选择器名
             int numberOfArg = [jsMethodArr[0] toInt32];
             NSString *selectorName = convertJPSelectorString(jsMethodName);
             
@@ -598,8 +604,11 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
             
             JSValue *jsMethod = jsMethodArr[1];
             if (class_respondsToSelector(currCls, NSSelectorFromString(selectorName))) {
+                // 重写方法
                 overrideMethod(currCls, selectorName, jsMethod, !isInstance, NULL);
             } else {
+                // 添加方法
+                
                 BOOL overrided = NO;
                 for (NSString *protocolName in protocols) {
                     char *types = methodTypesInProtocol(protocolName, selectorName, isInstance, YES);
