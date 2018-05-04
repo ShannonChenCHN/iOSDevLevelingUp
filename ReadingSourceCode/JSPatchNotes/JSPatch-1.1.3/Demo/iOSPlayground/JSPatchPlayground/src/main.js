@@ -6,9 +6,11 @@ defineClass('JPRootViewController', {
             
         // 在 block 内部使用 self
         var jsSelf = self;
-        self.callBlock(block(function(){
-                                                jsSelf.doSomething();
-                                                })
+        self.callBlock(block(
+                                 function(){
+                                    jsSelf.doSomething();
+                                 }
+                             )
                        );
     },
             

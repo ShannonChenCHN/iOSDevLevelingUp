@@ -42,6 +42,7 @@ var global = this
     return obj
   }
   
+  // 调用 objC 的方法
   var _methodFunc = function(instance, clsName, methodName, args, isSuper, isPerformSelector) {
     var selectorName = methodName
     if (!isPerformSelector) {
@@ -58,7 +59,10 @@ var global = this
     return _formatOCToJS(ret)
   }
 
+  // 自定义的 JS 对象原型方法
   var _customMethods = {
+  
+  // 用于调用 OC 方法的元函数，例如 UIView.alloc() 就相当于 UIView.__c('alloc')();
     __c: function(methodName) {
       var slf = this
 
@@ -86,12 +90,14 @@ var global = this
         }
       }
 
+      // 返回一个调用 OC 的函数用于调用
       return function(){
         var args = Array.prototype.slice.call(arguments)
         return _methodFunc(slf.__obj, slf.__clsName, methodName, args, slf.__isSuper)
       }
     },
 
+    // super 的实现
     super: function() {
       var slf = this
       if (slf.__obj) {
@@ -113,12 +119,14 @@ var global = this
     }
   }
 
+  // 给 Object 的原型对象添加方法，这样就可以让所有具有典型原型链继承的 JS 对象都拥有这些方法，用于调用 OC
   for (var method in _customMethods) {
     if (_customMethods.hasOwnProperty(method)) {
       Object.defineProperty(Object.prototype, method, {value: _customMethods[method], configurable:false, enumerable: false})
     }
   }
 
+  // 内部调用的 require 函数，每个 OC 类的信息都保存在JS全局作用域上的同名变量中
   var _require = function(clsName) {
     if (!global[clsName]) {
       global[clsName] = {
@@ -128,6 +136,7 @@ var global = this
     return global[clsName]
   }
 
+  // 全局的 require 函数，返回的是一个 JS 对象
   global.require = function() {
     var lastRequire
     for (var i = 0; i < arguments.length; i ++) {
@@ -210,6 +219,7 @@ var global = this
     };
   }
 
+  // 用于定义一个类的全局函数
   global.defineClass = function(declaration, properties, instMethods, clsMethods) {
     var newInstMethods = {}, newClsMethods = {}
     if (!(properties instanceof Array)) {
@@ -259,11 +269,13 @@ var global = this
     return require(className)
   }
 
+  // 定义协议
   global.defineProtocol = function(declaration, instProtos , clsProtos) {
       var ret = _OC_defineProtocol(declaration, instProtos,clsProtos);
       return ret
   }
 
+  // 封装 block 的函数
   global.block = function(args, cb) {
     var that = this
     var slf = global.self

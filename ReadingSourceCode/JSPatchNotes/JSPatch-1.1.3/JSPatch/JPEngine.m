@@ -166,6 +166,8 @@ static void (^_exceptionBlock)(NSString *log) = ^void(NSString *log) {
     
     JSContext *context = [[JSContext alloc] init];
     
+    // 在 Objective-C 中提供全局函数给 JS 调用
+    
 #ifdef DEBUG
     context[@"po"] = ^JSValue*(JSValue *obj) {
         id ocObject = formatJSToOC(obj);
@@ -317,6 +319,7 @@ static void (^_exceptionBlock)(NSString *log) = ^void(NSString *log) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 #endif
     
+    // 加载 JSPatch 文件中的脚本
     NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"JSPatch" ofType:@"js"];
     if (!path) _exceptionBlock(@"can't find JSPatch.js");
     NSString *jsCore = [[NSString alloc] initWithData:[[NSFileManager defaultManager] contentsAtPath:path] encoding:NSUTF8StringEncoding];
@@ -351,15 +354,18 @@ static void (^_exceptionBlock)(NSString *log) = ^void(NSString *log) {
         _exceptionBlock(@"script is nil");
         return nil;
     }
+    
+    // 环境初始化
     [self startEngine];
     
+    // 通过正则匹配将 JS 中所有的方法调用替换成 '__c(methodName)()' 的调用方式
     if (!_regex) {
         _regex = [NSRegularExpression regularExpressionWithPattern:_regexStr options:0 error:nil];
     }
     NSString *formatedScript = [NSString stringWithFormat:@";(function(){try{\n%@\n}catch(e){_OC_catch(e.message, e.stack)}})();", [_regex stringByReplacingMatchesInString:script options:0 range:NSMakeRange(0, script.length) withTemplate:_replaceStr]];
     @try {
         if ([_context respondsToSelector:@selector(evaluateScript:withSourceURL:)]) {
-            return [_context evaluateScript:formatedScript withSourceURL:resourceURL];
+            return [_context evaluateScript:formatedScript withSourceURL:resourceURL]; // resourceURL 指脚本来源，也就是文件名，应该是为了用于调试时获取信息的
         } else {
             return [_context evaluateScript:formatedScript];
         }
@@ -1039,6 +1045,7 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
     Class cls = instance ? [instance class] : NSClassFromString(className);
     SEL selector = NSSelectorFromString(selectorName);
     
+    // 调用父类的方法
     NSString *superClassName = nil;
     if (isSuper) {
         NSString *superSelectorName = [NSString stringWithFormat:@"SUPER_%@", selectorName];
@@ -1068,6 +1075,8 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
     }
     
     
+    
+    
     NSMutableArray *_markArray;
     
     NSInvocation *invocation;
@@ -1076,6 +1085,8 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
         _JSMethodSignatureCache = [[NSMutableDictionary alloc]init];
     }
     if (instance) {
+        // 调用实例方法
+        
         [_JSMethodSignatureLock lock];
         if (!_JSMethodSignatureCache[cls]) {
             _JSMethodSignatureCache[(id<NSCopying>)cls] = [[NSMutableDictionary alloc]init];
@@ -1094,6 +1105,8 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
         invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
         [invocation setTarget:instance];
     } else {
+        // 调用类方法
+        
         methodSignature = [cls methodSignatureForSelector:selector];
         methodSignature = fixSignature(methodSignature);
         if (!methodSignature) {
@@ -1119,6 +1132,7 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
         id valObj = argumentsObj[i-2];
         switch (argumentType[0] == 'r' ? argumentType[1] : argumentType[0]) {
                 
+                // 转换参数类型
                 #define JP_CALL_ARG_CASE(_typeString, _type, _selector) \
                 case _typeString: {                              \
                     _type value = [valObj _selector];                     \

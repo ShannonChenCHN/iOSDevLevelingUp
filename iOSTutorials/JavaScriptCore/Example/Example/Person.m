@@ -10,6 +10,10 @@
 
 @implementation Person
 
+- (void)dealloc {
+    
+}
+
 - (NSString *)getFullName {
     return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
 }

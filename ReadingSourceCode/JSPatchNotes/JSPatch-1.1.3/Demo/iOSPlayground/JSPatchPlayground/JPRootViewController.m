@@ -73,9 +73,11 @@ typedef void (^JSBlock)(NSDictionary *dict);
         self.errorWindow.hidden = NO;
     }];
     
+    // 执行 main.js 中的脚本
     NSString *scriptRootPath = [rootPath stringByAppendingPathComponent:@"src"];
     NSString *mainScriptPath = [NSString stringWithFormat:@"%@/%@", scriptRootPath, @"/main.js"];
     [JPEngine evaluateScriptWithPath:mainScriptPath];
+    
     
     self.watchDogs = [[NSMutableArray alloc] init];
     NSArray *contentOfFolder = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:scriptRootPath error:NULL];
