@@ -64,6 +64,7 @@ void testSelfSuper() {
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         testSelfSuper();
+        
     }
     return 0;
 }

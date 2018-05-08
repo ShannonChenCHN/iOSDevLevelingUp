@@ -96,6 +96,7 @@ typedef void (^JSBlock)(NSDictionary *dict);
     [btn addTarget:self action:@selector(showController) forControlEvents:UIControlEventTouchUpInside];
     [btn setBackgroundColor:[UIColor grayColor]];
     [self.view addSubview:btn];
+    
 }
 
 - (void)handleTapErrorBtn

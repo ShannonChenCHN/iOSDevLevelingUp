@@ -11,9 +11,9 @@
 @implementation Person
 
 
-- (BOOL)run {
-    return YES;
-}
+//- (BOOL)run {
+//    return YES;
+//}
 
 - (BOOL)driveWithCar:(id)car {
     
@@ -30,8 +30,24 @@
     return nil;
 }
 
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+    
+    if ([NSStringFromSelector(aSelector) isEqualToString:@"run"]) {
+        NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:"c24@0:8@16"];
+        return signature;
+    } else {
+        return [super methodSignatureForSelector:aSelector];
+    }
+    
+}
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
 //    [self doesNotRecognizeSelector:anInvocation.selector];
+    
+    if ([NSStringFromSelector(anInvocation.selector) isEqualToString:@"run"]) {
+        BOOL returnValue = YES;
+        [anInvocation setReturnValue:&returnValue];
+    }
+    
 }
 
 @end

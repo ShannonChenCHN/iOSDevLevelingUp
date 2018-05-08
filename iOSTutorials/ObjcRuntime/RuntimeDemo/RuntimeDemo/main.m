@@ -84,6 +84,33 @@ void getClassHierachy() {
                    class_isMetaClass(meta_meta)); // YES
 }
 
+static BOOL driveWithCarIMP(id self, SEL sel, id car) {
+    NSLog(@"新的实现：%@ %s%@", self, __func__, car);
+    
+    return (car != nil);
+}
+
+void exchangeMethods() {
+    
+    // 拿到 Method
+    Class cls = NSClassFromString(@"Person");
+    SEL originalSelector = @selector(driveWithCar:);
+    Method method = class_getInstanceMethod(cls, originalSelector);
+    
+    // 获得方法的函数指针
+    IMP imp = method_getImplementation(method);
+    
+    // 获得方法的参数类型
+    char *typeDescription = (char *)method_getTypeEncoding(method);
+    
+    // 新增一个 selector，指向原来的 driveWithCar: 的方法实现
+    class_addMethod(cls, @selector(orig_driveWithCar:), imp, typeDescription);
+    
+    // 将原来的 driveWithCar: 方法选择器的实现替换成新的实现
+    class_replaceMethod(cls, originalSelector, driveWithCarIMP, typeDescription);
+    
+}
+
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -92,11 +119,15 @@ int main(int argc, const char * argv[]) {
 //
 //        printAllLoadedLibraryNames();
 //
-        class_printAllClassMethodNames(Person.class);
+//        class_printAllClassMethodNames(Person.class);
 //        class_printAllInstanceMethodNames(Person.class);
 //
 //        getClassHierachy();
 
+        exchangeMethods();
+        Person *person = [[Person alloc] init];
+        [person driveWithCar:@"car"];
+        BOOL result = [person run];
         
     }
     return 0;

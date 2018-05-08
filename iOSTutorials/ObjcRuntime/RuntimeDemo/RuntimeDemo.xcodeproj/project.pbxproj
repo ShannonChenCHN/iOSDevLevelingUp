@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		580EFD31204F8B880046E5F2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 580EFD30204F8B880046E5F2 /* main.m */; };
 		580EFD39204F8B9C0046E5F2 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 580EFD38204F8B9C0046E5F2 /* Person.m */; };
+		5831996B209FF7590004B1C9 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 580EFD38204F8B9C0046E5F2 /* Person.m */; };
 		5896BF76209BFF4E00392776 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5896BF75209BFF4E00392776 /* main.m */; };
 		5896BF81209C03E200392776 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5896BF80209C03E200392776 /* main.m */; };
 /* End PBXBuildFile section */
@@ -243,6 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5831996B209FF7590004B1C9 /* Person.m in Sources */,
 				5896BF81209C03E200392776 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

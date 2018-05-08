@@ -19,6 +19,13 @@
 		3660A8B51CE365FB008970B4 /* src in Resources */ = {isa = PBXBuildFile; fileRef = 3660A8B41CE365FB008970B4 /* src */; };
 		3660A8F21CE36D05008970B4 /* SGDirWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660A8F11CE36D05008970B4 /* SGDirWatchdog.m */; };
 		3660A90D1CE4A546008970B4 /* JPErrorMsgViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3660A90C1CE4A546008970B4 /* JPErrorMsgViewController.m */; };
+		5831997C20A1AC8E0004B1C9 /* RTProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 5831996F20A1AC8E0004B1C9 /* RTProtocol.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5831997D20A1AC8E0004B1C9 /* MARTNSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5831997420A1AC8E0004B1C9 /* MARTNSObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5831997E20A1AC8E0004B1C9 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 5831997620A1AC8E0004B1C9 /* README.markdown */; };
+		5831997F20A1AC8E0004B1C9 /* RTUnregisteredClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 5831997720A1AC8E0004B1C9 /* RTUnregisteredClass.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5831998020A1AC8E0004B1C9 /* RTProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 5831997820A1AC8E0004B1C9 /* RTProperty.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5831998120A1AC8E0004B1C9 /* RTMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 5831997A20A1AC8E0004B1C9 /* RTMethod.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5831998220A1AC8E0004B1C9 /* RTIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = 5831997B20A1AC8E0004B1C9 /* RTIvar.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +51,20 @@
 		3660A8F11CE36D05008970B4 /* SGDirWatchdog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SGDirWatchdog.m; sourceTree = "<group>"; };
 		3660A90B1CE4A546008970B4 /* JPErrorMsgViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPErrorMsgViewController.h; sourceTree = "<group>"; };
 		3660A90C1CE4A546008970B4 /* JPErrorMsgViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPErrorMsgViewController.m; sourceTree = "<group>"; };
+		5831996F20A1AC8E0004B1C9 /* RTProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTProtocol.m; sourceTree = "<group>"; };
+		5831997020A1AC8E0004B1C9 /* RTProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTProperty.h; sourceTree = "<group>"; };
+		5831997120A1AC8E0004B1C9 /* RTUnregisteredClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTUnregisteredClass.h; sourceTree = "<group>"; };
+		5831997220A1AC8E0004B1C9 /* RTIvar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTIvar.h; sourceTree = "<group>"; };
+		5831997320A1AC8E0004B1C9 /* RTMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTMethod.h; sourceTree = "<group>"; };
+		5831997420A1AC8E0004B1C9 /* MARTNSObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MARTNSObject.m; sourceTree = "<group>"; };
+		5831997520A1AC8E0004B1C9 /* RTProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTProtocol.h; sourceTree = "<group>"; };
+		5831997620A1AC8E0004B1C9 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
+		5831997720A1AC8E0004B1C9 /* RTUnregisteredClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTUnregisteredClass.m; sourceTree = "<group>"; };
+		5831997820A1AC8E0004B1C9 /* RTProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTProperty.m; sourceTree = "<group>"; };
+		5831997920A1AC8E0004B1C9 /* MARTNSObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MARTNSObject.h; sourceTree = "<group>"; };
+		5831997A20A1AC8E0004B1C9 /* RTMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTMethod.m; sourceTree = "<group>"; };
+		5831997B20A1AC8E0004B1C9 /* RTIvar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTIvar.m; sourceTree = "<group>"; };
+		5831998320A1AEBB0004B1C9 /* MAObjCRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MAObjCRuntime.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +126,7 @@
 				361443581CE8041A00B303D4 /* JSPatch */,
 				3660A8B61CE369F0008970B4 /* libs */,
 				3660A8B41CE365FB008970B4 /* src */,
+				5831996E20A1AC8E0004B1C9 /* MAObjCRuntime */,
 				3660A8681CE3542A008970B4 /* AppDelegate.h */,
 				3660A8691CE3542A008970B4 /* AppDelegate.m */,
 				3660A86B1CE3542A008970B4 /* JPRootViewController.h */,
@@ -133,6 +155,27 @@
 				3660A8F11CE36D05008970B4 /* SGDirWatchdog.m */,
 			);
 			path = libs;
+			sourceTree = "<group>";
+		};
+		5831996E20A1AC8E0004B1C9 /* MAObjCRuntime */ = {
+			isa = PBXGroup;
+			children = (
+				5831997620A1AC8E0004B1C9 /* README.markdown */,
+				5831997120A1AC8E0004B1C9 /* RTUnregisteredClass.h */,
+				5831997720A1AC8E0004B1C9 /* RTUnregisteredClass.m */,
+				5831997920A1AC8E0004B1C9 /* MARTNSObject.h */,
+				5831997420A1AC8E0004B1C9 /* MARTNSObject.m */,
+				5831997520A1AC8E0004B1C9 /* RTProtocol.h */,
+				5831996F20A1AC8E0004B1C9 /* RTProtocol.m */,
+				5831997220A1AC8E0004B1C9 /* RTIvar.h */,
+				5831997B20A1AC8E0004B1C9 /* RTIvar.m */,
+				5831997020A1AC8E0004B1C9 /* RTProperty.h */,
+				5831997820A1AC8E0004B1C9 /* RTProperty.m */,
+				5831997320A1AC8E0004B1C9 /* RTMethod.h */,
+				5831997A20A1AC8E0004B1C9 /* RTMethod.m */,
+				5831998320A1AEBB0004B1C9 /* MAObjCRuntime.h */,
+			);
+			path = MAObjCRuntime;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,6 +237,7 @@
 			files = (
 				3614436E1CE8041A00B303D4 /* JSPatch.js in Resources */,
 				3660A8721CE3542A008970B4 /* Assets.xcassets in Resources */,
+				5831997E20A1AC8E0004B1C9 /* README.markdown in Resources */,
 				3660A8B51CE365FB008970B4 /* src in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -205,15 +249,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5831998220A1AC8E0004B1C9 /* RTIvar.m in Sources */,
 				3660A8F21CE36D05008970B4 /* SGDirWatchdog.m in Sources */,
+				5831997F20A1AC8E0004B1C9 /* RTUnregisteredClass.m in Sources */,
+				5831998020A1AC8E0004B1C9 /* RTProperty.m in Sources */,
+				5831997C20A1AC8E0004B1C9 /* RTProtocol.m in Sources */,
 				3660A90D1CE4A546008970B4 /* JPErrorMsgViewController.m in Sources */,
 				361443641CE8041A00B303D4 /* JPCleaner.m in Sources */,
 				361443671CE8041A00B303D4 /* JPSpecialInit.m in Sources */,
 				361443651CE8041A00B303D4 /* JPLocker.m in Sources */,
+				5831998120A1AC8E0004B1C9 /* RTMethod.m in Sources */,
 				3660A86D1CE3542A008970B4 /* JPRootViewController.m in Sources */,
 				3614436D1CE8041A00B303D4 /* JPEngine.m in Sources */,
 				3660A86A1CE3542A008970B4 /* AppDelegate.m in Sources */,
 				3660A8671CE3542A008970B4 /* main.m in Sources */,
+				5831997D20A1AC8E0004B1C9 /* MARTNSObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

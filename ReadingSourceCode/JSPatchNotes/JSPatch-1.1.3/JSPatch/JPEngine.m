@@ -9,6 +9,8 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
+#import "MAObjCRuntime.h"
+
 #if TARGET_OS_IPHONE
 #import <UIKit/UIApplication.h>
 #endif
@@ -546,7 +548,7 @@ static void addMethodToProtocol(Protocol* protocol, NSString *selectorName, NSSt
     protocol_addMethodDescription(protocol, sel, type, YES, isInstance);
 }
 
-// 定义一个类
+// 定义一个类，或者修改某个类
 // 以 classDeclaration 为 JPDemoController: UIViewController 为例
 static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods)
 {
@@ -571,9 +573,9 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
     
     NSArray *protocols = [protocolNames length] ? [protocolNames componentsSeparatedByString:@","] : nil;
     
-    // 使用 Runtime 生成 Objective-C 类
+    // 使用 Runtime 生成并注册一个 Objective-C 类
     Class cls = NSClassFromString(className);
-    if (!cls) {
+    if (!cls) { // 前提是编译后的二进制文件中没有该类
         Class superCls = NSClassFromString(superClassName);
         if (!superCls) {
             _exceptionBlock([NSString stringWithFormat:@"can't find the super class %@", superClassName]);
@@ -596,29 +598,31 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
         JSValue *jsMethods = isInstance ? instanceMethods: classMethods;
         
         Class currCls = isInstance ? cls: objc_getMetaClass(className.UTF8String);
-        NSDictionary *methodDict = [jsMethods toDictionary];
-        for (NSString *jsMethodName in methodDict.allKeys) {
+        NSDictionary *methodDict = [jsMethods toDictionary]; // 所有的方法都是以 key-value 形式传递过来的
+        for (NSString *jsMethodName in methodDict.allKeys) { // key 是方法名，value 是方法实现
             JSValue *jsMethodArr = [jsMethods valueForProperty:jsMethodName];
             
             // 选择器名
-            int numberOfArg = [jsMethodArr[0] toInt32];
+            int numberOfArg = [jsMethodArr[0] toInt32]; // 方法参数个数
             NSString *selectorName = convertJPSelectorString(jsMethodName);
             
             if ([selectorName componentsSeparatedByString:@":"].count - 1 < numberOfArg) {
                 selectorName = [selectorName stringByAppendingString:@":"];
             }
             
+            // 方法的实现
             JSValue *jsMethod = jsMethodArr[1];
             if (class_respondsToSelector(currCls, NSSelectorFromString(selectorName))) {
-                // 重写方法
+                // 如果这个类已经有了这个方法，就替换该方法
                 overrideMethod(currCls, selectorName, jsMethod, !isInstance, NULL);
             } else {
-                // 添加方法
+                // 否则，就添加一个新方法
+                // 因为获取方法参数的原因，所以这里 JS 调用新增方法走的流程还是 forwardInvocation 这一套
                 
                 BOOL overrided = NO;
                 for (NSString *protocolName in protocols) {
-                    char *types = methodTypesInProtocol(protocolName, selectorName, isInstance, YES);
-                    if (!types) types = methodTypesInProtocol(protocolName, selectorName, isInstance, NO);
+                    char *types = methodTypesInProtocol(protocolName, selectorName, isInstance, YES); // @required 方法
+                    if (!types) types = methodTypesInProtocol(protocolName, selectorName, isInstance, NO); // 非 @required 方法
                     if (types) {
                         overrideMethod(currCls, selectorName, jsMethod, !isInstance, types);
                         free(types);
@@ -639,8 +643,16 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
         }
     }
     
+    // 添加 getProp: 和 setProp:forKey: 方法用于动态添加属性
     class_addMethod(cls, @selector(getProp:), (IMP)getPropIMP, "@@:@");
     class_addMethod(cls, @selector(setProp:forKey:), (IMP)setPropIMP, "v@:@@");
+    
+    NSLog(@"============== Instance Methods for class: %@ ==============", className);
+    NSArray <RTMethod *> *rtMethods = [cls rt_methods];
+    for (RTMethod *aMethod in rtMethods) {
+        NSLog(@"%@", aMethod.selectorName);
+    }
+    NSLog(@"============== End ==================");
 
     return @{@"cls": className, @"superCls": superClassName};
 }
@@ -670,12 +682,12 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
 #endif
     BOOL deallocFlag = NO;
     id slf = assignSlf;
-    NSMethodSignature *methodSignature = [invocation methodSignature];
+    NSMethodSignature *methodSignature = [invocation methodSignature]; // 获取方法签名
     NSInteger numberOfArguments = [methodSignature numberOfArguments];
     
     NSString *selectorName = NSStringFromSelector(invocation.selector);
-    NSString *JPSelectorName = [NSString stringWithFormat:@"_JP%@", selectorName];
-    JSValue *jsFunc = getJSFunctionInObjectHierachy(slf, JPSelectorName);
+    NSString *JPSelectorName = [NSString stringWithFormat:@"_JP%@", selectorName]; // 获取重写的方法实现对应的 selector
+    JSValue *jsFunc = getJSFunctionInObjectHierachy(slf, JPSelectorName); // 获取 JS 中的方法实现
     if (!jsFunc) {
         JPExecuteORIGForwardInvocation(slf, selector, invocation);
         return;
@@ -691,6 +703,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
         [argList addObject:[JPBoxing boxWeakObj:slf]];
     }
     
+    // 取到被调用的方法的各个参数，依次保存到 argList 数组中
     for (NSUInteger i = 2; i < numberOfArguments; i++) {
         const char *argumentType = [methodSignature getArgumentTypeAtIndex:i];
         switch(argumentType[0] == 'r' ? argumentType[1] : argumentType[0]) {
@@ -808,6 +821,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
         strcpy(returnType, @encode(float));
     }
 
+    // 调用 JS 中实现的方法，并取出返回值
     switch (returnType[0] == 'r' ? returnType[1] : returnType[0]) {
         #define JP_FWD_RET_CALL_JS \
             JSValue *jsval; \
@@ -970,6 +984,7 @@ static void _initJPOverideMethods(Class cls) {
     }
 }
 
+// 替换方法或者添加新方法：重写 -forwardInvocation: 方法，然后再在 -forwardInvocation: 方法中调用要执行的方法
 static void overrideMethod(Class cls, NSString *selectorName, JSValue *function, BOOL isClassMethod, const char *typeDescription)
 {
     SEL selector = NSSelectorFromString(selectorName);
@@ -979,6 +994,7 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
         typeDescription = (char *)method_getTypeEncoding(method);
     }
     
+    // 拿到原方法的实现
     IMP originalImp = class_respondsToSelector(cls, selector) ? class_getMethodImplementation(cls, selector) : NULL;
     
     IMP msgForwardIMP = _objc_msgForward;
@@ -994,6 +1010,7 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
         }
     #endif
 
+    // 添加一个自定义的 -forwardInvocation: 方法实现
     if (class_getMethodImplementation(cls, @selector(forwardInvocation:)) != (IMP)JPForwardInvocation) {
         IMP originalForwardImp = class_replaceMethod(cls, @selector(forwardInvocation:), (IMP)JPForwardInvocation, "v@:@");
         if (originalForwardImp) {
@@ -1002,6 +1019,7 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
     }
 
     [cls jp_fixMethodSignature];
+    // 将原方法的实现关联到新选择器 ORIG+selectorName 上
     if (class_respondsToSelector(cls, selector)) {
         NSString *originalSelectorName = [NSString stringWithFormat:@"ORIG%@", selectorName];
         SEL originalSelector = NSSelectorFromString(originalSelectorName);
@@ -1010,11 +1028,13 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
         }
     }
     
+    // 将要重写的方法的新实现保存到 Dictionary 中 _JP+selectorName 对应的 value
     NSString *JPSelectorName = [NSString stringWithFormat:@"_JP%@", selectorName];
     
     _initJPOverideMethods(cls);
     _JSOverideMethods[cls][JPSelectorName] = function;
     
+    // 将原方法选择器关联到 _objc_msgForward 函数的实现上，也就是说当该方法被调用时，会调用到 _objc_msgForward 函数进行转发
     // Replace the original selector at last, preventing threading issus when
     // the selector get called during the execution of `overrideMethod`
     class_replaceMethod(cls, selector, msgForwardIMP, typeDescription);

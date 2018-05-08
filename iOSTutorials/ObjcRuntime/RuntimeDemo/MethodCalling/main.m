@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "Person.h"
 
 // 通过调用函数指针的方式调用方法
 void callMethodThroughFuntionPointer() {
