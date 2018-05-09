@@ -20,4 +20,6 @@
 
 - (BOOL)driveWithCar:(id)car;
 
++ (instancetype)person;
+
 @end

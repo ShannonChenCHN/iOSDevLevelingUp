@@ -1,4 +1,5 @@
 include('JPDemoController.js');
+
 defineClass('JPRootViewController', {
            
     viewWillAppear: function(animated) {

@@ -9,7 +9,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-#import "MAObjCRuntime.h"
+//#import "MAObjCRuntime.h"
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIApplication.h>
@@ -647,12 +647,12 @@ static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMe
     class_addMethod(cls, @selector(getProp:), (IMP)getPropIMP, "@@:@");
     class_addMethod(cls, @selector(setProp:forKey:), (IMP)setPropIMP, "v@:@@");
     
-    NSLog(@"============== Instance Methods for class: %@ ==============", className);
-    NSArray <RTMethod *> *rtMethods = [cls rt_methods];
-    for (RTMethod *aMethod in rtMethods) {
-        NSLog(@"%@", aMethod.selectorName);
-    }
-    NSLog(@"============== End ==================");
+//    NSLog(@"============== Instance Methods for class: %@ ==============", className);
+//    NSArray <RTMethod *> *rtMethods = [cls rt_methods];
+//    for (RTMethod *aMethod in rtMethods) {
+//        NSLog(@"%@", aMethod.selectorName);
+//    }
+//    NSLog(@"============== End ==================");
 
     return @{@"cls": className, @"superCls": superClassName};
 }
@@ -707,7 +707,7 @@ static void JPForwardInvocation(__unsafe_unretained id assignSlf, SEL selector, 
     for (NSUInteger i = 2; i < numberOfArguments; i++) {
         const char *argumentType = [methodSignature getArgumentTypeAtIndex:i];
         switch(argumentType[0] == 'r' ? argumentType[1] : argumentType[0]) {
-        
+
             #define JP_FWD_ARG_CASE(_typeChar, _type) \
             case _typeChar: {   \
                 _type arg;  \
@@ -1028,7 +1028,7 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
         }
     }
     
-    // 将要重写的方法的新实现保存到 Dictionary 中 _JP+selectorName 对应的 value
+    // 将要新增/修改后的方法的实现保存到 Dictionary 中 _JP+selectorName 对应的 value
     NSString *JPSelectorName = [NSString stringWithFormat:@"_JP%@", selectorName];
     
     _initJPOverideMethods(cls);
@@ -1040,7 +1040,7 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
     class_replaceMethod(cls, selector, msgForwardIMP, typeDescription);
 }
 
-#pragma mark -
+#pragma mark - 方法调用
 static id callSelector(NSString *className, NSString *selectorName, JSValue *arguments, JSValue *instance, BOOL isSuper)
 {
     NSString *realClsName = [[instance valueForProperty:@"__realClsName"] toString];
@@ -1065,9 +1065,12 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
     Class cls = instance ? [instance class] : NSClassFromString(className);
     SEL selector = NSSelectorFromString(selectorName);
     
-    // 调用父类的方法
+    // 如果是调用 super 方法，找到 superClass 这个方法的 IMP 实现，
+    // 为当前类新增一个方法指向 super 的 IMP 实现，那么调用这个类的新方法就相当于调用 super 方法。
+    // 把要调用的方法替换成这个新方法，就完成 super 方法的调用了
     NSString *superClassName = nil;
     if (isSuper) {
+        // 1. 先给当前类添加一个新方法， 方法名叫 SUPER_selectorName 方法实现就是父类方法的实现
         NSString *superSelectorName = [NSString stringWithFormat:@"SUPER_%@", selectorName];
         SEL superSelector = NSSelectorFromString(superSelectorName);
         
@@ -1084,6 +1087,7 @@ static id callSelector(NSString *className, NSString *selectorName, JSValue *arg
         
         class_addMethod(cls, superSelector, superIMP, method_getTypeEncoding(superMethod));
         
+        // 如果父类的方法在 JS 中被修改了，就将该方法的实现改为 JS 中的实现
         NSString *JPSelectorName = [NSString stringWithFormat:@"_JP%@", selectorName];
         JSValue *overideFunction = _JSOverideMethods[superCls][JPSelectorName];
         if (overideFunction) {

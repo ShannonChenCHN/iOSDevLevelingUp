@@ -79,24 +79,24 @@ var global = this
         throw new Error(slf + '.' + methodName + ' is undefined')
       }
   
-     // 调用 self.super() 时，获取父类名
+     // 调用 self.super() 时，获取父类名，后面调用方法时，就会直接父类这个方法的实现进行调用
       if (slf.__isSuper && slf.__clsName) {
           slf.__clsName = _OC_superClsName(slf.__obj.__realClsName ? slf.__obj.__realClsName: slf.__clsName);
       }
   
-     // 如果是 JS 端定义的方法，就直接调用
+     // A.如果是 JS 端定义的方法，就直接调用 JS 端定义的方法实现
       var clsName = slf.__clsName
       if (clsName && _ocCls[clsName]) {
         var methodType = slf.__obj ? 'instMethods': 'clsMethods'
         if (_ocCls[clsName][methodType][methodName]) {
-          _OC_log('_ocCls[clsName][methodType][methodName]: ' + clsName + ',' + methodName);
+          _OC_log('Call JS Method: ' + clsName + ',' + methodName);
           slf.__isSuper = 0;
           return _ocCls[clsName][methodType][methodName].bind(slf)
         }
       }
 
-      // 返回一个调用 OC 的函数用于调用 OC 中定义的方法
-//       _OC_log('_methodFunc: ' + clsName + ',' + methodName);
+      // B. 返回一个调用 OC 的函数用于调用 OC 中定义的方法
+       _OC_log('Call OC Method: ' + clsName + ',' + methodName);
       return function(){
         var args = Array.prototype.slice.call(arguments)
         return _methodFunc(slf.__obj, slf.__clsName, methodName, args, slf.__isSuper)
@@ -192,7 +192,7 @@ var global = this
     }
   }
 
-  // 将示例方法和类方法保存到全局变量 _ocCls 中
+  // 将 JS 中定义的示例方法和类方法保存到全局变量 _ocCls 中
   var _setupJSMethod = function(className, methods, isInst, realClsName) {
     for (var name in methods) {
       var key = isInst ? 'instMethods': 'clsMethods',
@@ -259,7 +259,7 @@ var global = this
     _formatDefineMethods(instMethods, newInstMethods, realClsName)
     _formatDefineMethods(clsMethods, newClsMethods, realClsName)
 
-   // 调用 OC 中实现的 _OC_defineClass 函数进行类的定义
+   // 调用 OC 中实现的 _OC_defineClass 函数进行 OC 端类的定义
     var ret = _OC_defineClass(declaration, newInstMethods, newClsMethods)
     var className = ret['cls']
     var superCls = ret['superCls']
@@ -279,7 +279,7 @@ var global = this
       }
     }
 
-    // 将示例方法和类方法保存到全局变量 _ocCls 中
+    // 将示例方法和类方法保存到全局变量 _ocCls 中（这里是指 JS 中定义的方法）
     _setupJSMethod(className, instMethods, 1, realClsName)
     _setupJSMethod(className, clsMethods, 0, realClsName)
 

@@ -10,6 +10,13 @@
 
 @implementation Person
 
+- (void)dealloc {
+    
+}
+
++ (instancetype)person {
+    return [Person new];
+}
 
 //- (BOOL)run {
 //    return YES;
@@ -22,6 +29,7 @@
     return (car != nil);
 }
 
+#if 0
 + (BOOL)resolveInstanceMethod:(SEL)sel {
     return NO;
 }
@@ -49,5 +57,7 @@
     }
     
 }
+
+#endif
 
 @end

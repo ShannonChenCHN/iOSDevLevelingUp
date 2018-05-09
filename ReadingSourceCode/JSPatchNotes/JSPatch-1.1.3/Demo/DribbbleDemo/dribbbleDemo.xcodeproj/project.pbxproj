@@ -13,6 +13,7 @@
 		36091A791CAB91990012490F /* JPLocker.m in Sources */ = {isa = PBXBuildFile; fileRef = 36091A5F1CAB91980012490F /* JPLocker.m */; };
 		36091A7B1CAB91990012490F /* JPSpecialInit.m in Sources */ = {isa = PBXBuildFile; fileRef = 36091A631CAB91980012490F /* JPSpecialInit.m */; };
 		36CE19221CB17D6A007D73AC /* dribbble in Resources */ = {isa = PBXBuildFile; fileRef = 36CE19211CB17D6A007D73AC /* dribbble */; };
+		736C13A19DD27790CFE5DADB /* libPods-dribbbleDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15903DAE6B51ADB1AEC38472 /* libPods-dribbbleDemo.a */; };
 		DEBA57DF1B95D5A200B4DC66 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBA57DE1B95D5A200B4DC66 /* main.m */; };
 		DEBA57E21B95D5A300B4DC66 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBA57E11B95D5A300B4DC66 /* AppDelegate.m */; };
 		DEBA57EA1B95D5A300B4DC66 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEBA57E91B95D5A300B4DC66 /* Images.xcassets */; };
@@ -68,6 +69,7 @@
 			files = (
 				DEBA58551B95DA7C00B4DC66 /* Security.framework in Frameworks */,
 				DEBA58531B95DA6E00B4DC66 /* UIKit.framework in Frameworks */,
+				736C13A19DD27790CFE5DADB /* libPods-dribbbleDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,12 +197,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DEBA57FC1B95D5A300B4DC66 /* Build configuration list for PBXNativeTarget "dribbbleDemo" */;
 			buildPhases = (
-				379F843EA00F8D428B9036AE /* 📦 Check Pods Manifest.lock */,
+				379F843EA00F8D428B9036AE /* [CP] Check Pods Manifest.lock */,
 				DEBA57D51B95D5A200B4DC66 /* Sources */,
 				DEBA57D61B95D5A200B4DC66 /* Frameworks */,
 				DEBA57D71B95D5A200B4DC66 /* Resources */,
-				5051F1B8E1BE3F57F4085EA8 /* 📦 Copy Pods Resources */,
-				3E10562C003A078AFFFB76ED /* 📦 Embed Pods Frameworks */,
+				5051F1B8E1BE3F57F4085EA8 /* [CP] Copy Pods Resources */,
+				3E10562C003A078AFFFB76ED /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -287,29 +289,32 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		379F843EA00F8D428B9036AE /* 📦 Check Pods Manifest.lock */ = {
+		379F843EA00F8D428B9036AE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-dribbbleDemo-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3E10562C003A078AFFFB76ED /* 📦 Embed Pods Frameworks */ = {
+		3E10562C003A078AFFFB76ED /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -317,14 +322,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-dribbbleDemo/Pods-dribbbleDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5051F1B8E1BE3F57F4085EA8 /* 📦 Copy Pods Resources */ = {
+		5051F1B8E1BE3F57F4085EA8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
