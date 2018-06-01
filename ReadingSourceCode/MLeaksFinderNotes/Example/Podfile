@@ -1,0 +1,5 @@
+
+target 'Example' do
+    pod 'MLeaksFinder',                  :path => '../MLeaksFinder'
+    pod 'FBRetainCycleDetector'
+end

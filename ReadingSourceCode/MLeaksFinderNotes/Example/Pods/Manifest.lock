@@ -1,0 +1,19 @@
+PODS:
+  - FBRetainCycleDetector (0.1.4)
+  - MLeaksFinder (1.0.0)
+
+DEPENDENCIES:
+  - FBRetainCycleDetector
+  - MLeaksFinder (from `../MLeaksFinder`)
+
+EXTERNAL SOURCES:
+  MLeaksFinder:
+    :path: ../MLeaksFinder
+
+SPEC CHECKSUMS:
+  FBRetainCycleDetector: 46f8179bbb1c587deee3ea838a1a3ee02acf5015
+  MLeaksFinder: 89eb3142bf1bbd0a3d1849543b629399c5da74c5
+
+PODFILE CHECKSUM: 263b6b73b65356f3d3780b628e66a7060d281aed
+
+COCOAPODS: 1.3.0
