@@ -11,11 +11,24 @@
 @interface ViewController ()
 
 @property (nonatomic, copy) void (^block)(void);
-@property (nonatomic, strong) id delegate;
+@property (nonatomic, strong) NSMutableArray *data;
 
 @end
 
 @implementation ViewController
+
+- (void)dealloc {
+    
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.data = [NSMutableArray array];
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,10 +36,12 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.block = ^{
-        NSLog(@"%@", self);  // 这里会导致内存泄漏
+        for (int i = 0; i < 10000; i++) {
+            [self.data addObject:[UIImage imageNamed:@"chao"]];  // 这里会导致内存泄漏
+        }
     };
     
-    self.delegate = self;
+    self.block();
 }
 
 - (IBAction)push:(id)sender {
