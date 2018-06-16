@@ -82,7 +82,8 @@ A journey of leveling up iOS dev knowledge and skill.
 - [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/issues)
 
 ## 友情链接
-- [iOS 开发周报](https://github.com/SwiftOldDriver/iOS-Weekly)
+- [老司机 iOS 周报](https://github.com/SwiftOldDriver/iOS-Weekly)
 - [iOS 开发知识小集](https://github.com/southpeak/iOS-tech-set)
+- [SwiftGG翻译组](http://swift.gg/)
 - [iOS Dev Weekly](https://iosdevweekly.com/)
 
