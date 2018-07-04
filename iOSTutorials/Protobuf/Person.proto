@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+// 一个名为 Person 的消息
+message Person {
+  required string name = 1; // 这一行代表一个 Field，1 代表 field_number，string 表示 wire_type
+  required int32 id = 2;
+  optional string email = 3;
+
+  enum PhoneType {
+    MOBILE = 0;
+    HOME = 1;
+    WORK = 2;
+  }
+
+  // 一个 PhoneNumber 消息
+  message PhoneNumber {
+    string number = 1;
+    PhoneType type = 2;
+  }
+
+  repeated PhoneNumber phone = 4; // repeated 代表数组
+}
