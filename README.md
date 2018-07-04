@@ -70,7 +70,7 @@ A journey of leveling up iOS dev knowledge and skill.
   - [调试、IDE、工具](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/10)
   - [Linux 相关（vim、shell、shell script）](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/2)
 - 延伸
-  - [大前端](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
+  - [大前端、跨平台](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/21)
   - [人工智能和机器学习](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/56)
   - [AR，VR](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/92)
   - [软件工程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/9)
