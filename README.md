@@ -22,7 +22,7 @@ A journey of leveling up iOS dev knowledge and skill.
     - [C/C++](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/99)
     - [JavaScript](https://github.com/ShannonChenCHN/AFrontEndWebDevTour)
     - [Ruby](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/96)
-    - Python
+    - [Python](https://github.com/ShannonChenCHN/APythonTour)
     - Java
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
   - [内存管理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
