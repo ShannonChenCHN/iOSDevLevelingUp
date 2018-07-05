@@ -23,17 +23,27 @@ echo "=========字符串长度==========="
 stringlength=${#myname}
 echo "length of my name is ${stringlength}"
 
+
 # 截取字符串
 echo "=========截取字符串==========="
 echo ${greeting:0:5}
 
 
-
 # 查找字符串
-echo `expr index "$greeting" Chen`
+echo "=========查找字符串==========="
+expr index "$myname" S
+expr index "$myname" w
+echo `expr index "$greeting" C`
 
-array=($myname $myfamilyname $greeting)
+# 数组
+echo "=========数组==========="
+array=("name" "age" "height" "sex")
 echo ${array[2]}
-echo ${array[@]}
+echo ${array[@]} # 获取数组所有元素
+echo ${#array[@]} # 数组长度
 
-echo ${#array[@]}
+
+
+:<<EOF
+echo "=========这里被注释了==========="
+EOF
