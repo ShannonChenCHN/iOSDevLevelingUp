@@ -103,36 +103,15 @@ expr 是一款表达式计算工具，使用它能完成表达式的求值操作
   - continue
   - esac
 
+## 调试
+
+- [Shell脚本调试技术 - IBM](https://www.ibm.com/developerworks/cn/linux/l-cn-shell-debug/index.html)
+- [如何调试BASH脚本](https://coolshell.cn/articles/1379.html)
 
 
 ### 问题
-#### 1. 如何讲一个字符串转成大写？
 
-``` Shell
-y="HELLO"
-val=$(echo "$y" | tr '[a-z]' '[A-Z]')
-# 或者 val=$(echo "$y" | tr '[:upper:]' '[:lower:]')
-string="$val world"
-```
-#### 2. 在linux下怎么把一个文件的内容复制到另一个文件的末尾？
-
-``` Shell
-cat file1.txt >> file2.txt
-```
-
-参考：
-- [在 bash shell 脚本中，将字符串从大写字母转换为小写 ](https://ask.helplib.com/839022)'
-
-
-#### 2. Mac 终端执行 `sed -I` 指令时，总是出现 `extra characters at the end of command`
-在 -i 指令后面多加一个 `“” `即可：
-```
-sed -i "" "s/192.168.0.2/192.168.0.3/g" *.rptdesign  
-```
-
-
-参考：
-- [mac 执行sed -i指令时，总是出现extra characters at the end of command](http://blog.csdn.net/lgh1117/article/details/50094595)
+见 [这里](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/2#issuecomment-338358993)。
 
   
   
