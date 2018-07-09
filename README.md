@@ -4,13 +4,18 @@ A journey of leveling up iOS dev knowledge and skill.
 
 ## 生产力
 
-- [个人博客](https://shannonchenchn.github.io/)（[简书](http://www.jianshu.com/u/4ef5e287fc91)）
-- [个人作品](https://github.com/ShannonChenCHN/SCKit)
-- [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
-- [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
-- [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/102)
-- [开发笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/84)
-- [版本总结](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/63)
+- 输出
+  - [个人博客](https://shannonchenchn.github.io/)（[简书](http://www.jianshu.com/u/4ef5e287fc91)）
+  - [个人作品](https://github.com/ShannonChenCHN/SCKit)
+  - [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/102)
+  - [开发笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/84)
+  - [版本总结](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/63)
+
+- 输入
+  - [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
+  - [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
+  - [每日一读](https://github.com/ShannonChenCHN/ReadingListWeekly)
+  - [英文技术文章阅读笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/112)
 
 
 ## 知识大纲
