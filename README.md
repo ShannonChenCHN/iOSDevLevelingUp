@@ -22,11 +22,11 @@ A journey of leveling up iOS dev knowledge and skill.
 - 基础
   - 语言
     - [Objective-C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/39)
-    - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
     - [C/C++](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/99)
+    - [Swift](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/14)
     - [JavaScript](https://github.com/ShannonChenCHN/AFrontEndWebDevTour)
-    - [Ruby](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/96)
     - [Python](https://github.com/ShannonChenCHN/APythonTour)
+    - [Ruby](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/96)
     - [Lua](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/116)
     - Java
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
