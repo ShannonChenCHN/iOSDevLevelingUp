@@ -5,7 +5,7 @@ A journey of leveling up iOS dev knowledge and skill.
 ## 生产力
 
 - 输出
-  - [个人博客](https://shannonchenchn.github.io/)（[简书](http://www.jianshu.com/u/4ef5e287fc91)）
+  - [个人博客](https://shannonchenchn.github.io/)、[简书](http://www.jianshu.com/u/4ef5e287fc91)、[随笔](https://github.com/ShannonChenCHN/eureka)
   - [个人作品](https://github.com/ShannonChenCHN/SCKit)
   - [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/102)
   - [开发笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/84)
