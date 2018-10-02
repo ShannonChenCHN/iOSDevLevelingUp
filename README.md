@@ -15,6 +15,7 @@ A journey of leveling up iOS dev knowledge and skill.
   - [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
   - [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
   - [每周读点英文技术文章](https://github.com/ShannonChenCHN/eureka/issues/97)
+  - [线下活动](https://github.com/ShannonChenCHN/eureka/issues/86)
 
 
 ## 知识大纲
