@@ -3,6 +3,23 @@
 - objc4 的源码不能直接编译，需要配置相关环境才能运行。可以在[这里](https://github.com/RetVal/objc-runtime)下载可调式的源码。
 - objc 运行时源码的入口在 `void _objc_init(void)` 函数。
 
+## 目录
+- 1.Objective-C 对象是什么？Class 是什么？id 又是什么？
+- 2.isa 是什么？为什么要有 isa？
+- 3.为什么在 Objective-C 中，所以的对象都用一个指针来追踪？
+- 4.Objective-C 对象是如何被创建（alloc）和初始化（init）的？
+- 5.Objective-C 对象的实例变量是什么？为什么不能给 Objective-C 对象动态添加实例变量？
+- 6.Objective-C 对象的属性是什么？属性跟实例变量的区别？
+- 7.Objective-C 对象的方法是什么？Objective-C 对象的方法在内存中的存储结构是什么样的？
+- 8.什么是 IMP？什么是选择器 selector ？
+- 9.消息发送和消息转发
+- 10.Method Swizzling
+- 11.Category
+- 12.Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
+- 13.Objective-C 中的 Protocol 是什么？
+- 14.`self` 和 `super` 的本质
+- 15.`load` 方法和 `initialize` 方法
+
 
 ### 1. Objective-C 对象是什么？Class 是什么？id 又是什么？
 
