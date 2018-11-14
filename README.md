@@ -5,16 +5,14 @@ A journey of leveling up iOS dev knowledge and skill.
 ## 生产力
 
 - 输出
-  - [个人博客](https://shannonchenchn.github.io/)、[简书](http://www.jianshu.com/u/4ef5e287fc91)、[随笔](https://github.com/ShannonChenCHN/eureka)
+  - [个人博客](https://shannonchenchn.github.io/)、[简书](http://www.jianshu.com/u/4ef5e287fc91)
   - [个人作品](https://github.com/ShannonChenCHN/SCKit)
   - [开发周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/102)
-  - [开发笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/84)
-  - [版本总结](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/63)
-
+  - [随笔](https://github.com/ShannonChenCHN/eureka)
 - 输入
   - [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
   - [读书笔记](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingBooks)
-  - [每周读点英文技术文章](https://github.com/ShannonChenCHN/eureka/issues/97)
+  - [自学计算机课程的笔记](https://github.com/ShannonChenCHN/what-is-computer-science)
   - [线下活动](https://github.com/ShannonChenCHN/eureka/issues/86)
 
 
