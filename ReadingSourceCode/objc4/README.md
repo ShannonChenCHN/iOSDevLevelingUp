@@ -165,7 +165,7 @@ struct class_rw_t {
 - 如果在当前类/元类中没找到，就会通过类/元类的 superclass 在继承链中一级一级往上查找
 
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/Runtime/class-diagram.jpg)
+![](./src/objc-runtime-class-diagram.webp)
 <div align='center'>图 1. 对象，类与元类之间的关系</div>
 
 **isa_t 中包含什么：**
@@ -748,9 +748,9 @@ struct method_t {
 - [Selector, Method 和 IMP 的区别与联系](https://www.jianshu.com/p/84d1771e9792)
 - [深入解析 ObjC 中方法的结构](https://draveness.me/method-struct)
     
-### 7. 什么是 IMP？什么是选择器 selector ？
+### 8. 什么是 IMP？什么是选择器 selector ？
 
-#### 7.1 IMP
+#### 8.1 IMP
 
 IMP 在 runtime 源码 objc.h 中的定义是：
 
@@ -763,7 +763,7 @@ typedef void (*IMP)(void /* id, SEL, ... */ );
 
 你会发现 IMP 指向的方法与 objc_msgSend 函数类型相同，参数都包含 id 和 SEL 类型。每个方法名都对应一个 SEL 类型的方法选择器，而每个实例对象中的 SEL 对应的方法实现肯定是唯一的，通过一组 id 和 SEL 参数就能确定唯一的方法实现地址；反之亦然。
 
-#### 7.2 选择器 selector
+#### 8.2 选择器 selector
 
 选择器代表方法在 Runtime 期间的标识符，为 SEL 类型，SEL 与普通字符串的区别在于 SEL 对于选择器来说总是能保证其唯一性。在类加载的时候，编译器会生成与方法相对应的选择子，并注册到 Objective-C 的 Runtime 运行系统。
 
@@ -851,7 +851,7 @@ static SEL sel_alloc(const char *name, bool copy)
 - [Cocoa Core Competencies](https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/Selector.html)
 - [从源代码看 ObjC 中消息的发送](https://draveness.me/message)
    
-### 8. 关于消息发送和消息转发
+### 9. 消息发送和消息转发
 > 具体过程查看源码中 `lookUpImpOrForward()` 函数部分的注释
 
 1. 发送 hello 消息后，编译器会将上面这行 [obj hello]; 代码转成 objc_msgSend()（注：objc_msgSend 是一个私有方法，而且是用汇编实现的，我们没有办法进入它的实现，但是我们可以通过 lookUpImpOrForward 函数断点拦截）
@@ -867,30 +867,30 @@ static SEL sel_alloc(const char *name, bool copy)
 
 - [从源代码看 ObjC 中消息的发送](https://draveness.me/message)
 
-### 9. Method Swizzling
+### 10. Method Swizzling
 
 - 什么是 Method Swizzling ？
 - Method Swizzling 有什么注意点？
 - Method Swizzling 的原理是什么？
 - Method Swizzling 为什么要在 +load 方法中进行？
 
-### 10. Category
+### 11. Category
 
 - Category 是什么？
 - Category 中的方法和属性以及协议是怎么存储和加载的？
 - Category 和 Class 的关系
 
-### 11.  Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
+### 12. Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
 - Associated Objects 的原理是什么？
 - Associated Objects 的内存管理机制？
 - 到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
 
-### 12. Objective-C 中的 Protocol 是什么？
+### 13. Objective-C 中的 Protocol 是什么？
 
 
-### 13. self 和 super 的本质
+### 14. `self` 和 `super` 的本质
 
 
 self 和 super 两个是不同的，self 是方法的一个隐藏参数（每个方法都有两个隐藏的参数，`self` 和 `_cmd`），每个方法的实现的第一个参数即为 self。而 super 不是一个隐藏参数，它实际上只是一个”编译器标示符”，它负责告诉编译器，当调用 [super xxx]方法时，去调用父类的方法，而不是本类中的方法。
@@ -1014,7 +1014,7 @@ static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
 - [Objective C: Difference between self and super](https://stackoverflow.com/a/5675894)
 - [What does it mean when you assign [super init] to self?](https://www.cocoawithlove.com/2009/04/what-does-it-mean-when-you-assign-super.html)
 
-### 14. load 方法和 initialize 方法
+### 15. load 方法和 initialize 方法
 
 
 - `+load ` 方法和 `+initialize` 方法分别在什么时候被调用？
