@@ -8,6 +8,42 @@ AFNetworking 作为我们最基础的网络框架，目前在 GitHub 上 Objecti
 
 > 注：这篇文章不会逐行分析源码，具体的代码注释见 [这里](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode/AFNetworkingNotes/AFNetworking-3.1.0)。
 
+## 目录
+- 一、架构
+- 二、核心逻辑
+- 三、AFURLSessionManager
+  - 3.1 线程
+  - 3.2 AFURLSessionManagerTaskDelegate
+  - 3.3 NSProgress
+  - 3.4 NSSecureCoding
+  - 3.5 _AFURLSessionTaskSwizzling
+- 四、AFURLRequestSerialization
+  - 4.1 构建普通请求
+  - 4.2 构建 multipart 请求
+- 五、AFURLResponseSerialization
+  - 5.1 `-validateResponse:data:error:` 方法
+  - 5.2 `-responseObjectForResponse:data:error:` 方法
+- 六、AFSecurityPolicy
+  - 6.1 预备知识点
+    - 6.1.1 为什么要使用 HTTPS
+    - 6.1.2 HTTPS 的出现
+    - 6.1.3 SSL/TLS 协议
+    - 6.1.4 HTTPS 与 HTTP 的区别是什么？
+    - 6.1.5 HTTPS 连接的建立过程
+    - 6.1.6 HTTPS 传输时是如何验证证书的？怎样应对中间人伪造证书？
+    - 6.1.7 Certificate Pinning 是什么？
+  - 6.2 AFSecurityPolicy 的实现
+- 七、AFNetworkReachabilityManager
+- 八、UIKit 扩展
+- 九、AFNetworking 2.x 
+- 十、AFNetworking 的价值
+  - 10.1 请求调度：NSURLConnection + NSOperation
+  - 10.2 更高层次的抽象
+  - 10.3 block
+  - 10.4 模块化
+十一、问题
+十二、收获
+
 ### 一、架构
 AFNetworking 一共分为 5 个模块，2 个核心模块和 3 个辅助模块：
 
