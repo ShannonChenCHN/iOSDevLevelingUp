@@ -90,4 +90,5 @@ A journey of leveling up iOS dev knowledge and skill.
 - [iOS 开发知识小集](https://github.com/southpeak/iOS-tech-set)
 - [SwiftGG翻译组](http://swift.gg/)
 - [iOS Dev Weekly](https://iosdevweekly.com/)
+- [JavaScript Weekly](https://javascriptweekly.com/issues/412)
 
