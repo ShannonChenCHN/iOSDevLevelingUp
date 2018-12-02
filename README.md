@@ -94,8 +94,6 @@ A journey of leveling up iOS dev knowledge and skill.
 ## 友情链接
 - [bang's blog](http://blog.cnbang.net/)（非常感谢 bang 的无私分享，iOS 技术成长路上的启明灯）
 - [老司机 iOS 周报](https://github.com/SwiftOldDriver/iOS-Weekly)
-- [iOS 开发知识小集](https://github.com/southpeak/iOS-tech-set)
-- [SwiftGG翻译组](http://swift.gg/)
 - [iOS Dev Weekly](https://iosdevweekly.com/)
 - [JavaScript Weekly](https://javascriptweekly.com/issues/412)
 
