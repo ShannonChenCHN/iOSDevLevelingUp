@@ -7,7 +7,7 @@ A journey of leveling up iOS dev knowledge and skill.
 - 输出
   - [个人博客](https://shannonchenchn.github.io/)、[简书](http://www.jianshu.com/u/4ef5e287fc91)
   - [个人作品](https://github.com/ShannonChenCHN/SCKit)
-  - [周报](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/102)（回顾最近一周的工作、学习、生活，分享一些思考和见闻）
+  - [周报](https://github.com/ShannonChenCHN/iOSDevLevelingUp/issues/120)（回顾最近一周的工作、学习、生活，分享一些思考和见闻）
   - [随笔](https://github.com/ShannonChenCHN/eureka)
 - 输入
   - [源码阅读](https://github.com/ShannonChenCHN/iOSLevelingUp/tree/master/ReadingSourceCode)
