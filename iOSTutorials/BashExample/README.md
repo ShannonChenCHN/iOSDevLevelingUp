@@ -103,6 +103,18 @@ expr 是一款表达式计算工具，使用它能完成表达式的求值操作
   - continue
   - esac
 
+## Coding style
+
+
+- 格式
+- 命名规范
+- 注释
+
+
+#### 参考
+- [Shell Style Guide - Google](https://google.github.io/styleguide/shell.xml)
+
+
 ## 调试
 
 - [Shell脚本调试技术 - IBM](https://www.ibm.com/developerworks/cn/linux/l-cn-shell-debug/index.html)
