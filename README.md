@@ -60,6 +60,7 @@ A journey of leveling up iOS dev knowledge and skill.
     - 统计系统
     - 动态化
       - [Web view 和 Hybrid](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/32)
+      - [热修复](https://github.com/ShannonChenCHN/iOSDevLevelingUp/issues/121)
 - 质量
   - [Code Quality](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/27)
   - [性能调优和监控体系](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/26)
