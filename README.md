@@ -87,11 +87,6 @@ A journey of leveling up iOS dev knowledge and skill.
 - [面试题集锦](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/18)
 - [更多...](https://github.com/ShannonChenCHN/iOSLevelingUp/issues)
 
-## 交流
-
-如果你也喜欢交流技术、喜欢阅读、积极践行，欢迎关注我的公众号，一起成长。
-
-![](src/qrcode_for_gh_cc686217be41_430.jpg)
 
 ## 友情链接
 - [bang's blog](http://blog.cnbang.net/)（非常感谢 bang 的无私分享，iOS 技术成长路上的启明灯）
