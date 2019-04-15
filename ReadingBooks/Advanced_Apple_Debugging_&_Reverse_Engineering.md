@@ -1,7 +1,7 @@
 # Advanced Apple Debugging & Reverse Engineering
 
 
-## Section I 
+## 第一部分 LLDB 命令
 ### 1. Getting Started
 
 #### 1.1 Disabling Rootless 
@@ -1042,7 +1042,7 @@ UIDevice
 world hello
 ```
 
-## Section II Understanding Assembly
+## 第二部分 汇编语言
 
 ### 10. Assembly Register Calling Convention
 
@@ -1547,3 +1547,635 @@ Registers`ViewController.awakeFromNib():
 ```
 
 `ret` 指令所做的是将栈顶的保存的内容 pop 出来，也就是 `call` 后面的指令对应的地址，然后再将 rsp 增加 0x8。
+
+
+## 第三部分 深入程序的底层
+
+## 13. Hello, Ptrace
+
+- System calls
+- The Foundation of attachment, ptrace
+- ptrace arguments
+- Creating around PT_DENY_ATTACH
+- Other anti-debugging techniques
+
+## 14. Dynamic Frameworks
+
+### 14.1 动态库简介
+- 什么是静态库？
+  - 可以在运行时加载到进程内存中运行的代码
+- 为什么需要动态库？
+  - 节省内存空间，多个不同的进程可以共享同一个动态库
+  - 更新动态库时，依赖它的程序无须重新编译
+- 从 iOS 8 开始，苹果放宽了动态库使用的限制，允许开发者在 app 中使用第三方的动态库，这意味着我们可以在不同的 iOS extension 之间共享 framework，比如 Today Extension 和 Action Extension。
+
+### 14.2 检测一个二进制可执行文件中用到的 framework
+
+- 负责加载动态库的程序叫做动态链接器 dyld。
+
+- 使用 `otool -L` 查看二进制文件 `DeleteMe` 中链接的动态库
+
+```
+$ otool -L /Users/xianglongchen/Library/Developer/Xcode/DerivedData/DeleteMe-cfvigoormjpbaoebptogdzvtelbt/Build/Products/Debug-iphonesimulator/DeleteMe.app/DeleteMe
+/Users/xianglongchen/Library/Developer/Xcode/DerivedData/DeleteMe-cfvigoormjpbaoebptogdzvtelbt/Build/Products/Debug-iphonesimulator/DeleteMe.app/DeleteMe:
+  /System/Library/Frameworks/CallKit.framework/CallKit (compatibility version 1.0.0, current version 1.0.0)
+  /System/Library/Frameworks/Social.framework/Social (compatibility version 1.0.0, current version 87.0.0)
+  /System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 1556.0.0)
+  /usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)
+  /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.200.5)
+  /System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 61000.0.0)
+```
+
+从上面的打印结果可以看出，动态库都是保存在这些目录下的：
+```
+/System/Library/Frameworks/
+/usr/lib/
+```
+
+- 使用 `otool -l` 查看二进制文件 `DeleteMe` 的 load commands
+
+```
+otool -l /Users/xianglongchen/Library/Developer/Xcode/DerivedData/DeleteMe-cfvigoormjpbaoebptogdzvtelbt/Build/Products/Debug-iphonesimulator/DeleteMe.app/DeleteMe
+/Users/xianglongchen/Library/Developer/Xcode/DerivedData/DeleteMe-cfvigoormjpbaoebptogdzvtelbt/Build/Products/Debug-iphonesimulator/DeleteMe.app/DeleteMe:
+Mach header
+      magic cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+ 0xfeedfacf 16777223          3  0x00           2    22       2856 0x00200085
+ ...
+Load command 12
+          cmd LC_LOAD_WEAK_DYLIB
+      cmdsize 80
+         name /System/Library/Frameworks/CallKit.framework/CallKit (offset 24)
+   time stamp 2 Thu Jan  1 08:00:02 1970
+      current version 1.0.0
+compatibility version 1.0.0
+Load command 13
+          cmd LC_LOAD_DYLIB
+      cmdsize 80
+         name /System/Library/Frameworks/Social.framework/Social (offset 24)
+   time stamp 2 Thu Jan  1 08:00:02 1970
+      current version 87.0.0
+compatibility version 1.0.0
+Load command 14
+          cmd LC_LOAD_DYLIB
+      cmdsize 88
+         name /System/Library/Frameworks/Foundation.framework/Foundation (offset 24)
+   time stamp 2 Thu Jan  1 08:00:02 1970
+      current version 1556.0.0
+compatibility version 300.0.0
+ ...
+```
+
+从上面的打印结果可以看到， CallKit 的 cmd 是 LC_LOAD_WEAK_DYLIB，而 Social 的 cmd 是 LC_LOAD_DYLIB，这说明 CallKit 是可选的，而 Social 是必需的。
+
+
+### 14.3 修改 load command
+
+
+我们可以通过命令 `install_name_tool` 来修改和增加 framework load command。
+
+比如，将 `DeleteMe` 中的 CallKit 库换成 NotificationCenter 库，操作命令如下：
+```
+install_name_tool -change /System/Library/Frameworks/CallKit.framework/CallKit /System/Library/Frameworks/NotificationCenter.framework/NotificationCenter /Users/derekselander/Library/Developer/CoreSimulator/Devices/
+D0576CB9-42E1-494B-B626-B4DB75411700/data/Containers/Bundle/Application/474C8786-CC4F-4615-8BB0-8447DC9F82CA/DeleteMe.app/DeleteMe
+```
+
+
+
+### 14.4 在运行时加载 framework
+
+
+在 Xcode 中运行 DeleteMe，pause，然后用 `process load` 命令加载动态库 `Speech`：
+```
+(lldb) process load /Applications/Xcode.app/Contents/Developer/Platforms/
+iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk//System/
+Library/Frameworks/Speech.framework/Speech
+```
+
+实际上我们不需要指定具体的 framework 地址，`dyld` 会自动在一些目录下搜索，所以像下面这样也可以加载动态库：
+```
+(lldb) process load MessageUI.framework/MessageUI
+ Loading "MessageUI.framework/MessageUI"...ok
+Image 1 loaded.
+```
+
+
+延伸：如何获取系统动态库的位置和二进制执行文件 DeleteMe 在模拟器中的位置？
+
+```
+(lldb) image list CallKit
+[  0] 0484D8BA-5CB8-3DD3-8136-D8A96FB7E15B 0x0000000102d10000 /
+Applications/Xcode.app/Contents/Developer/Platforms/
+iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/
+Library/Frameworks/CallKit.framework/CallKit
+```
+
+```
+$ pgrep -fl DeleteMe
+61175 /Users/derekselander/Library/Developer/CoreSimulator/Devices/D0576CB9-42E1-494B-B626-B4DB75411700/data/Containers/Bundle/Application/474C8786-CC4F-4615-8BB0-8447DC9F82CA/DeleteMe.app/Delet
+
+```
+
+### 14.5 探索 framework
+
+在 `~/.lldbinit` 文件中添加以下几个命令正则别名：
+```
+command regex dump_stuff "s/(.+)/image lookup -rn '\+\[\w+(\(\w+\))?\ \w+\]$' %1 /"
+command regex ivars 's/(.+)/expression -lobjc -O -- [%1 _ivarDescription]/'
+command regex methods 's/(.+)/expression -lobjc -O -- [%1 _shortMethodDescription]/'
+command regex lmethods 's/(.+)/expression -lobjc -O -- [%1 _methodDescription]/'
+```
+
+查看 Social 动态库中的所有不带参数的类方法：
+```
+(lldb) dump_stuff Social
+71 matches found in /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/Social.framework/Social:
+        Address: Social[0x000000000000262c] (Social.__TEXT.__text + 0)
+        Summary: Social`+[SLInternalComposeServiceHostContext _extensionAuxiliaryVendorProtocol]        Address: Social[0x0000000000002698] (Social.__TEXT.__text + 108)
+        Summary: Social`+[SLInternalComposeServiceHostContext _extensionAuxiliaryHostProtocol]        Address: Social[0x000000000000281a] (Social.__TEXT.__text + 494)
+        ...
+
+```
+
+查看一个对象的所有的实例变量：
+```
+(lldb) ivars [SLFacebookUpload new]
+<SLFacebookUpload: 0x600000056320>:
+in SLFacebookUpload:
+  _uploadID (NSString*): nil
+  _uploadType (long): 0
+  _totalBytes (unsigned long): 0
+  _transferredBytes (unsigned long): 0
+in NSObject:
+  isa (Class): SLFacebookUpload (isa, 0x103914078)
+```
+
+查看一个对象或者类自己实现的方法：
+```
+(lldb) methods SLFacebookUpload
+<SLFacebookUpload: 0x10f75f078>:
+in SLFacebookUpload:
+    Class Methods:
+        + (BOOL) supportsSecureCoding; (0x10f6e3b5b)
+    Properties:
+        @property (retain, nonatomic) NSString* uploadID;  (@synthesize
+uploadID = _uploadID;)
+        ...
+        @property (nonatomic) unsigned long transferredBytes;
+(@synthesize transferredBytes = _transferredBytes;)
+    Instance Methods:
+        - (id) uploadID; (0x10f6e3b63)
+        ...
+        - (void) setTotalBytes:(unsigned long)arg1; (0x10f6e3bd3)
+(NSObject ...)
+```
+
+
+查看一个对象或者类所有的方法：
+```
+(lldb) lmethods SLFacebookUpload
+<SLFacebookUpload: 0x10f75f078>:
+in SLFacebookUpload:
+    Class Methods:
+        + (BOOL) supportsSecureCoding; (0x10f6e3b5b)
+    Properties:
+        @property (retain, nonatomic) NSString* uploadID;  (@synthesize
+uploadID = _uploadID;)
+        ...
+        @property (nonatomic) unsigned long transferredBytes;
+(@synthesize transferredBytes = _transferredBytes;)
+    Instance Methods:
+        - (id) uploadID; (0x10f6e3b63)
+        ...
+        - (void) setTotalBytes:(unsigned long)arg1; (0x10f6e3bd3)
+in NSObject:
+    Class Methods:
+        + (id) CKSQLiteClassName; (0x126ecbb5e)
+        ...
+        + (BOOL) isFault; (0x10fd08a6d)
+    Properties:
+        @property (retain, nonatomic) NSArray* accessibilityCustomRotors;
+        ...
+    @property (readonly, copy) NSString* debugDescription;
+Instance Methods:
+    - (id) mf_objectWithHighest:(^block)arg1; (0x126776a76)
+    ...
+    - (BOOL) isFault; (0x10fd08a70)
+```
+
+### 14.6 在 iOS 设备上加载动态库
+
+## 15. Hooking & Executing Code with `dlopen` & `dlsym`
+
+### 15.1 The Objective-C runtime vs. Swift & C
+
+
+### 15.2 Setting up your Project
+
+### 15.3 Easy mode: hooking C functions
+
+
+由于 C 不是像 OC 那样的动态语言，所以如果我们要 hook C 函数的话，就需要在该函数加载到内存之前就进行拦截。而动态库的链接就发生在程序启动时，所以我们可以通过创建动态库并在其中拦截 C 函数来实现 hook。
+
+> 问题：链接后，进程中就有了两个 `getenv` 函数（假设我们 hook 的是 `getenv` 函数），那 CPU 怎么知道去找那个函数执行呢？
+
+1. 创建动态库；
+
+2. 在动态库中实现 `getenv` 函数，并通过 `dlopen` 和 `dlsym` 来调用原始的实现；
+
+我们可以通过调用 dlopen 和 dlsym 在运行时加载动态库，并调用动态库中的函数。
+
+dlopen 的函数声明如下，返回值为要加载的动态库的引用：
+```
+extern void * dlopen(const char * __path, int __mode);
+```
+
+dlsym 的函数声明如下，返回值为要调用的函数的地址：
+```
+extern void * dlsym(void * __handle, const char * __symbol);
+
+```
+
+示例：
+```
+void *handle = dlopen("/usr/lib/system/libsystem_c.dylib", RTLD_NOW);
+char * (*real_getenv)(const char *) = dlsym(handle, "getenv");
+char *home_path = real_getenv("HOME");
+
+```
+
+3. 在应用程序中引入前面创建的动态库，并调用 `getenv` 函数，cmd+R 运行，此时调用的 `getenv` 就是 hook 后的实现了。
+
+### 15.4 Hard mode: hooking Swift methods
+
+
+hook Swift 方法有个问题：   
+- `dlsym` 函数只会返回一个函数的地址，而 Swift 中的方法不像 C 函数，Swift 中的方法属于某个类或结构体，所以，我们需要将 `dlsym` 返回的 C 函数转成 Swift 方法
+- Swift 方法在编译时会进行符号修饰（mangle），所以最终的函数名跟源代码中的方法名不一样
+
+
+hook Swift 方法的过程（以动态库 HookingSwift 的 originalImage 方法为例）：
+
+1. 找到要 hook 的实际方法名，也就是编译后的方法名。
+
+编译运行项目后，pause，执行下面的命令：
+```
+ (lldb) image lookup -rn HookingSwift.*originalImage
+ 1 match found in /Users/derekselander/Library/Developer/Xcode/
+DerivedData/Watermark-eztayvulqnjphfeqxjisvyqebwbz/Build/Products/Debug-
+iphonesimulator/Watermark.app/Frameworks/HookingSwift.framework/
+HookingSwift:
+        Address: HookingSwift[0x00000000000013e0]
+(HookingSwift.__TEXT.__text + 448)
+        Summary: HookingSwift`HookingSwift.CopyrightImageGenerator.
+(originalImage in _71AD57F3ABD678B113CF3AD05D01FF41).getter :
+Swift.Optional<__ObjC.UIImage> at CopyrightImageGenerator.swift:36
+```
+
+其中的 `0x00000000000013e0` 就是该函数所在的地址。
+
+接着，再从 HookingSwift 动态库的符号表中查找该函数对应的符号：
+```
+ (lldb) image dump symtab -m HookingSwift
+ ...
+ [    6]     17 D X Code            0x00000000000013e0
+0x00000000000000e0 0x000f0000
+_T012HookingSwift23CopyrightImageGeneratorC08originalD033_71AD57F3ABD678B113CF3AD05D01FF41LLSo7UIImageCSgfg
+ ...
+```
+
+上面的 `_T012HookingSwift23CopyrightImageGeneratorC08originalD033_71AD57F3ABD678B113CF3AD05D01FF41LLSo7UIImageCSgfg` 就是我们想要的符号。
+
+2. 调用 dlopen 和 dlsym 函数获取要 hook 的函数地址，并将函数转成 Swift 方法进行调用（方法所属的对象作为函数的第一个参数）：
+
+```
+if let handle = dlopen("./Frameworks/HookingSwift.framework/HookingSwift", RTLD_NOW) {
+  let sym = dlsym(handle, "_TFC12HookingSwift23CopyrightImageGeneratorgP33_71AD57F3ABD678B113CF3AD05D01FF4113originalImageGSqCSo7UIImage_")!
+  print("\(sym)")
+
+  typealias privateMethodAlias = @convention(c) (Any) -> UIImage? // 1
+  let originalImageFunction = unsafeBitCast(sym, to:privateMethodAlias.self) // 2
+  let imageGenerator = CopyrightImageGenerator()
+  let originalImage = originalImageFunction(imageGenerator) // 3
+  self.imageView.image = originalImage // 4
+}
+```
+## 16. Exploring and Method Swizzling Objective-C Frameworks
+
+
+## 第四部分 自定义 LLDB 命令
+
+## 17. Hello Script Bridging
+
+LLDB 有多种方式来创建自定义命令：
+- `commnad alias`：缺点是不能带参数
+- `command regex`：对于多行命令、多个参数、可选参数的情况实现起来不太方便
+- LLDB script bridging：LLDB 提供的 Python 接口，用来扩展 LLDB debugger
+
+
+### 17.1 Credit where credit due
+
+
+系统自带了一个牛逼闪闪的脚本，其中实现了 `malloc_info -s`、`obj_refs -O`、`ptr_refs` 等命令来查看对象使用的内存状态：
+```
+/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/Resources/Python/lldb/macosx/heap.py
+```
+
+> 注：这个脚本本身的实现也非常值得研究学习一下。
+
+通过下面的命令可以将上面的脚本加载到当前的 LLDB 环境中：
+```
+ (lldb) command script import lldb.macosx.heap
+```
+
+
+### 17.2 Creating your first LLDB Python script
+
+首先，创建 `~/lldb` 目录：
+```shell
+$ mkdir ~/lldb
+```
+
+然后在该目录下创建一个 python 脚本：
+```shell
+touch ~/lldb/helloworld.py
+```
+
+在上面新建的脚本中添加如下内容：
+```python
+def your_first_command(debugger, command, result, internal_dict):
+  print ("hello world!")
+```
+
+在你的 LLDB 会话中，导入我们在上面新建的脚本（这里是为了告诉 LLDB 我们要从哪里（路径）添加一个脚本）：
+```shell
+(lldb) command script import ~/lldb/helloworld.py
+```
+
+接着再导入 helloworld 模块（Python 中的模块概念，具体介绍见[这里](https://github.com/ShannonChenCHN/APythonTour/issues/6)）：
+```shell
+(lldb) script import helloworld
+```
+
+此时，我们就可以在 LLDB 中使用 helloworld 模块了，下面这个命令是打印出 helloworld 模块中所有的方法：
+```shell
+(lldb) script dir(helloworld)
+ ['__builtins__', '__doc__', '__file__', '__name__', '__package__', 'your_first_command']
+```
+
+最后，我们再以 `your_first_command` 函数作为输入，添加一条新的 LLDB 命令 `yay`：
+```
+ (lldb) command script add -f helloworld.your_first_command yay
+```
+
+这样，我们就可以在 LLDB 中直接通过调用 `yay` 命令来实现 `helloworld.your_first_command` 函数的调用了：
+```
+(lldb) yay
+hello world!
+```
+
+### 17.3 Setting up commands efficiently
+
+上一节中是手动导入我们的自定义脚本，实际上有更方便的方式。
+
+LLDB 有一个 hook 函数 `__lldb_init_module`，当我们的模块加载到 LLDB 环境中时，这个函数就会被调用。
+
+在我们前面创建的 `helloworld.py` 中添加下面的函数：
+
+```python
+def __lldb_init_module(debugger, internal_dict):
+    debugger.HandleCommand('command script add -f helloworld.your_first_command yay')
+```
+
+> debugger 是一个 LLDB `SBDebugger` 的对象实例，调用 `debugger.HandleCommand` 函数执行命令就相当于在 LLDB 命令行中直接输入命令。
+
+然后再在 `~/.lldbinit` 文件中最后添加下面这条命令：
+```
+command script import ~/lldb/helloworld.py
+```
+
+这样，我们就可以直接在 LLDB 中使用 `yay` 命令了。
+
+## 18. Debugging Script Bridging
+
+
+### 18.1 初识 pdb 
+
+跟 Objective-C 代码的 debugger LLDB 一样，Python 也有自己的 debugger pdb。
+
+
+打开 `~/lldb/helloworld.py` 文件，修改 `your_first_command` 函数：
+```python
+def your_first_command(debugger, command, result, internal_dict):
+    import pdb; pdb.set_trace()
+    print ("hello world")
+```
+
+> 注：在 Xcode 中的 LLDB 环境不支持使用 pdb 调试 Python，pdb 调试只支持在命令行中的 LLDB 环境。
+
+```
+$ lldb
+(lldb) yay woot
+> /Users/derekselander/lldb/helloworld.py(3)your_first_command()
+-> print ("hello world")
+(Pdb)
+```
+
+当使用 Python 创建 LLDB 命令时，在所定义的 Python 函数中一般会有 3 个特定的参数：`debugger`，`command`，`result`：
+```
+(Pdb) command
+'woot'
+(Pdb) debugger
+<lldb.SBDebugger; proxy of <Swig Object of type 'lldb::SBDebugger *' at 0x10d1dc570> >
+(Pdb) result
+<lldb.SBCommandReturnObject; proxy of <Swig Object of type 'lldb::SBCommandReturnObject *' at 0x10d323510> >
+(Pdb) internal_dict
+*** SystemExit: -1
+```
+
+跟 LLDB 一样，pdb 中也提供了 `c` 和 `continue` 命令以继续执行。
+
+
+### 18.2 pdb 调试实战
+
+
+打开模拟器的照片应用，然后启动 LLDB：
+```
+$ lldb -n MobileSlideShow
+```
+
+```shell
+(lldb) command script import ~/lldb/findclass.py
+(lldb) help findclass
+     For more information run 'help findclass'  Expects 'raw' input (see 'help raw-input'.)
+
+Syntax: findclass
+
+    The findclass command will dump all the Objective-C runtime classes it knows about.
+    Alternatively, if you supply an argument for it, it will do a case sensitive search
+    looking only for the classes which contain the input.
+
+    Usage: findclass  # All Classes
+    Usage: findclass UIViewController # Only classes that contain UIViewController in name
+
+(lldb) findclass
+Traceback (most recent call last):
+  File "/Users/xianglongchen/lldb/findclass.py", line 40, in findclass
+    raise AssertionError("Uhoh... something went wrong, can you figure it out? :]")
+AssertionError: Uhoh... something went wrong, can you figure it out? :]
+```
+
+
+```
+(lldb) script import pdb
+(lldb) findclass
+Traceback (most recent call last):
+  File "/Users/xianglongchen/lldb/findclass.py", line 40, in findclass
+    raise AssertionError("Uhoh... something went wrong, can you figure it out? :]")
+AssertionError: Uhoh... something went wrong, can you figure it out? :]
+(lldb) script pdb.pm()
+> /Users/xianglongchen/lldb/findclass.py(40)findclass()
+-> raise AssertionError("Uhoh... something went wrong, can you figure it out? :]")
+```
+
+```
+(Pdb) l 1, 50
+  1   import lldb
+  2
+  3   def __lldb_init_module(debugger, internal_dict):
+  ...
+ 39        if res.GetError():
+ 40  ->         raise AssertionError("Uhoh... something went wrong, can you figure it out? :]")
+
+```
+
+打印错误信息（我这边的错误跟原书上的有点不太一样）：
+```
+(Pdb) print res.GetError()
+error: 'objc_getClassList' has unknown return type; cast the call to its declared return type
+error: 'objc_getClassList' has unknown return type; cast the call to its declared return type
+error: too many arguments to method call, expected 1, have 2
+error: while importing modules:
+error: Couldn't load top-level module Foundation
+```
+
+错误原因如下：
+- 前两个错误的原因一样：在 LLDB 中调用函数时，有一个常见的问题是，LLDB 无法得知返回值的类型，所以需要进行类型强制转换
+- 第三个错误的原因是，在调用方法 `-[NSMutableString appendFormat:]` 拼接 C 字符串时出错了（我在 Xcode 中试了下没问题，但是不知道为啥这里不行）
+- 最后两个错误实际上是一个错误，去掉第一行的 `@import Foundation` 就好了
+
+修改 `~/lldb/findclass.py` 脚本中的代码如下：
+```
+ codeString = r'''
+    int numClasses;
+    Class * classes = NULL;
+    classes = NULL;
+    numClasses = (int)objc_getClassList(NULL, 0);
+    NSMutableString *returnString = [NSMutableString string];
+    classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
+    numClasses = (int)objc_getClassList(classes, numClasses);
+
+    for (int i = 0; i < numClasses; i++) {
+      Class c = classes[i];
+      char *clsName = (char *)class_getName(c);
+      NSString *clsNameObj = [NSString stringWithUTF8String:clsName];
+      [returnString appendString:clsNameObj];
+      [returnString appendString:@","];
+    }
+    free(classes);
+    
+    returnString;
+    '''
+```
+
+
+修改完 `~/lldb/findclass.py` 脚本后，如果要让修改的内容生效，要么重新启动 LLDB，要么在 LLDB 环境中重新导入该脚本：
+```
+(lldb) command script import ~/lldb/findclass.py
+```
+
+使用组合键 `ctrl+D` 可以退出 pdb。
+
+
+### 18.3 LLDB 命令的 Debug 选项
+
+当使用 LLDB 的 `expression` 调试代码时，我们可以使用 `-g` 选项来调试参数中的代码，也就是 JIT code，如如上面 `~/lldb/findclass.py` 中的 codeString。
+
+
+使用 `source list` 或者 `l` 命令可以查看当前调试的源代码：
+```
+(lldb) source list
+```
+
+
+使用 `gui` 命令可以以 gui 的形式来调试 JIT 代码：
+```
+(lldb) gui
+```
+
+### 18.4 常见问题
+
+#### （1） Python build errors
+
+
+第一种错误是编译时错误：
+```
+(lldb) command script import ~/lldb/findclass.py
+error: module importing failed: ('unexpected indent', ('/Users/xianglongchen/lldb/findclass.py', 40, 4, '    debugger.GetCommandInterpreter().HandleCommand("expression -lobjc -g -O -- " + codeString, res)\n'))
+  File "temp.py", line 1, in <module>
+```
+
+原因是第 39 行的代码没有对齐。
+
+#### (2) Python runtime errors or unexpected values
+
+第二种错误是运行时的错误，一般我们可以借助 pdb 进行调试，在源码中预期出现错误的地方加上下面这行代码进行调试：
+```python
+import pdb; pdb.set_trace()
+```
+
+然后再重新加载并执行时，pdb 就会自动在添加断点的地方停止，我们就可以查看变量信息了。
+
+#### (3) JIT code build errors
+
+这里的 JIT code 指的是传给 LLDB 命令作为参数执行的 code，比如上面 `~/lldb/findclass.py` 中的 codeString。
+
+调试 JIT code 的编译错误比较麻烦，JIT 代码运行出错时 debugger 不会提供导致错误的源码的具体位置，我们只能通过错误信息进行推测，并注释掉一部分存在嫌疑的代码来进行排除。
+
+#### (4) JIT code with unexpected results
+
+第四种错误是 JIT 运行时错误，我们可以使用带 `--debug` 或者 `-g` 选项的 `expression` 命令来调试这种错误。
+
+
+### 19. Script Bridging Classes and Hierarchy
+### 20. Script Bridging with Options & Arguments
+### 21. Script Bridging with SBValue & Memory
+
+
+### 22. SB Examples, Improved Lookup
+### 23. SB Examples, Resymbolicating a Stripped ObjC Binary
+### 24. SB Examples, Malloc Logging
+
+## 第五部分 DTrace
+
+### 25. Hello, DTrace
+
+- 什么是 DTrace？
+- DTrace 可以用来干什么？
+
+延伸阅读：    
+- http://dtrace.org/guide/preface.html
+- https://objccn.io/issue-19-4/
+- http://www.brendangregg.com/dtracebook/index.html
+
+#### 25.1 The bad news
+
+
+
+
+### 26. Intermediate DTrace
+
+
+
+### 27. DTrace vs objc_msgSend
+
+
