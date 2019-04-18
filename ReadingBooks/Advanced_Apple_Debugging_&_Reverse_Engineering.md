@@ -1,5 +1,7 @@
 # Advanced Apple Debugging & Reverse Engineering
 
+这本书主要介绍了 LLDB 常用的调试命令、汇编语言、Ptrace、动态库、使用 Python 实现自定义 LLDB 命令以及 DTrace 等技术，个人认为前三个部分（Section）最重要，尤其是第二部分，非常推荐，还有第四部分的前两章关于自定义 LLDB 命令脚本的开发以及调试也值得学习一下，第四部分剩下的内容和第五部分只需要了解即可。
+
 
 ## 第一部分 LLDB 命令
 ### 1. Getting Started
