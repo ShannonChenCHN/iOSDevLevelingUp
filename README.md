@@ -21,7 +21,8 @@ A journey of leveling up iOS dev knowledge and skill.
 - 基础
   - 语言
     - [汇编语言](https://github.com/ShannonChenCHN/iOSDevLevelingUp/issues/123)
-    - [C/C++](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/99)
+    - [C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/99)
+    - [C++](https://github.com/ShannonChenCHN/ACppTour)
     - [Objective-C](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/39)
     - [JavaScript](https://github.com/ShannonChenCHN/AFrontEndWebDevTour)
     - [Python](https://github.com/ShannonChenCHN/APythonTour)
