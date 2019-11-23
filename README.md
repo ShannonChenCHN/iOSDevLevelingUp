@@ -95,4 +95,5 @@ A journey of leveling up iOS dev knowledge and skill.
 - [老司机 iOS 周报](https://github.com/SwiftOldDriver/iOS-Weekly)
 - [iOS Dev Weekly](https://iosdevweekly.com/)
 - [JavaScript Weekly](https://javascriptweekly.com/issues/412)
+- [酷壳 – CoolShell.cn](https://coolshell.cn/)
 
