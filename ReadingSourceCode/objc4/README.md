@@ -911,6 +911,10 @@ static SEL sel_alloc(const char *name, bool copy)
 - Associated Objects 的内存管理机制？
 - 到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
+参考：
+- [Objective-C Associated Objects 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
+- [Associated Objects - NSHipster](https://nshipster.com/associated-objects/)
+
 
 ### 13. Objective-C 中的 Protocol 是什么？
 
