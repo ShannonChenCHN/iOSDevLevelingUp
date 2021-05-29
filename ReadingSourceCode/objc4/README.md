@@ -892,6 +892,11 @@ static SEL sel_alloc(const char *name, bool copy)
 - Method Swizzling 的原理是什么？
 - Method Swizzling 为什么要在 +load 方法中进行？
 
+参考：
+- [Objective-C Method Swizzling - 玉令天下](http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/)
+- [What are the Dangers of Method Swizzling in Objective-C? - Stack Overflow](https://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c)
+- [Method Swizzling - NSHipster](https://nshipster.cn/method-swizzling/)
+
 ### 11. Category
 
 - Category 是什么？
