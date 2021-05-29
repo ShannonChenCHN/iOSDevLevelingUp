@@ -204,7 +204,7 @@ isa 的类型 isa_t 是一个 union 类型的结构体，也就是说其中的 i
 内存中的数据类型分为两种：值类型和引用类型。指针就是引用类型，struct 类型就是值类型。
 
 
-值类型在传值时需要拷贝内容本身，而引用类型在传递时，拷贝的是对象的地址。所以，一方面，值类型的传递占用更多的内存空间，使用引用类型更节省内存开销；另一方面，也是最主要的原因，很多时候，我们需要把一个对象交给另一个函数或者方法去修改其中的内容（比如说一个 Person 对象的 age 属性），显然如果我们想让修改方获取到这个对象，我们需要的传递的是地址，而不是复制一份。
+值类型在传值时需要拷贝内容本身，而引用类型在传递时，拷贝的是对象的地址。所以，一方面，值类型的传递占用更多的内存空间，使用引用类型更节省内存开销；另一方面，也是最主要的原因(Really？?)，很多时候，我们需要把一个对象交给另一个函数或者方法去修改其中的内容（比如说一个 Person 对象的 age 属性），显然如果我们想让修改方获取到这个对象，我们需要的传递的是地址，而不是复制一份。
 
 对于像 `int` 这样的基本数据类型，拷贝起来更快，而且数据简单，方便修改，所以就不用指针了。
 
@@ -216,6 +216,7 @@ isa 的类型 isa_t 是一个 union 类型的结构体，也就是说其中的 i
 - [need of pointer objects in objective c](https://stackoverflow.com/questions/17992127/need-of-pointer-objects-in-objective-c)
 - [Why "Everything" in Objective C is pointers. I mean why I should declare NSArray instance variables in pointers.](https://teamtreehouse.com/community/why-everything-in-objective-c-is-pointers-i-mean-why-i-should-declare-nsarray-instance-variables-in-pointers)
 - [Why do all objects in Objective-C have to use pointers?](https://www.quora.com/Why-do-all-objects-in-Objective-C-have-to-use-pointers#)
+- [Swift and mutating struct](https://stackoverflow.com/a/24035861)
 
 ### 4. Objective-C 对象是如何被创建（alloc）和初始化（init）的？
 
