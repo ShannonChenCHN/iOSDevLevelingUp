@@ -903,6 +903,8 @@ static SEL sel_alloc(const char *name, bool copy)
 - Category 中的方法和属性以及协议是怎么存储和加载的？
 - Category 和 Class 的关系
 
+- [深入理解Objective-C：Category](https://tech.meituan.com/DiveIntoCategory.html)
+
 ### 12. Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
 - Associated Objects 的原理是什么？
