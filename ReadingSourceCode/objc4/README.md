@@ -887,15 +887,16 @@ static SEL sel_alloc(const char *name, bool copy)
 
 ### 10. Method Swizzling
 
-- 什么是 Method Swizzling ？
-- Method Swizzling 有什么注意点？
+- 什么是 Method Swizzling ？一般用来干什么？
 - Method Swizzling 的原理是什么？
+- Method Swizzling 有什么注意点？最佳实践是什么？
 - Method Swizzling 为什么要在 +load 方法中进行？
 
 参考：
 - [Objective-C Method Swizzling - 玉令天下](http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/)
 - [What are the Dangers of Method Swizzling in Objective-C? - Stack Overflow](https://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c)
 - [Method Swizzling - NSHipster](https://nshipster.cn/method-swizzling/)
+- [Objective-C Method Swizzling 的最佳实践 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/14/objective-c-method-swizzling-best-practice/)
 
 ### 11. Category
 
@@ -903,7 +904,9 @@ static SEL sel_alloc(const char *name, bool copy)
 - Category 中的方法和属性以及协议是怎么存储和加载的？
 - Category 和 Class 的关系
 
-- [深入理解Objective-C：Category](https://tech.meituan.com/DiveIntoCategory.html)
+参考：
+- [深入理解Objective-C：Category - 美团技术团队](https://tech.meituan.com/DiveIntoCategory.html)
+- [Objective-C Category 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/05/18/objective-c-category-implementation-principle/)
 
 ### 12. Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
