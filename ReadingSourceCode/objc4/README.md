@@ -1482,10 +1482,119 @@ static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
 ### 15. load 方法和 initialize 方法
 
 
-- `+load ` 方法和 `+initialize` 方法分别在什么时候被调用？
+- `+load` 方法和 `+initialize` 方法分别在什么时候被调用？，在父类、子类和分类中的调用顺序是什么？
 - 这两个方法是用来干嘛的？
 - ProtocolKit 的实现中为什么要在 main 函数执行前进行 Protocol 方法默认实现的注册？
 
+> `+load` 方法是当类或分类被添加到 Objective-C runtime 时被调用的，实现这个方法可以让我们在类加载的时候执行一些类相关的行为。
+
+
+
+#### 15.1 `+load` 方法
+
+根据 runtime 源码，加载 objc runtime 时调用  `+load` 方法的流程如下：
+
+
+```
+_objc_init()
+  _dyld_objc_notify_register()
+    map_images()
+    load_images()
+      prepare_load_methods()
+        schedule_class_load()
+	  schedule_class_load() // 确保父类优先
+	  add_class_to_loadable_list()
+	    getLoadMethod() // 获取 +load 方法，保存到 loadable_classes 里
+	add_category_to_loadable_list()
+	  _category_getLoadMethod()  // 获取 +load 方法，保存到 loadable_categories 里
+      call_load_methods()
+        call_class_loads() 
+	  (*load_method)(cls, SEL_load) // 从 loadable_classes 中取出各个类，调用它们的 +load 方法
+	call_category_loads()
+	  (*load_method)(cls, SEL_load) // 从 loadable_categories 中取出各个 Category，调用它们的 +load 方法
+  
+```
+
+
+
+结论：
+
+- 先调用父类的 `+load` 方法，后调用子类的 `+load` 方法
+- Category 的 `+load` 方法会在它的主类的 `+load` 方法被调用之后才被调用
+- 不同的类之间的 `+load` 方法的调用顺序根据编译时的顺序(在 Xcode Build Phases 中可以看到)来确定的，靠前的先加载
+
+
+
+
+
+#### 15.2 `+initialize` 方法
+
+在处理消息发送的函数 `lookUpImpOrForward()` 中我们可以看到 initialize class 的逻辑：
+
+```
+IMP lookUpImpOrForward(Class cls, SEL sel, id inst, 
+                       bool initialize, bool cache, bool resolver)
+{
+    IMP imp = nil;
+    bool triedResolver = NO;
+
+		// 省略部分内容...
+		...
+
+    // 在 Objective-C 运行时 初始化的过程中（也就是libSystem 调用 _objc_init 函数时）会对其中的类进行第一次初始化也就是执行 realizeClass 方法，为类分配可读写结构体 class_rw_t 的空间，并返回正确的类结构体
+    if (!cls->isRealized()) {
+        // Drop the read-lock and acquire the write-lock.
+        // realizeClass() checks isRealized() again to prevent
+        // a race while the lock is down.
+        runtimeLock.unlockRead();
+        runtimeLock.write();
+
+        realizeClass(cls);
+
+        runtimeLock.unlockWrite();
+        runtimeLock.read();
+    }
+
+    // _class_initialize 方法会调用类的 initialize 方法，在这个类第一次被初始化时就会调用 initialize 方法
+    if (initialize  &&  !cls->isInitialized()) {
+        runtimeLock.unlockRead();
+        _class_initialize (_class_getNonMetaClass(cls, inst));
+        runtimeLock.read();
+        // If sel == initialize, _class_initialize will send +initialize and 
+        // then the messenger will send +initialize again after this 
+        // procedure finishes. Of course, if this is not being called 
+        // from the messenger then it won't happen. 2778172
+    }
+
+ 		// 省略后面的内容...
+ 		...
+ 		
+    return imp;
+}
+```
+
+通过阅读 runtime 源码，一个 ObjC 类的 `+initialize` 方法被调用的大概流程如下：
+
+```objective-c++
+objc_msgSend()
+  lookUpImpOrForward()
+    _class_initialize()
+      _class_initialize(supercls) // initialize 当前类之前确保先 initialize 父类
+      callInitialize()
+        ((void(*)(Class, SEL))objc_msgSend)(cls, SEL_initialize); // 调用 initialize 方法
+```
+
+
+
+结论：
+
+- `+initialize` 方法是在类或它的子类收到第一条消息之前被调用的，这里所指的消息包括实例方法和类方法的调用。也就是说 `+initialize` 方法是以懒加载的方式被调用的，如果程序一直没有给某个类或它的子类发送消息，那么这个类的 `+initialize` 方法是永远不会被调用的。
+
+- **跟 `+load` 方法是通过函数指针来直接调用不同，`+initialize` 方法的调用是通过 `objc_msgSend` 调用的，与普通方法的调用是一样的，走的都是发送消息的流程**。
+- 基于第二点，可以得出下面的结论：
+  - 如果子类没有实现 `+initialize` 方法，那么继承自父类的实现会被调用
+  - 如果一个子类没有实现 `+initialize` 方法，那么父类的实现会被执行多次
+  - 如果一个类的分类实现了 `+initialize` 方法，那么就会对这个类中的实现造成覆盖
 
 
 
