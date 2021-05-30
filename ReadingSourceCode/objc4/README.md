@@ -919,8 +919,148 @@ static SEL sel_alloc(const char *name, bool copy)
 - 同理，不要用 Category 来覆写父类的方法。因为如果原类中也覆盖了父类的这个方法，这样还是会遇到上面的第一个问题。
 - 不要用 Category 来覆写原类其他 Category 中定义的方法。因为哪个 Category 中的方法会最先被调用是不可预知的。
 
+#### 11.3 category VS. extension
+
+美团技术团队的博客总结的很好：
+> extension看起来很像一个匿名的category，但是extension和有名字的category几乎完全是两个东西。 extension在编译期决议，它就是类的一部分，在编译期和头文件里的@interface以及实现文件里的@implement一起形成一个完整的类，它伴随类的产生而产生，亦随之一起消亡。extension一般用来隐藏类的私有信息，你必须有一个类的源码才能为一个类添加extension，所以你无法为系统的类比如NSString添加extension。
+> 
+> 但是category则完全不一样，它是在运行期决议的。 就category和extension的区别来看，我们可以推导出一个明显的事实，extension可以添加实例变量，而category是无法添加实例变量的（因为在运行期，对象的内存布局已经确定，如果添加实例变量就会破坏类的内部布局，这对编译型语言来说是灾难性的）。
+
+#### 11.4 源码实现
+
+##### （1）Category 的真实面目
+在 `objc-runtime-new.h` 中可以找到 Category 在 runtime 层面的定义：
+
+```
+struct category_t {
+    const char *name; // 分类名
+    classref_t cls;  // 原类
+    struct method_list_t *instanceMethods; // 实例方法列表
+    struct method_list_t *classMethods;    // 类方法列表
+    struct protocol_list_t *protocols;     // 协议列表
+    struct property_list_t *instanceProperties;  // 实例属性列表
+    // Fields below this point are not always present on disk.
+    struct property_list_t *_classProperties;  // 类属性列表
+
+    method_list_t *methodsForMeta(bool isMeta) {
+        if (isMeta) return classMethods;
+        else return instanceMethods;
+    }
+
+    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);
+};
+```
+
+定义一个 Category，然后再使用 `clang -rewrite-objc MyCategory.m`，也可以看到 Category 经过编译器处理后的样子。详见 [深入理解Objective-C：Category - 美团技术团队](https://tech.meituan.com/DiveIntoCategory.html)。
+
+##### （2）Category (方法、属性等)的加载过程
+
+Objective-C 的运行是依赖 ObjC 的 runtime 的，而 ObjC 的 runtime 和其他系统库一样，是 macOS 和 iOS 通过 dyld 动态加载的。
+
+ObjC runtime 的加载是从 `objc-os.mm` 中的 `_objc_init` 函数开始的，其中加载 Category 大概流程如下：
+```Objective-C++
+_objc_init()
+  _dyld_objc_notify_register()
+    map_images()
+      map_images_nolock()
+        _read_images()
+	  addUnattachedCategoryForClass() // 把 category 和原类做一个关联映射
+	  remethodizeClass()              // 把 category 的实例方法/类方法、协议以及属性/类属性添加到原类/元类上
+	    attachCategories()
+```
+
+加载 Category 属性和方法的主要逻辑都在 `attachCategories` 函数中：
+```
+// Attach method lists and properties and protocols from categories to a class.
+// Assumes the categories in cats are all loaded and sorted by load order, 
+// oldest categories first.
+static void 
+attachCategories(Class cls, category_list *cats, bool flush_caches)
+{
+    if (!cats) return;
+    if (PrintReplacedMethods) printReplacements(cls, cats);
+
+    bool isMeta = cls->isMetaClass();
+
+    // fixme rearrange to remove these intermediate allocations
+    method_list_t **mlists = (method_list_t **)
+        malloc(cats->count * sizeof(*mlists));
+    property_list_t **proplists = (property_list_t **)
+        malloc(cats->count * sizeof(*proplists));
+    protocol_list_t **protolists = (protocol_list_t **)
+        malloc(cats->count * sizeof(*protolists));
+
+    // Count backwards through cats to get newest categories first
+    int mcount = 0;
+    int propcount = 0;
+    int protocount = 0;
+    int i = cats->count;
+    bool fromBundle = NO;
+    while (i--) {
+        auto& entry = cats->list[i];
+
+        method_list_t *mlist = entry.cat->methodsForMeta(isMeta);
+        if (mlist) {
+            mlists[mcount++] = mlist;
+            fromBundle |= entry.hi->isBundle();
+        }
+
+        property_list_t *proplist = 
+            entry.cat->propertiesForMeta(isMeta, entry.hi);
+        if (proplist) {
+            proplists[propcount++] = proplist;
+        }
+
+        protocol_list_t *protolist = entry.cat->protocols;
+        if (protolist) {
+            protolists[protocount++] = protolist;
+        }
+    }
+
+    auto rw = cls->data();
+
+    prepareMethodLists(cls, mlists, mcount, NO, fromBundle);
+    rw->methods.attachLists(mlists, mcount);
+    free(mlists);
+    if (flush_caches  &&  mcount > 0) flushCaches(cls);
+
+    rw->properties.attachLists(proplists, propcount);
+    free(proplists);
+
+    rw->protocols.attachLists(protolists, protocount);
+    free(protolists);
+}
+```
+
+`attachLists` 函数做的工作就是把类中原有的方法(或者属性和协议)放到了新添加的 category (或者属性和协议)的后面了，代码实现如下：
+
+```
+void attachLists(List* const * addedLists, uint32_t addedCount) {
+        if (addedCount == 0) return;
+
+        if (hasArray()) {
+            // many lists -> many lists
+            uint32_t oldCount = array()->count;
+            uint32_t newCount = oldCount + addedCount;
+            setArray((array_t *)realloc(array(), array_t::byteSize(newCount)));
+            array()->count = newCount;
+            memmove(array()->lists + addedCount, array()->lists, 
+                    oldCount * sizeof(array()->lists[0]));
+            memcpy(array()->lists, addedLists, 
+                   addedCount * sizeof(array()->lists[0]));
+        }
+        
+	// 后面的内容省略了...
+    }
+```
+
+结论：
+- category的方法没有“完全替换掉”原来类已经有的方法，也就是说如果 category 和原来类都有 methodA，那么 category 附加完成之后，类的方法列表里会有两个 methodA
+- category的方法被放到了新方法列表的前面，而原来类的方法被放到了新方法列表的后面，这也就是我们平常所说的 category 的方法会“覆盖”掉原来类的同名方法，这是因为运行时在查找方法的时候是顺着方法列表的顺序查找的，它只要一找到对应名字的方法，就停止查找，不会再关心后面是不是还有一样名字的方法。
+
+
 参考：
-- [深入理解Objective-C：Category - 美团技术团队](https://tech.meituan.com/DiveIntoCategory.html)
+- [深入理解Objective-C：Category - 美团技术团队](https://tech.meituan.com/DiveIntoCategory.html) ⭐️
 - [Objective-C Category 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/05/18/objective-c-category-implementation-principle/)
 - [Cocoa Core Competencies - Apple](https://developer.apple.com/library/archive/documentation/General/Conceptual/DevPedia-CocoaCore/Category.html)
 - [Overriding methods using categories in Objective-C - Stack Overflow](https://stackoverflow.com/questions/5272451/overriding-methods-using-categories-in-objective-c)
