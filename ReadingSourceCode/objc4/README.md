@@ -917,13 +917,13 @@ static SEL sel_alloc(const char *name, bool copy)
 - Associated Objects 的五种 policy 有什么区别，有什么坑？
 - Associated Objects 的内存管理机制是什么？生命周期是怎样的，什么时候被释放，什么时候被移除？
 
-#### （1）使用场景
+#### 12.1 使用场景
 
 - 为现有的类添加私有变量以帮助实现细节
 - 为现有的类添加公有属性
 - 为 KVO 创建一个关联的观察者
 
-#### （2）相关函数
+#### 12.2 相关函数
 
 `objc/runtime.h` 文件中可以看到：
 
@@ -939,7 +939,7 @@ void objc_removeAssociatedObjects(id object);
 
 ```
 
-##### `objc_setAssociatedObject` 的第二个参数 `const void *key`
+#### 12.3 `objc_setAssociatedObject` 的第二个参数 `const void *key`
 
 `void *` 一般被称为通用指针或泛指针，它是C关于“纯粹地址(raw address)”的一种约定。void 指针指向某个对象，但该对象不属于任何类型。请看下例：
 ```
@@ -982,11 +982,70 @@ if (j != refs->end()) {
 - 声明 `static void *kAssociatedObjectKey = &kAssociatedObjectKey;` ，使用时 `objc_getAssociatedObject(self, &kAssociatedObjectKey);`；
 - 直接使用 getter 的 selector 作为 key，使用时 `objc_getAssociatedObject(self, @selector(associatedObjectGetterName));`，而且在 getter 中可以直接写成 `objc_getAssociatedObject(self, _cmd);`。
 
+
+#### 12.4 Associated Objects 的原理是什么？Associated Objects 被存储在什么地方？
+
+
+我们可以在 `objc-references.mm` 中的 `_object_set_associative_reference` 函数中，看到 `objc_setAssociatedObject` 的核心逻辑：
+```Objective-C++
+    void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) {
+    // retain the new value (if any) outside the lock.
+    ObjcAssociation old_association(0, nil);
+    id new_value = value ? acquireValue(value, policy) : nil;
+    {
+        AssociationsManager manager;
+        AssociationsHashMap &associations(manager.associations());
+        disguised_ptr_t disguised_object = DISGUISE(object);
+        if (new_value) {
+            // break any existing association.
+            AssociationsHashMap::iterator i = associations.find(disguised_object);
+            if (i != associations.end()) {
+                // secondary table exists
+                ObjectAssociationMap *refs = i->second;
+                ObjectAssociationMap::iterator j = refs->find(key);
+                if (j != refs->end()) {
+                    old_association = j->second;
+                    j->second = ObjcAssociation(policy, new_value);
+                } else {
+                    (*refs)[key] = ObjcAssociation(policy, new_value);
+                }
+            } else {
+                // create the new association (first time).
+                ObjectAssociationMap *refs = new ObjectAssociationMap;
+                associations[disguised_object] = refs;
+                (*refs)[key] = ObjcAssociation(policy, new_value);
+                object->setHasAssociatedObjects();
+            }
+        } else {
+            // setting the association to nil breaks the association.
+            AssociationsHashMap::iterator i = associations.find(disguised_object);
+            if (i !=  associations.end()) {
+                ObjectAssociationMap *refs = i->second;
+                ObjectAssociationMap::iterator j = refs->find(key);
+                if (j != refs->end()) {
+                    old_association = j->second;
+                    refs->erase(j);
+                }
+            }
+        }
+    }
+    // release the old value (outside of the lock).
+    if (old_association.hasValue()) ReleaseValue()(old_association);
+}
+```
+
+核心逻辑其实就是 4 个数据结构：
+- `AssociationsManager` 是顶级的对象，维护了一个从 `spinlock_t` 锁到 `AssociationsHashMap` 哈希表的单例键值对映射；
+- `AssociationsHashMap` 是一个无序的哈希表，维护了从对象地址到 `ObjectAssociationMap` 的映射；
+- `ObjectAssociationMap` 是一个 C++ 中的 `map` ，维护了从 `key` 到 `ObjcAssociation` 的映射，即关联记录；
+- `ObjcAssociation` 是一个 C++ 的类，表示一个具体的关联结构，主要包括两个实例变量，`_policy` 表示关联策略，`_value` 表示关联对象。
+
 参考：
 - [Objective-C Associated Objects 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
 - [Associated Objects - NSHipster](https://nshipster.com/associated-objects/)
 - [The Objective-C Programming Language - Apple](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocAssociativeReferences.html)
 - [Associated Object 与 Dealloc - 玉令天下](http://yulingtianxia.com/blog/2017/12/15/Associated-Object-and-Dealloc/)
+- [关联对象 AssociatedObject 完全解析 - Draveness](https://draveness.me/ao/)
 - [C语言void指针到底是什么?什么时候使用void指针? - C 语言中文网](http://c.biancheng.net/cpp/html/1582.html)
 
 
