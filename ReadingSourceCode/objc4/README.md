@@ -1040,6 +1040,29 @@ if (j != refs->end()) {
 - `ObjectAssociationMap` 是一个 C++ 中的 `map` ，维护了从 `key` 到 `ObjcAssociation` 的映射，即关联记录；
 - `ObjcAssociation` 是一个 C++ 的类，表示一个具体的关联结构，主要包括两个实例变量，`_policy` 表示关联策略，`_value` 表示关联对象。
 
+
+#### 12.5 Associated Objects 的内存管理机制是什么？
+
+
+|              关联策略               |                           等价属性                           |              说明              |
+| :---------------------------------: | :----------------------------------------------------------: | :----------------------------: |
+|      `OBJC_ASSOCIATION_ASSIGN`      | `@property (assign)` <br /> or `@property (unsafe_unretained) ` |         弱引用关联对象         |
+| `OBJC_ASSOCIATION_RETAIN_NONATOMIC` |               `@property (strong, nonatomic)`                | 强引用关联对象，且为非原子操作 |
+|  `OBJC_ASSOCIATION_COPY_NONATOMIC`  |                `@property (copy, nonatomic)`                 |  复制关联对象，且为非原子操作  |
+|      `OBJC_ASSOCIATION_RETAIN`      |                 `@property (strong, atomic)`                 |  强引用关联对象，且为原子操作  |
+|       `OBJC_ASSOCIATION_COPY`       |                  `@property (copy, atomic)`                  |   复制关联对象，且为原子操作   |
+
+
+
+   
+
+
+​		
+​		
+​		
+​		
+
+
 参考：
 - [Objective-C Associated Objects 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
 - [Associated Objects - NSHipster](https://nshipster.com/associated-objects/)
