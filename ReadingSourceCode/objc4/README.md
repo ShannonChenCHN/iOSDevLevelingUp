@@ -1093,6 +1093,11 @@ void *objc_destructInstance(id obj)
 
 #### 12.6 如何实现 Weak Associated Object?
 
+两种方式：
+- `host --> wrapper(retain) --> obj(weak)` ：“宿主对象”通过 retain 方式的关联一个 Wrapper 对象，Wrapper 对象再持有一个 weak 属性去保存真正要关联的那个对象
+- `host --> obj(retain) --> TempObject.block(retain) --> notify host to nil out obj when dealloc`：“宿主对象” 通过 retain 方式的关联目标对象，目标对象再通过 retain 方式的关联一个中间对象 dealloc 回调的 block。当目标对象被释放时，中间对象也被释放了，block 回调通知“宿主对象”清空属性，也就是关联对象的值。
+
+实现代码详见[如何实现 Weak Associated Object](https://zhangbuhuai.com/post/weak-associated-object.html)。
 
 参考：
 - [Objective-C Associated Objects 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
@@ -1101,6 +1106,7 @@ void *objc_destructInstance(id obj)
 - [Associated Object 与 Dealloc - 玉令天下](http://yulingtianxia.com/blog/2017/12/15/Associated-Object-and-Dealloc/)
 - [关联对象 AssociatedObject 完全解析 - Draveness](https://draveness.me/ao/)
 - [C语言void指针到底是什么?什么时候使用void指针? - C 语言中文网](http://c.biancheng.net/cpp/html/1582.html)
+- [如何实现 Weak Associated Object](https://zhangbuhuai.com/post/weak-associated-object.html)
 
 
 ### 13. Objective-C 中的 Protocol 是什么？
