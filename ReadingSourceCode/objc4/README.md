@@ -901,12 +901,29 @@ static SEL sel_alloc(const char *name, bool copy)
 ### 11. Category
 
 - Category 是什么？
+- Category 的使用注意点
 - Category 中的方法和属性以及协议是怎么存储和加载的？
 - Category 和 Class 的关系
+
+#### 11.1 应用场景
+
+在 Objective-C 2.0 中，提供了 Category 这个语言特性，可以动态地为已有类添加新行为。
+
+- 给已经存在的类添加方法
+- 将一个类的实现拆分成多个独立的源文件
+- 声明私有的方法
+
+#### 11.2 注意点
+
+- 不要用 Category 来覆写原类的方法。因为这样可能会导致原类中的方法不再被调用。
+- 同理，不要用 Category 来覆写父类的方法。因为如果原类中也覆盖了父类的这个方法，这样还是会遇到上面的第一个问题。
+- 不要用 Category 来覆写原类其他 Category 中定义的方法。因为哪个 Category 中的方法会最先被调用是不可预知的。
 
 参考：
 - [深入理解Objective-C：Category - 美团技术团队](https://tech.meituan.com/DiveIntoCategory.html)
 - [Objective-C Category 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/05/18/objective-c-category-implementation-principle/)
+- [Cocoa Core Competencies - Apple](https://developer.apple.com/library/archive/documentation/General/Conceptual/DevPedia-CocoaCore/Category.html)
+- [Overriding methods using categories in Objective-C - Stack Overflow](https://stackoverflow.com/questions/5272451/overriding-methods-using-categories-in-objective-c)
 
 ### 12. Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
