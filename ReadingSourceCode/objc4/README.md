@@ -910,13 +910,32 @@ static SEL sel_alloc(const char *name, bool copy)
 
 ### 12. Associated Objects 的原理是什么？到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
 
-- Associated Objects 的原理是什么？
-- Associated Objects 的内存管理机制？
-- 到底能不能在 Category 中给 Objective-C 类添加属性和实例变量？
+我们需要知道以下几个问题：
+- Associated Objects 的应用场景
+- Associated Objects 相关函数介绍
+- Associated Objects 的原理是什么？Associated Objects 被存储在什么地方，是不是存放在被关联对象本身的内存中？
+- Associated Objects 的五种 policy 有什么区别，有什么坑？
+- Associated Objects 的内存管理机制是什么？生命周期是怎样的，什么时候被释放，什么时候被移除？
+
+#### （1）使用场景
+
+
+
+#### （2）
+
+```Objective-C
+void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy);
+id objc_getAssociatedObject(id object, const void *key);
+void objc_removeAssociatedObjects(id object);
+
+```
 
 参考：
 - [Objective-C Associated Objects 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
 - [Associated Objects - NSHipster](https://nshipster.com/associated-objects/)
+- [The Objective-C Programming Language - Apple](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocAssociativeReferences.html)
+- [Associated Object 与 Dealloc - 玉令天下](http://yulingtianxia.com/blog/2017/12/15/Associated-Object-and-Dealloc/)
+- [C语言void指针到底是什么?什么时候使用void指针? - C 语言中文网](http://c.biancheng.net/cpp/html/1582.html)
 
 
 ### 13. Objective-C 中的 Protocol 是什么？
