@@ -1062,7 +1062,7 @@ void attachLists(List* const * addedLists, uint32_t addedCount) {
 
 （1）我们可以在一个类的 `+load` 方法中调用 category 中声明的方法么？
 
-可以调用，因为 attatch category 到类的工作是在 `map_images` 阶段调用的(前面提到过)，而 ObjC 类的 `+load` 方法是在 `load_images` 阶段调用的，前者比后者要早。
+可以调用，因为 attatch category 到类的工作是在 `map_images` 阶段调用的(前面提到过)，而 ObjC 类的 `+load` 方法是在 `load_images` 阶段调用的，前者比后者要早。这一点通过符号断点也可以验证。
 
 runtime 加载时，`_objc_init` 函数中会调用到 `_dyld_objc_notify_register`：
 ```
@@ -1492,14 +1492,76 @@ static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
 
 #### 15.1 `+load` 方法
 
-根据 runtime 源码，加载 objc runtime 时调用  `+load` 方法的流程如下：
+在 runtime 动态库加载的入口函数 `_objc_init` 设置符号断点，启动程序，可以看到如下堆栈：
 
+```
+#0	0x00007fff201b300d in _objc_init ()
+#1	0x00000001002e36db in _os_object_init ()
+#2	0x00000001002f4928 in libdispatch_init ()
+#3	0x00007fff2a4fe65b in libSystem_initializer ()
+#4	0x000000010002d079 in ImageLoaderMachO::doModInitFunctions(ImageLoader::LinkContext const&) ()
+#5	0x000000010002d478 in ImageLoaderMachO::doInitialization(ImageLoader::LinkContext const&) ()
+#6	0x0000000100027d1a in ImageLoader::recursiveInitialization(ImageLoader::LinkContext const&, unsigned int, char const*, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#7	0x0000000100027c85 in ImageLoader::recursiveInitialization(ImageLoader::LinkContext const&, unsigned int, char const*, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#8	0x0000000100025b82 in ImageLoader::processInitializers(ImageLoader::LinkContext const&, unsigned int, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#9	0x0000000100025c22 in ImageLoader::runInitializers(ImageLoader::LinkContext const&, ImageLoader::InitializerTimingList&) ()
+#10	0x00000001000125e9 in dyld::initializeMainExecutable() ()
+#11	0x00000001000189a4 in dyld::_main(macho_header const*, unsigned long, int, char const**, char const**, char const**, unsigned long*) ()
+#12	0x000000010001122b in dyldbootstrap::start(dyld3::MachOLoaded const*, int, char const**, dyld3::MachOLoaded const*, unsigned long*) ()
+#13	0x0000000100011025 in _dyld_start ()
+```
+
+接着在设置断点`map_images`，函数堆栈如下：
+```
+#0	0x00007fff201c4fe1 in map_images ()
+#1	0x0000000100015d2c in dyld::notifyBatchPartial(dyld_image_states, bool, char const* (*)(dyld_image_states, unsigned int, dyld_image_info const*), bool, bool) ()
+#2	0x0000000100015ecf in dyld::registerObjCNotifiers(void (*)(unsigned int, char const* const*, mach_header const* const*), void (*)(char const*, mach_header const*), void (*)(char const*, mach_header const*)) ()
+#3	0x00007fff203228ff in _dyld_objc_notify_register ()
+#4	0x00007fff201b34d9 in _objc_init ()
+#5	0x00000001002e36db in _os_object_init ()
+#6	0x00000001002f4928 in libdispatch_init ()
+#7	0x00007fff2a4fe65b in libSystem_initializer ()
+#8	0x000000010002d079 in ImageLoaderMachO::doModInitFunctions(ImageLoader::LinkContext const&) ()
+#9	0x000000010002d478 in ImageLoaderMachO::doInitialization(ImageLoader::LinkContext const&) ()
+#10	0x0000000100027d1a in ImageLoader::recursiveInitialization(ImageLoader::LinkContext const&, unsigned int, char const*, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#11	0x0000000100027c85 in ImageLoader::recursiveInitialization(ImageLoader::LinkContext const&, unsigned int, char const*, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#12	0x0000000100025b82 in ImageLoader::processInitializers(ImageLoader::LinkContext const&, unsigned int, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#13	0x0000000100025c22 in ImageLoader::runInitializers(ImageLoader::LinkContext const&, ImageLoader::InitializerTimingList&) ()
+#14	0x00000001000125e9 in dyld::initializeMainExecutable() ()
+#15	0x00000001000189a4 in dyld::_main(macho_header const*, unsigned long, int, char const**, char const**, char const**, unsigned long*) ()
+#16	0x000000010001122b in dyldbootstrap::start(dyld3::MachOLoaded const*, int, char const**, dyld3::MachOLoaded const*, unsigned long*) ()
+#17	0x0000000100011025 in _dyld_start ()
+
+```
+
+最后再在一个类的 `+load` 方法处设置断点，得到函数堆栈如下：
+```
+#0	0x000000010000378c in +[Dog load] at /Users/ShannonChen/Desktop/Playgrounds/ObjCPlayground/ObjCPlayground/Dog.m:15
+#1	0x00007fff201b79e9 in load_images ()
+#2	0x000000010001228a in dyld::notifySingle(dyld_image_states, ImageLoader const*, ImageLoader::InitializerTimingList*) ()
+#3	0x0000000100027d08 in ImageLoader::recursiveInitialization(ImageLoader::LinkContext const&, unsigned int, char const*, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#4	0x0000000100025b82 in ImageLoader::processInitializers(ImageLoader::LinkContext const&, unsigned int, ImageLoader::InitializerTimingList&, ImageLoader::UninitedUpwards&) ()
+#5	0x0000000100025c22 in ImageLoader::runInitializers(ImageLoader::LinkContext const&, ImageLoader::InitializerTimingList&) ()
+#6	0x000000010001262f in dyld::initializeMainExecutable() ()
+#7	0x00000001000189a4 in dyld::_main(macho_header const*, unsigned long, int, char const**, char const**, char const**, unsigned long*) ()
+#8	0x000000010001122b in dyldbootstrap::start(dyld3::MachOLoaded const*, int, char const**, dyld3::MachOLoaded const*, unsigned long*) ()
+#9	0x0000000100011025 in _dyld_start ()
+```
+
+大概过程如下：
+- dyld 开始将程序二进制文件初始化
+- 交由 ImageLoader 读取 image，其中包含了我们的类、方法等各种符号
+- 由于 runtime 向 dyld 绑定了回调，当 image 加载到内存后，dyld 会通知 runtime 进行处理
+- runtime 接手后调用 `map_images` 做解析和处理，接下来 `load_images` 中调用 `call_load_methods` 方法，遍历所有加载进来的 Class，按继承层级依次调用 Class 的 `+load` 方法和其 Category 的 `+load` 方法
+
+
+根据 runtime 源码，加载 objc runtime 时调用 `+load` 方法的流程如下：
 
 ```
 _objc_init()
   _dyld_objc_notify_register()
-    map_images()
-    load_images()
+    map_images()  // 先映射二进制数据
+    load_images() // 然后加载二进制数据
       prepare_load_methods()
         schedule_class_load()
 	  schedule_class_load() // 确保父类优先
