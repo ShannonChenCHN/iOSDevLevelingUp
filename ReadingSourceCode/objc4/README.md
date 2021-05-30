@@ -1062,7 +1062,7 @@ void attachLists(List* const * addedLists, uint32_t addedCount) {
 
 （1）我们可以在一个类的 `+load` 方法中调用 category 中声明的方法么？
 
-可以调用，因为 attatch category 到类的工作是在 `map_images` 阶段调用的，而 ObjC 类的 `+load` 方法是在 `load_images` 阶段调用的，前者比后者要早。
+可以调用，因为 attatch category 到类的工作是在 `map_images` 阶段调用的(前面提到过)，而 ObjC 类的 `+load` 方法是在 `load_images` 阶段调用的，前者比后者要早。
 
 runtime 加载时，`_objc_init` 函数中会调用到 `_dyld_objc_notify_register`：
 ```
@@ -1098,6 +1098,25 @@ void _dyld_objc_notify_register(_dyld_objc_notify_mapped    mapped,
                                 _dyld_objc_notify_init      init,
                                 _dyld_objc_notify_unmapped  unmapped);
 
+```
+`load_images` 函数中调用了各个类和 Category 的 `+load` 方法：
+```
+void load_images(const char *path __unused, const struct mach_header *mh)
+{
+    // Return without taking locks if there are no +load methods here.
+    if (!hasLoadMethods((const headerType *)mh)) return;
+
+    recursive_mutex_locker_t lock(loadMethodLock);
+
+    // Discover load methods
+    {
+        rwlock_writer_t lock2(runtimeLock);
+        prepare_load_methods((const headerType *)mh);
+    }
+
+    // Call +load methods (without runtimeLock - re-entrant)
+    call_load_methods();
+}
 ```
 
 
@@ -1466,6 +1485,9 @@ static instancetype _I_NyanCat_init(NyanCat * self, SEL _cmd) {
 - `+load ` 方法和 `+initialize` 方法分别在什么时候被调用？
 - 这两个方法是用来干嘛的？
 - ProtocolKit 的实现中为什么要在 main 函数执行前进行 Protocol 方法默认实现的注册？
+
+
+
 
 参考：
 - [Objective-C +load vs +initialize - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/05/02/objective-c-plus-load-vs-plus-initialize/)
