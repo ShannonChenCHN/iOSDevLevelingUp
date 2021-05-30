@@ -1058,6 +1058,57 @@ void attachLists(List* const * addedLists, uint32_t addedCount) {
 - category的方法没有“完全替换掉”原来类已经有的方法，也就是说如果 category 和原来类都有 methodA，那么 category 附加完成之后，类的方法列表里会有两个 methodA
 - category的方法被放到了新方法列表的前面，而原来类的方法被放到了新方法列表的后面，这也就是我们平常所说的 category 的方法会“覆盖”掉原来类的同名方法，这是因为运行时在查找方法的时候是顺着方法列表的顺序查找的，它只要一找到对应名字的方法，就停止查找，不会再关心后面是不是还有一样名字的方法。
 
+#### 11.5 category 和 `+load` 方法
+
+（1）我们可以在一个类的 `+load` 方法中调用 category 中声明的方法么？
+
+可以调用，因为 attatch category 到类的工作是在 `map_images` 阶段调用的，而 ObjC 类的 `+load` 方法是在 `load_images` 阶段调用的，前者比后者要早。
+
+runtime 加载时，`_objc_init` 函数中会调用到 `_dyld_objc_notify_register`：
+```
+void _objc_init(void)
+{
+    static bool initialized = false;
+    if (initialized) return;
+    initialized = true;
+    
+    // fixme defer initialization until an objc-using image is found?
+    environ_init();
+    tls_init();
+    static_init();
+    lock_init();
+    exception_init();
+
+    _dyld_objc_notify_register(&map_images, load_images, unmap_image);
+}
+```
+而 `_dyld_objc_notify_register` 函数会在适当的时机分别调用 `map_images` 函数和 `load_images` 函数：
+```
+//
+// Note: only for use by objc runtime
+// Register handlers to be called when objc images are mapped, unmapped, and initialized.
+// Dyld will call back the "mapped" function with an array of images that contain an objc-image-info section.
+// Those images that are dylibs will have the ref-counts automatically bumped, so objc will no longer need to
+// call dlopen() on them to keep them from being unloaded.  During the call to _dyld_objc_notify_register(),
+// dyld will call the "mapped" function with already loaded objc images.  During any later dlopen() call,
+// dyld will also call the "mapped" function.  Dyld will call the "init" function when dyld would be called
+// initializers in that image.  This is when objc calls any +load methods in that image.
+//
+void _dyld_objc_notify_register(_dyld_objc_notify_mapped    mapped,
+                                _dyld_objc_notify_init      init,
+                                _dyld_objc_notify_unmapped  unmapped);
+
+```
+
+
+（2）如果一个类和它的各个 category 中都重写了 `+load` 方法，那么调用顺序是怎样的呢？
+
+`+load` 的执行顺序是先调用类的 `+load`，后调用 category 的，而 category 的 `+load` 执行顺序是根据类的编译顺序(在 Xcode Build phases 里面可以看到)决定的。
+
+（3）如果一个类中和它的各个 category 中都实现了相同的方法，会发生什么？
+
+对于 Category 覆写的方法，运行时的消息机制会先找到方法列表中第一个匹配的方法，也就是最后一个编译的 category 里的对应方法。因为上面提到过，各个 Category 中的方法是逆序排列的，而且 Category 的方法被插入到了原类中方法的前面。 
+
 
 参考：
 - [深入理解Objective-C：Category - 美团技术团队](https://tech.meituan.com/DiveIntoCategory.html) ⭐️
