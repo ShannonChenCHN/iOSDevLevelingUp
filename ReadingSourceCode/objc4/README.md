@@ -919,16 +919,68 @@ static SEL sel_alloc(const char *name, bool copy)
 
 #### （1）使用场景
 
+- 为现有的类添加私有变量以帮助实现细节
+- 为现有的类添加公有属性
+- 为 KVO 创建一个关联的观察者
 
+#### （2）相关函数
 
-#### （2）
+`objc/runtime.h` 文件中可以看到：
 
 ```Objective-C
-void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy);
+/// 用于给对象添加关联对象，传入 nil 则可以移除已有的关联对象
+void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy); 
+
+/// 用于获取关联对象
 id objc_getAssociatedObject(id object, const void *key);
+
+/// 用于移除一个对象的所有关联对象
 void objc_removeAssociatedObjects(id object);
 
 ```
+
+##### `objc_setAssociatedObject` 的第二个参数 `const void *key`
+
+`void *` 一般被称为通用指针或泛指针，它是C关于“纯粹地址(raw address)”的一种约定。void 指针指向某个对象，但该对象不属于任何类型。请看下例：
+```
+    int    *ip;
+    void    *p;
+```
+在上例中，ip 指向一个整型值，而 p 指向的对象不属于任何类型。
+在 C 中，任何时候你都可以用其它类型的指针来代替 void 指针(在 C++ 中同样可以)，或者用 void 指针来代替其它类型的指针(在 C++ 中需要进行强制转换)，并且不需要进行强制转换。例如，你可以把 `char *` 类型的指针传递给需要 void 指针的函数。
+
+`const` 表示这个一个常量。
+
+所以，传入的第二参数必须是一个唯一的对象级别的常量。从 runtime 源码中，可以看到这个 key 最后被用来从 [std::map](https://en.cppreference.com/w/cpp/container/map) 中查找对应的 value。
+
+```C++
+/// 比较器的定义
+struct ObjectPointerLess {
+    bool operator()(const void *p1, const void *p2) const {
+        return p1 < p2;
+    }
+};
+
+/// 最终保存关联对象的 Map
+class ObjectAssociationMap : public std::map<void *, ObjcAssociation, ObjectPointerLess, ObjectAssociationMapAllocator>
+ 
+...
+
+/// 访问关联对象的逻辑
+ObjectAssociationMap *refs = i->second;
+ObjectAssociationMap::iterator j = refs->find(key);
+if (j != refs->end()) {
+    old_association = j->second;
+    j->second = ObjcAssociation(policy, new_value);
+} else {
+    (*refs)[key] = ObjcAssociation(policy, new_value);
+}
+...
+```
+一般来说，有以下三种推荐的 `key` 值：
+- 声明 `static char kAssociatedObjectKey;` ，使用时 `objc_getAssociatedObject(self, &kAssociatedObjectKey);`；
+- 声明 `static void *kAssociatedObjectKey = &kAssociatedObjectKey;` ，使用时 `objc_getAssociatedObject(self, &kAssociatedObjectKey);`；
+- 直接使用 getter 的 selector 作为 key，使用时 `objc_getAssociatedObject(self, @selector(associatedObjectGetterName));`，而且在 getter 中可以直接写成 `objc_getAssociatedObject(self, _cmd);`。
 
 参考：
 - [Objective-C Associated Objects 的实现原理 - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/06/26/objective-c-associated-objects-implementation-principle/)
