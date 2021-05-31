@@ -1662,6 +1662,7 @@ objc_msgSend()
 
 参考：
 - [Objective-C +load vs +initialize - 雷纯锋的技术博客](http://www.ds99.site/blog/2015/05/02/objective-c-plus-load-vs-plus-initialize/)
+- [NSObject +load and +initialize - What do they do?](https://stackoverflow.com/questions/13326435/nsobject-load-and-initialize-what-do-they-do?rq=1)
 - [孙源：iOS 程序 main 函数之前发生了什么](http://blog.sunnyxx.com/2014/08/30/objc-pre-main/)
 
 ### 延伸
