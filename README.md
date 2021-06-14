@@ -34,13 +34,13 @@ A journey of leveling up iOS dev knowledge and skill.
     - Java
   - [Cocoa Touch](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/51)
   - [内存管理](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/38)
+  - [多线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
   - [数据存储](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/34)
   - 布局和渲染
     - [storyboard 与布局适配](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/8)
     - [Drawing](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/48)
     - [文字/图像](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/44)
     - [动画](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/31)
-  - [多线程](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/16)
   - **计算机基础（重点）**
     - [数据结构和算法](https://github.com/ShannonChenCHN/DataStructure-Algorithm-Notes)
     - [编译、链接和装载](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/47)
