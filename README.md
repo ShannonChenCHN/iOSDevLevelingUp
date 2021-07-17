@@ -55,7 +55,8 @@ A journey of leveling up iOS dev knowledge and skill.
     - [直播](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/36)
     - [音视频](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/13)
     - [文本绘制和排版](https://github.com/ShannonChenCHN/iOSLevelingUp/issues/30)
-    - IM
+    - [IM 即时通讯](https://github.com/ShannonChenCHN/iOSDevLevelingUp/issues/127)
+    - 视频直播
     - 其他
   - 运营需求
     - 配置系统
